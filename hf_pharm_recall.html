@@ -1,0 +1,486 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:sans-serif}
+body{background:#fff;color:#111;padding:16px;font-size:13px}
+h2{font-size:16px;font-weight:600;margin-bottom:4px}
+.sub{color:#666;font-size:12px;margin-bottom:14px}
+.resource-banner{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#1E40AF}
+.resource-banner strong{display:block;margin-bottom:2px;font-size:13px}
+.tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.tab{padding:7px 14px;border-radius:20px;border:1.5px solid #CBD5E1;font-size:12px;cursor:pointer;background:#fff;color:#475569;font-weight:500}
+.tab.active{background:#0F766E;color:#fff;border-color:#0F766E}
+.panel{display:none}.panel.active{display:block}
+.sec{font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.05em;margin:14px 0 6px}
+table{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:12px}
+th{background:#F1F5F9;text-align:left;padding:7px 8px;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:#475569;border:1px solid #E2E8F0;font-weight:600}
+td{padding:6px 8px;border:1px solid #E2E8F0;vertical-align:top}
+td input{width:100%;border:none;border-bottom:1.5px solid #e2e8f0;font-size:11px;background:transparent;outline:none;padding:1px 0;color:#1e293b}
+td input:focus{border-bottom-color:#0F766E}
+tr:nth-child(even) td{background:#FAFAFA}
+.rl{font-weight:600;font-size:11px;color:#1e293b;background:#F8FAFC!important;white-space:nowrap}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.f{margin-bottom:6px}
+.f label{font-size:10px;color:#94a3b8;display:block;margin-bottom:2px;text-transform:uppercase;letter-spacing:.03em}
+.f input{width:100%;border:none;border-bottom:1.5px solid #CBD5E1;font-size:12px;background:transparent;outline:none;padding:2px 0;color:#1e293b}
+.f input:focus{border-bottom-color:#0F766E}
+.f textarea{width:100%;border:1px solid #CBD5E1;border-radius:6px;font-size:12px;background:transparent;outline:none;padding:4px 6px;color:#1e293b;resize:vertical;min-height:52px}
+.f textarea:focus{border-color:#0F766E}
+.btn{background:#0F766E;color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;cursor:pointer;font-weight:500;margin-top:8px}
+.btn:hover{background:#0D9488}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.fb{margin-top:12px;font-size:12px;line-height:1.9;padding:10px 14px;border-radius:8px;display:none;background:#F0FDF4;color:#14532D;border:1px solid #86EFAC}
+.warn{background:#FFFBEB;border-left:3px solid #F59E0B;padding:7px 10px;border-radius:0 6px 6px 0;font-size:11px;color:#92400E;margin:8px 0}
+.on-exam{background:#FEE2E2;border:1px solid #FDA4AF;border-radius:6px;padding:4px 10px;font-size:11px;color:#991B1B;font-weight:700;display:inline-block;margin-bottom:8px}
+.lo-tag{background:#EDE9FE;border:1px solid #C4B5FD;border-radius:5px;padding:2px 8px;font-size:10px;color:#5B21B6;font-weight:600;margin-bottom:6px;display:inline-block}
+.pq-box{background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:12px}
+.pq-q{font-weight:600;margin-bottom:6px;color:#92400E}
+.pq-choices{margin-left:12px;margin-bottom:6px;color:#78350F;line-height:1.8}
+.pq-ans{display:none;background:#F0FDF4;border:1px solid #86EFAC;border-radius:6px;padding:6px 10px;font-size:11px;color:#14532D;margin-top:4px}
+.pq-btn{font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #D97706;background:#FEF3C7;color:#92400E;cursor:pointer}
+.pq-btn:hover{background:#FDE68A}
+.card{border:1px solid #E2E8F0;border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.gdmt-pill{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;margin:2px}
+.p1{background:#DBEAFE;color:#1E40AF}
+.p2{background:#D1FAE5;color:#065F46}
+.p3{background:#EDE9FE;color:#5B21B6}
+.p4{background:#FEF3C7;color:#92400E}
+</style></head><body>
+
+<h2>Heart Failure Pharm — Active Recall</h2>
+<p class="sub">Built from Dr. Lam CV57 & CV58 MNTs + LOs. Close notes. Fill from memory. Reveal after genuine attempt.</p>
+
+<div class="resource-banner">
+  <strong>📺 Watch first: Bootcamp — Heart Failure Pharmacology (both parts)</strong>
+  Focus on the 4 GDMT drugs, mortality vs symptom benefit distinction, and ADHF management. Use this tool immediately after.
+</div>
+
+<div style="margin-bottom:14px">
+  <div style="font-size:12px;font-weight:600;margin-bottom:6px;color:#374151">The 4 GDMT Drugs for HFrEF — fill from memory before starting:</div>
+  <span class="gdmt-pill p1">1. ?</span>
+  <span class="gdmt-pill p2">2. ?</span>
+  <span class="gdmt-pill p3">3. ?</span>
+  <span class="gdmt-pill p4">4. ?</span>
+  <div style="font-size:10px;color:#94a3b8;margin-top:4px">Answer: ACEi/ARB/ARNI · Beta Blocker · Aldosterone Antagonist · SGLT2 inhibitor</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="sw(0)">Pathophys & Remodeling</div>
+  <div class="tab" onclick="sw(1)">ACEi / ARB / ARNI</div>
+  <div class="tab" onclick="sw(2)">Beta Blockers</div>
+  <div class="tab" onclick="sw(3)">Aldosterone Antagonists</div>
+  <div class="tab" onclick="sw(4)">SGLT2i & Vasodilators</div>
+  <div class="tab" onclick="sw(5)">Digoxin & Ivabradine</div>
+  <div class="tab" onclick="sw(6)">HFpEF & ADHF</div>
+  <div class="tab" onclick="sw(7)">Practice Qs</div>
+</div>
+
+<!-- TAB 0: PATHOPHYS -->
+<div class="panel active" id="p0">
+<div class="lo-tag">LO1 · LO2</div>
+<div class="on-exam">ON EXAM — Frank-Starling, eccentric vs concentric hypertrophy, why remodeling kills</div>
+
+<div class="sec">Frank-Starling principle as compensatory mechanism (LO1)</div>
+<div class="fg">
+  <div class="f"><label>Frank-Starling principle — state it</label><input placeholder="↑ preload (ventricular filling) → ↑ stretch → ↑ force of contraction → ↑ CO (up to a point)"></div>
+  <div class="f"><label>How does a failing heart use Frank-Starling to compensate?</label><input placeholder="↓ CO → fluid retention → ↑ venous return → ↑ EDV → ↑ stretch → attempts to restore CO"></div>
+  <div class="f"><label>Why does this compensation eventually fail?</label><input placeholder="Chronic volume overload → excessive stretch → myocytes on descending limb of curve → less force per stretch → decompensation"></div>
+  <div class="f"><label>What does HF therapy target? (2 categories from your notes)</label><input placeholder="1) Hemodynamic stabilization (preload/afterload) 2) Neurohormonal pathways (SNS + RAAS) to slow progression"></div>
+</div>
+
+<div class="sec">Cardiac remodeling — types, causes, consequences (LO2)</div>
+<div class="fg">
+  <div class="f"><label>Eccentric hypertrophy — cause and function lost</label><input placeholder="Preload/volume stress → sarcomeres added in SERIES → dilated chamber → systolic dysfunction (↓ EF) → HFrEF"></div>
+  <div class="f"><label>Concentric hypertrophy — cause and function lost</label><input placeholder="Afterload/pressure stress → sarcomeres added in PARALLEL → thick wall, small cavity → diastolic dysfunction (↓ filling) → HFpEF"></div>
+  <div class="f"><label>What drives remodeling at the molecular level?</label><input placeholder="AngII (growth factor effects on myocytes/vascular smooth muscle) + aldosterone (fibrosis/collagen deposition) + chronic SNS activation"></div>
+  <div class="f"><label>Which drugs have proven ANTI-REMODELING effects? (name classes)</label><input placeholder="ACEi/ARB/ARNI + Beta blockers + Aldosterone antagonists — all reduce LV remodeling; furosemide does NOT"></div>
+  <div class="f"><label>HFrEF definition (EF threshold)</label><input placeholder="LVEF ≤ 40% — primarily systolic dysfunction"></div>
+  <div class="f"><label>HFpEF definition (EF threshold)</label><input placeholder="LVEF ≥ 50% — diastolic dysfunction; determined by Doppler echo or cardiac catheterization"></div>
+</div>
+<button class="btn" onclick="rev('fb0',a0)">Reveal answers</button>
+<div id="fb0" class="fb"></div>
+</div>
+
+<!-- TAB 1: ACEi/ARB/ARNI -->
+<div class="panel" id="p1">
+<div class="lo-tag">LO3 · LO4</div>
+<div class="on-exam">ON EXAM — ARNI mechanism, why no ACEi+ARNI, 36-hour washout, CHARMS trial (Qs 1, 2 from MNT)</div>
+
+<div class="sec">ACEi in HF — MOA chain (LO3)</div>
+<div class="fg">
+  <div class="f"><label>Full MOA chain: ACEi → ? → ? → ? → ? (hemodynamic effects)</label><input placeholder="↓AngII → ↓aldosterone → ↓Na/water retention → ↓preload AND ↓arterial constriction → ↓afterload → ↑CO"></div>
+  <div class="f"><label>Anti-remodeling mechanism of ACEi (LO2+LO3)</label><input placeholder="↓ tissue AngII (growth factor) + ↑ tissue bradykinin → ↓ vascular smooth muscle growth + ↓ myocyte hypertrophy → prevents remodeling"></div>
+  <div class="f"><label>Indications for ACEi in HF (EF threshold + symptoms)</label><input placeholder="Symptomatic AND asymptomatic HFrEF with EF < 40% — up-titrate to target dose"></div>
+  <div class="f"><label>Key adverse effects in HF context (4)</label><input placeholder="Hypotension, orthostatic hypotension (venodilation), dry cough (bradykinin), hyperkalemia (↓aldosterone), AKI (efferent dilation → ↓GFR)"></div>
+  <div class="f"><label>When to hold ACEi — K+ threshold</label><input placeholder="Do not start/continue if serum K+ ≥ 5.5 mEq/L; discontinue K+-sparing diuretics and K+ supplements"></div>
+</div>
+
+<div class="sec">ARBs in HF — differences from ACEi (LO3)</div>
+<div class="fg">
+  <div class="f"><label>MOA of ARBs in HF</label><input placeholder="Directly block AT1 receptor → ↓circulating aldosterone → vasodilation → ↑CO, ↓cardiac filling pressure → ↓chronic baroreceptor/SNS/RAAS response"></div>
+  <div class="f"><label>Why are ARBs 2nd line vs ACEi in HF?</label><input placeholder="ACEi generally 1st line; ARBs given to patients intolerant to ACEi (cough, angioedema)"></div>
+  <div class="f"><label>Why do ARBs have less cough/angioedema?</label><input placeholder="ARBs do NOT increase bradykinin (don't inhibit ACE enzyme) → no bradykinin-mediated cough or angioedema"></div>
+  <div class="f"><label>CHARMS trial — what did it show? (clinical implication)</label><input placeholder="NOT recommended to use ACEi + ARB together → significantly ↑ risk of kidney failure, severe hyperkalemia, hypotension with NO proven mortality benefit"></div>
+</div>
+
+<div class="sec">ARNI (Sacubitril/Valsartan) — MOA, advantages, critical rules (LO4)</div>
+<div class="warn">ARNI = Sacubitril (neprilysin inhibitor) + Valsartan (ARB). You CANNOT combine with ACEi. Must washout ACEi 36 hours before starting.</div>
+<div class="fg">
+  <div class="f"><label>Sacubitril MOA — full chain</label><input placeholder="Inhibits neprilysin → ↑ ANP/BNP (natriuretic peptides) → ↑ Na+/water excretion → ↓ preload + vasodilation; also ↑ bradykinin and AngII (neprilysin normally degrades these)"></div>
+  <div class="f"><label>Valsartan component MOA</label><input placeholder="ARB → blocks AT1 receptor → blocks AngII vasoconstriction, remodeling, and aldosterone release"></div>
+  <div class="f"><label>Why can't you combine ARNI with ACEi? (mechanism — NOT just a rule)</label><input placeholder="Double hit on bradykinin degradation: neprilysin inhibitor ↑ bradykinin AND ACEi also ↑ bradykinin (both pathways blocked) → dangerously high bradykinin → severe angioedema risk"></div>
+  <div class="f"><label>How long to washout ACEi before starting ARNI?</label><input placeholder="36 hours — to clear bradykinin before adding neprilysin inhibitor"></div>
+  <div class="f"><label>Why is ARNI preferred over ACEi/ARB when available?</label><input placeholder="ARNI significantly reduces mortality, hospitalization rates, AND improves cardiac reverse remodeling MORE than ACEi/ARBs alone"></div>
+  <div class="f"><label>Key rule: can you use ARNI + ACEi? ARNI + ARB? ARNI alone?</label><input placeholder="ARNI = ARB already built in → ARNI + ACEi = NO (angioedema) → ARNI + separate ARB = NO → use ARNI alone (pick one from RAAS category)"></div>
+</div>
+<button class="btn" onclick="rev('fb1',a1)">Reveal answers</button>
+<div id="fb1" class="fb"></div>
+</div>
+
+<!-- TAB 2: BETA BLOCKERS -->
+<div class="panel" id="p2">
+<div class="lo-tag">LO6</div>
+<div class="on-exam">ON EXAM — Which 3 BBs proven for HF, timing rules, decompensation trap (MNT Q4)</div>
+
+<div class="sec">Beta blockers in HF — the 3 proven drugs (LO6)</div>
+<div class="warn">Only 3 beta blockers have proven mortality benefit in HF. This is a classic exam trap — other beta blockers are NOT interchangeable for HF.</div>
+<table>
+  <tr><th>Drug</th><th>Receptor selectivity</th><th>Proven mortality benefit in HF?</th><th>Key distinguishing feature</th></tr>
+  <tr><td class="rl">Metoprolol succinate</td><td><input placeholder="β1 selective"></td><td><input placeholder="YES — one of 3"></td><td><input placeholder="succinate (extended release) only — NOT tartrate"></td></tr>
+  <tr><td class="rl">Carvedilol</td><td><input placeholder="β1/β2/α1"></td><td><input placeholder="YES — one of 3"></td><td><input placeholder="also reduces afterload via α1 blockade → vasodilation"></td></tr>
+  <tr><td class="rl">Bisoprolol</td><td><input placeholder="β1 selective"></td><td><input placeholder="YES — one of 3"></td><td><input placeholder="highly cardioselective β1"></td></tr>
+</table>
+
+<div class="sec">BB mechanism in HF and timing rules (LO6)</div>
+<div class="fg">
+  <div class="f"><label>Why do BBs help HF? (neurohormonal rationale)</label><input placeholder="Chronic SNS activation in HF → β1 stimulation → tachycardia + remodeling; BBs block this → ↓HR, ↓remodeling, reverse LV dysfunction over time"></div>
+  <div class="f"><label>ACEi + BB combination — what do they do together?</label><input placeholder="Together reverse LV remodeling + improve symptoms + prevent hospitalization + prolong life (synergistic anti-remodeling)"></div>
+  <div class="f"><label>Up-titration rule for BBs</label><input placeholder="Increase dose no less than every 2-WEEK intervals (ACEi can be done more rapidly)"></div>
+  <div class="f"><label>Critical timing rule: when NOT to start BBs</label><input placeholder="Do NOT start/increase BBs in decompensated HF (fluid-overloaded state) — optimize diuresis FIRST, then start BB; premature initiation can worsen HF (MNT Q4)"></div>
+  <div class="f"><label>What happens if you stop BBs abruptly in HF?</label><input placeholder="Rebound ↑SNS → ↓CO + fluid retention → MUST titrate off slowly (upregulation of β receptors during chronic BB use)"></div>
+  <div class="f"><label>When to hold BB in HF (HR threshold)</label><input placeholder="Stop/hold if HR < 50 bpm (bradycardia/heart block risk)"></div>
+  <div class="f"><label>MNT Q4 — patient starts carvedilol, returns with ↑edema, JVD, HR 58. Why?</label><input placeholder="C — initiated BB before achieving adequate volume stabilization (fluid-overloaded) → BB ↓CO → worsened congestion. Should have diuresed first."></div>
+</div>
+<button class="btn" onclick="rev('fb2',a2)">Reveal answers</button>
+<div id="fb2" class="fb"></div>
+</div>
+
+<!-- TAB 3: ALDOSTERONE ANTAGONISTS -->
+<div class="panel" id="p3">
+<div class="lo-tag">LO5</div>
+<div class="on-exam">ON EXAM — EF threshold for MRA use, K+ threshold, spiro vs eplerenone SE difference (MNT Q3)</div>
+
+<div class="sec">Aldosterone's role in HF — why it's harmful (LO5)</div>
+<div class="fg">
+  <div class="f"><label>What does aldosterone do in HF beyond Na+/water retention?</label><input placeholder="Promotes myocardial fibrosis + collagen deposition + remodeling → worsens cardiac structure and function over time"></div>
+  <div class="f"><label>Why does aldosterone rise in HF?</label><input placeholder="↓CO → ↑RAAS → ↑AngII → ↑aldosterone from adrenal cortex → vicious cycle of fluid retention + remodeling"></div>
+</div>
+
+<div class="sec">Spironolactone vs Eplerenone — fill differences</div>
+<table>
+  <tr><th>Feature</th><th>Spironolactone</th><th>Eplerenone</th></tr>
+  <tr><td class="rl">MOA</td><td><input placeholder="Blocks mineralocorticoid receptor in DCT/collecting duct"></td><td><input placeholder="Same — but more selective for mineralocorticoid receptor"></td></tr>
+  <tr><td class="rl">Receptor selectivity</td><td><input placeholder="Blocks mineralocorticoid AND sex hormone receptors (androgen/progesterone)"></td><td><input placeholder="Mineralocorticoid SPECIFIC — no sex hormone blockade"></td></tr>
+  <tr><td class="rl">Gynecomastia/impotence</td><td><input placeholder="YES — due to androgen receptor blockade"></td><td><input placeholder="NO — more selective"></td></tr>
+  <tr><td class="rl">K+ effect</td><td><input placeholder="↑ K+ (hyperkalemia)"></td><td><input placeholder="Same — ↑ K+"></td></tr>
+  <tr><td class="rl">Metabolic acidosis</td><td><input placeholder="Yes — ↓ H+ excretion (coupled to Na+ reabsorption)"></td><td><input placeholder="Same"></td></tr>
+  <tr><td class="rl">HF indication (EF threshold)</td><td><input placeholder="EF < 35% on ACEi/ARB therapy"></td><td><input placeholder="Same — EF < 35%"></td></tr>
+</table>
+
+<div class="sec">Clinical rules for MRA use</div>
+<div class="fg">
+  <div class="f"><label>K+ threshold — when NOT to start MRA</label><input placeholder="Avoid if K+ > 5.0 mEq/L (hyperkalemia risk — already on ACEi/ARB which also raise K+)"></div>
+  <div class="f"><label>Why is hyperkalemia especially dangerous when MRA added to ACEi?</label><input placeholder="ACEi already ↓ aldosterone → ↓ K+ excretion; adding MRA blocks remaining K+ excretion → additive hyperkalemia → arrhythmia risk"></div>
+  <div class="f"><label>MNT Q3 — bilateral gynecomastia in patient on metoprolol + lisinopril + spironolactone. Cause?</label><input placeholder="C — Spironolactone blocks androgen receptors → gynecomastia and breast tenderness in men. NOT eplerenone (more selective)."></div>
+  <div class="f"><label>Anti-remodeling effects of MRA (beyond diuresis)</label><input placeholder="Blocks aldosterone-mediated myocardial fibrosis, collagen deposition, and remodeling → slows HF progression independently of diuretic effect"></div>
+</div>
+<button class="btn" onclick="rev('fb3',a3)">Reveal answers</button>
+<div id="fb3" class="fb"></div>
+</div>
+
+<!-- TAB 4: SGLT2i & VASODILATORS -->
+<div class="panel" id="p4">
+<div class="lo-tag">LO7 · LO8 · LO9</div>
+<div class="on-exam">ON EXAM — SGLT2i MOA in HF, hydralazine+isosorbide rationale, preload vs afterload distinction</div>
+
+<div class="sec">SGLT2 inhibitors in HF (LO9)</div>
+<div class="fg">
+  <div class="f"><label>Original purpose of SGLT2i</label><input placeholder="Type 2 diabetes — inhibit glucose reabsorption in PCT → glucosuria → ↓ blood glucose"></div>
+  <div class="f"><label>Where do SGLT2i act in the kidney?</label><input placeholder="Proximal Convoluted Tubule (PCT) — inhibit SGLT2 cotransporter → ↓ glucose reabsorption (90% of glucose reabsorbed here)"></div>
+  <div class="f"><label>How do SGLT2i help HF? (mechanism)</label><input placeholder="↓ glucose reabsorption → glucosuria → osmotic diuresis (water follows glucose) → ↓ blood volume → ↓ volume overload; exact cardiac mechanism not fully understood"></div>
+  <div class="f"><label>Evidence for SGLT2i in HF</label><input placeholder="NEJM trial: adding SGLT2i to existing HF regimen → reduced mortality → now 4th pillar of GDMT"></div>
+  <div class="f"><label>Key adverse effects (3)</label><input placeholder="Hypotension (volume loss), UTI (glucosuria → bacterial growth paradise), Ketoacidosis (less glucose → alternative fuel sources → ketosis)"></div>
+  <div class="f"><label>Drugs to know (2 agents)</label><input placeholder="Empagliflozin + Dapagliflozin"></div>
+  <div class="f"><label>SGLT2i in HFpEF — is there a role?</label><input placeholder="YES — if diabetes contributes to HFpEF, SGLT2i appropriate (treats contributing condition); otherwise HFpEF has very limited treatment options"></div>
+</div>
+
+<div class="sec">Preload vs Afterload — foundation for vasodilator rationale (LO7)</div>
+<div class="fg">
+  <div class="f"><label>Preload definition and what reduces it</label><input placeholder="Ventricular filling pressure (venous return/EDV); reduced by venodilators (nitrates, ACEi/ARB) and diuretics"></div>
+  <div class="f"><label>Afterload definition and what reduces it</label><input placeholder="Resistance heart must overcome to eject blood (arterial resistance/SVR); reduced by arterial dilators (hydralazine, ACEi/ARB, CCBs)"></div>
+  <div class="f"><label>Why reduce both in HF?</label><input placeholder="↓ preload → ↓ congestion/edema; ↓ afterload → ↑ CO (less resistance → more forward flow out of failing heart)"></div>
+</div>
+
+<div class="sec">Hydralazine + Isosorbide Dinitrate (LO8)</div>
+<div class="fg">
+  <div class="f"><label>Isosorbide dinitrate — type of vasodilator and primary effect</label><input placeholder="Long-acting nitrate → venodilator → ↓ preload (reduces pulmonary/venous congestion)"></div>
+  <div class="f"><label>Hydralazine — type of vasodilator and primary effect</label><input placeholder="Arterial vasodilator → ↓ afterload (reduces resistance heart ejects against → ↑ CO)"></div>
+  <div class="f"><label>Together — why combine them?</label><input placeholder="Combination reduces BOTH preload (isosorbide) AND afterload (hydralazine) → comprehensive hemodynamic improvement in HF"></div>
+  <div class="f"><label>Special population where this combination has proven mortality benefit</label><input placeholder="Black patients — shown to reduce mortality and hospitalization specifically in this population (V-HeFT trials)"></div>
+  <div class="f"><label>When is this combination prescribed?</label><input placeholder="Supplementary to 4 core GDMT drugs; prescribed when patient needs additional BP/afterload control or if intolerant to ACEi/ARB/ARNI"></div>
+  <div class="f"><label>Key adverse effects</label><input placeholder="Hypotension + lupus-like syndrome (hydralazine)"></div>
+</div>
+<button class="btn" onclick="rev('fb4',a4)">Reveal answers</button>
+<div id="fb4" class="fb"></div>
+</div>
+
+<!-- TAB 5: DIGOXIN & IVABRADINE -->
+<div class="panel" id="p5">
+<div class="lo-tag">LO10 · LO11</div>
+<div class="on-exam">ON EXAM — Digoxin MOA chain (Na/K ATPase → Na/Ca exchanger → ↑Ca2+ → ↑contractility + vagal tone), mortality vs symptom benefit distinction</div>
+
+<div class="sec">Digoxin MOA — trace the full chain (LO10)</div>
+<div class="card">
+  <div class="fg">
+    <div class="f"><label>Step 1: What does digoxin block?</label><input placeholder="Na+/K+ ATPase in cardiomyocytes → blocks Na+ extrusion from cell"></div>
+    <div class="f"><label>Step 2: Result of blocked Na+/K+ ATPase</label><input placeholder="↑ intracellular Na+ (can't pump Na+ out)"></div>
+    <div class="f"><label>Step 3: How does ↑ intracellular Na+ increase Ca2+?</label><input placeholder="Na+/Ca2+ exchanger normally uses Na+ gradient to extrude Ca2+; ↑ intracellular Na+ → exchanger can't extrude Ca2+ → ↑ intracellular Ca2+"></div>
+    <div class="f"><label>Step 4: Effect of ↑ intracellular Ca2+</label><input placeholder="↑ Ca2+ → ↑ actin-myosin crossbridge formation → ↑ contractility (positive inotropy) → better forward flow out of failing heart"></div>
+    <div class="f"><label>Step 5: Secondary effect via baroreceptor</label><input placeholder="↑ contractility → ↑ CO → baroreceptors sense ↑ BP → ↑ vagal tone (↓ SNS) → slows HR and AV conduction"></div>
+    <div class="f"><label>TLDR of digoxin effects (from your notes)</label><input placeholder="↑ contractility (positive inotrope) + ↑ vagal tone (↓ HR, slows AV conduction)"></div>
+  </div>
+</div>
+
+<div class="sec">Digoxin — clinical use and adverse effects</div>
+<div class="fg">
+  <div class="f"><label>Does digoxin reduce MORTALITY in HF?</label><input placeholder="NO — reduces symptoms and hospitalization only. Not 1st line. Does NOT prolong survival (critical exam distinction)."></div>
+  <div class="f"><label>When is digoxin used? (Q27 from practice bank)</label><input placeholder="Add-on in HFrEF (EF <30%) still symptomatic despite optimal GDMT — reduces symptoms/hospitalizations but not mortality"></div>
+  <div class="f"><label>Digoxin adverse effects (3 key)</label><input placeholder="1) Blurred/yellow vision (classic toxicity sign) 2) Heart block (↑ vagal tone → AV conduction delay) 3) Ventricular tachycardia (↑ automaticity at toxic levels)"></div>
+  <div class="f"><label>Why does hypokalemia worsen digoxin toxicity?</label><input placeholder="Digoxin competes with K+ for Na+/K+ ATPase binding site; ↓ K+ → digoxin binds more effectively → toxicity at lower doses; furosemide-induced hypokalemia + digoxin = dangerous combo (Q62 from pharm bank)"></div>
+  <div class="f"><label>Q54 from pharm practice bank — drug that blocks Na+/K+ ATPase in cardiac cells</label><input placeholder="Digoxin — Q54 answer = B"></div>
+</div>
+
+<div class="sec">Ivabradine (LO11)</div>
+<div class="fg">
+  <div class="f"><label>MOA of ivabradine</label><input placeholder="Direct SA node inhibitor — blocks If (funny Na+ channel); funny channel opens at hyperpolarized states (~-90mV), drives pacemaker depolarization; blocking it → ↓ action potentials → ↓ HR"></div>
+  <div class="f"><label>When is ivabradine used in HF?</label><input placeholder="When BB (already on board) still leaves HR ≥ 70 bpm — ivabradine added to further ↓ HR"></div>
+  <div class="f"><label>Does ivabradine reduce mortality?</label><input placeholder="NO — only reduces hospitalization rate. 2nd line/supplementary. No mortality/survival benefit."></div>
+  <div class="f"><label>Vericiguat — MOA and benefit level</label><input placeholder="Stimulates guanylate cyclase → ↑ cGMP → ↑ NO → vasodilation; very modest benefit — supplementary only"></div>
+</div>
+<button class="btn" onclick="rev('fb5',a5)">Reveal answers</button>
+<div id="fb5" class="fb"></div>
+</div>
+
+<!-- TAB 6: HFpEF & ADHF -->
+<div class="panel" id="p6">
+<div class="lo-tag">LO12 · LO13 · LO14</div>
+<div class="on-exam">ON EXAM — HFpEF has NO proven GDMT benefit; ADHF = diurese first; loop diuretic hierarchy</div>
+
+<div class="sec">HFpEF management (LO12)</div>
+<div class="fg">
+  <div class="f"><label>Key distinction: what do ALL the HFrEF GDMT drugs do in HFpEF?</label><input placeholder="NO mortality or symptom benefit in HFpEF — clinical trials showed no benefit from ACEi, ARB, BBs, MRAs in HFpEF"></div>
+  <div class="f"><label>What is the only treatment strategy for HFpEF?</label><input placeholder="Treat the CONTRIBUTING CONDITIONS that cause the inflammatory/remodeling state"></div>
+  <div class="f"><label>3 conditions that contribute to HFpEF</label><input placeholder="Diabetes, Hypertension, Obesity — cause myocardial inflammation → abnormal remodeling → dysfunctional ventricular relaxation → diastolic filling impairment"></div>
+  <div class="f"><label>Why does HFpEF have so few treatments?</label><input placeholder="HFpEF is heterogeneous and primarily inflammatory/metabolic, not driven by pure SNS/RAAS activation like HFrEF — those pathways are less central"></div>
+  <div class="f"><label>SGLT2i role in HFpEF</label><input placeholder="Appropriate if diabetes contributes — targets underlying condition (diabetes) AND may reduce volume overload"></div>
+  <div class="f"><label>Eccentric vs concentric hypertrophy — which is HFrEF, which is HFpEF?</label><input placeholder="Eccentric (volume/preload stress → dilated) = HFrEF (systolic); Concentric (pressure/afterload stress → thick wall) = HFpEF (diastolic)"></div>
+</div>
+
+<div class="sec">Acute Decompensated Heart Failure (ADHF) — management algorithm (LO13, LO14)</div>
+<div class="warn">ADHF = extreme congestion/volume overload state. First priority is DECONGEST — NOT starting new GDMT drugs. BBs should not be initiated in ADHF.</div>
+<div class="fg">
+  <div class="f"><label>Definition of ADHF</label><input placeholder="Acute exacerbation of HF with extreme congestion — primarily extreme volume overload, especially pulmonary edema"></div>
+  <div class="f"><label>First step in ADHF management</label><input placeholder="Solve congestion first → give diuretic (strongest = loop diuretic) BEFORE adjusting GDMT"></div>
+  <div class="f"><label>1st line diuretic in ADHF</label><input placeholder="Loop diuretics — Furosemide (Lasix) most commonly; blocks Na+/K+/2Cl- symport in TAL → powerful diuresis"></div>
+  <div class="f"><label>If furosemide fails — what next?</label><input placeholder="Switch to Bumetanide or Torsemide (especially if RV failure present)"></div>
+  <div class="f"><label>If loop diuretic alone is insufficient — what to add?</label><input placeholder="Add thiazide diuretic — Hydrochlorothiazide OR Metolazone (acts at DCT; metolazone works even in renal insufficiency)"></div>
+  <div class="f"><label>Why are vasodilators used in ADHF?</label><input placeholder="ADHF patients often hypertensive; vasodilators ↓ afterload → ↑ forward flow → relieve congestion (used alongside diuretics)"></div>
+  <div class="f"><label>Why NOT start BB in ADHF?</label><input placeholder="Starting BB in fluid-overloaded state → ↓CO further → worsens congestion (MNT Q4); optimize volume first, THEN start/resume BB"></div>
+</div>
+
+<div class="sec">Mortality vs symptom benefit — master this distinction</div>
+<table>
+  <tr><th>Drug</th><th>Reduces MORTALITY?</th><th>Reduces symptoms/hospitalization?</th></tr>
+  <tr><td class="rl">ACEi/ARB</td><td><input placeholder="YES"></td><td><input placeholder="YES"></td></tr>
+  <tr><td class="rl">ARNI (sacubitril/valsartan)</td><td><input placeholder="YES — more than ACEi/ARB"></td><td><input placeholder="YES"></td></tr>
+  <tr><td class="rl">Beta blockers (3 proven)</td><td><input placeholder="YES"></td><td><input placeholder="YES"></td></tr>
+  <tr><td class="rl">Aldosterone antagonists</td><td><input placeholder="YES"></td><td><input placeholder="YES"></td></tr>
+  <tr><td class="rl">SGLT2 inhibitors</td><td><input placeholder="YES"></td><td><input placeholder="YES"></td></tr>
+  <tr><td class="rl">Digoxin</td><td><input placeholder="NO — symptoms/hospitalization ONLY"></td><td><input placeholder="YES"></td></tr>
+  <tr><td class="rl">Ivabradine</td><td><input placeholder="NO — hospitalization reduction only"></td><td><input placeholder="YES (reduces hospitalization)"></td></tr>
+  <tr><td class="rl">Furosemide (loop diuretic)</td><td><input placeholder="NO — symptom/congestion relief only"></td><td><input placeholder="YES"></td></tr>
+  <tr><td class="rl">Hydralazine/isosorbide</td><td><input placeholder="YES — in Black patients specifically"></td><td><input placeholder="YES"></td></tr>
+</table>
+<button class="btn" onclick="rev('fb6',a6)">Reveal answers</button>
+<div id="fb6" class="fb"></div>
+</div>
+
+<!-- TAB 7: PRACTICE Qs -->
+<div class="panel" id="p7">
+<p style="font-size:11px;color:#94a3b8;margin-bottom:12px">MNT practice questions (Dr. Lam CV57) + selected questions from your CV Pharm Part 2 bank. Attempt before revealing.</p>
+
+<div class="pq-box">
+  <div class="pq-q">MNT Q1. 64M with MI, LVEF 35%, dilated chamber with ↑ wall thickness. ACEi started. Which physiological effect best explains reduced cardiac remodeling?</div>
+  <div class="pq-choices">A. Decreased degradation of bradykinin<br>B. Direct antagonism of AT1 receptor<br>C. Increased excretion of K+ and H+<br>D. Vasoconstriction of efferent arteriole<br>E. Reflex activation of SNS</div>
+  <button class="pq-btn" onclick="showAns('mq1')">Reveal answer</button>
+  <div id="mq1" class="pq-ans"><strong>Answer: A — Decreased degradation of bradykinin.</strong> ACEi inhibit ACE (kininase II), which normally degrades bradykinin. ↑ bradykinin + ↓ tissue AngII together reduce vascular smooth muscle and myocyte growth → anti-remodeling. B is the ARB mechanism. D is wrong direction (ACEi dilates efferent, lowering not raising pressure).</div>
+</div>
+
+<div class="pq-box">
+  <div class="pq-q">MNT Q2. 58F with HFrEF (EF 30%) on lisinopril. Transitioning to sacubitril/valsartan (ARNI). What is the most appropriate next step?</div>
+  <div class="pq-choices">A. Start ARNI immediately at next dose<br>B. Discontinue lisinopril and wait 36 hours before starting ARNI<br>C. Add ARNI to current lisinopril regimen<br>D. Halve lisinopril dose for one week then switch<br>E. Replace lisinopril with ARB for two weeks prior</div>
+  <button class="pq-btn" onclick="showAns('mq2')">Reveal answer</button>
+  <div id="mq2" class="pq-ans"><strong>Answer: B — Discontinue lisinopril and wait 36 hours.</strong> ARNI contains sacubitril (neprilysin inhibitor) which ↑ bradykinin. ACEi also ↑ bradykinin. Combining them = "double hit" on bradykinin → dangerously high bradykinin → severe angioedema. Must clear ACEi for 36 hours first.</div>
+</div>
+
+<div class="pq-box">
+  <div class="pq-q">MNT Q3. 72M on metoprolol succinate, lisinopril, and spironolactone. K+ = 5.6, creatinine = 2.1 (baseline 1.1). He has bilateral breast enlargement and tenderness. Cause?</div>
+  <div class="pq-choices">A. Metoprolol succinate<br>B. Lisinopril<br>C. Spironolactone<br>D. Eplerenone</div>
+  <button class="pq-btn" onclick="showAns('mq3')">Reveal answer</button>
+  <div id="mq3" class="pq-ans"><strong>Answer: C — Spironolactone.</strong> Non-selective mineralocorticoid antagonist that also blocks androgen and progesterone receptors → gynecomastia and breast tenderness in men. Eplerenone (D) is more selective for mineralocorticoid receptor → does NOT cause gynecomastia. Note also: K+ 5.6 and ↑ creatinine suggest hyperkalemia + AKI from the combination of lisinopril + spironolactone.</div>
+</div>
+
+<div class="pq-box">
+  <div class="pq-q">MNT Q4. Patient with HFrEF started on carvedilol. Two weeks later: severe fatigue, ↑ peripheral edema, HR 58, JVD. Most likely reason?</div>
+  <div class="pq-choices">A. Direct stimulation of α1 receptors causing vasoconstriction<br>B. Use of β1-selective agent in patient with lung disease<br>C. Initiation of beta-blocker before achieving adequate volume stabilization<br>D. Antagonism of RAAS pathway → Na+ retention<br>E. Rapid up-titration at 1-week intervals</div>
+  <button class="pq-btn" onclick="showAns('mq4')">Reveal answer</button>
+  <div id="mq4" class="pq-ans"><strong>Answer: C — Started BB before achieving adequate volume stabilization.</strong> In decompensated/fluid-overloaded HF, BBs ↓ CO → worsens congestion (JVD, edema). Should have optimized diuresis FIRST. Note: E is also wrong because up-titration should be no less than every 2 weeks (1 week would be too rapid, but the stem says "two weeks later" suggesting a single dose initiation issue, not rapid titration).</div>
+</div>
+
+<div class="pq-box">
+  <div class="pq-q">Bank Q27. 80M with CHF, EF &lt;30%, worsening dyspnea/fatigue. Physician adds a medication that has NOT been shown to prolong life but will reduce his symptoms. Which medication?</div>
+  <div class="pq-choices">A. Metoprolol &nbsp; B. Digoxin &nbsp; C. Empagliflozin &nbsp; D. Eplerenone &nbsp; E. Sacubitril/valsartan</div>
+  <button class="pq-btn" onclick="showAns('bq27')">Reveal answer</button>
+  <div id="bq27" class="pq-ans"><strong>Answer: B — Digoxin.</strong> Key distinction: Digoxin reduces symptoms and hospitalization but has NOT been shown to reduce mortality in HF. All other options (metoprolol, empagliflozin, eplerenone, sacubitril/valsartan) have proven mortality benefit in HFrEF.</div>
+</div>
+
+<div class="pq-box">
+  <div class="pq-q">Bank Q28. Which of the following drugs improves survival in chronic systolic HF? (1=Enalapril, 2=Digoxin, 3=Carvedilol, 4=Furosemide)</div>
+  <div class="pq-choices">A. 1,2,3 only &nbsp; B. 1,3 only &nbsp; C. 2,4 only &nbsp; D. 4 only &nbsp; E. All</div>
+  <button class="pq-btn" onclick="showAns('bq28')">Reveal answer</button>
+  <div id="bq28" class="pq-ans"><strong>Answer: B — 1 and 3 only (Enalapril and Carvedilol).</strong> ACEi (enalapril) and beta blockers (carvedilol) = proven mortality benefit. Digoxin (2) = symptom/hospitalization benefit ONLY, no mortality benefit. Furosemide (4) = symptom/congestion relief only, no mortality benefit.</div>
+</div>
+
+<div class="pq-box">
+  <div class="pq-q">Bank Q30. Which drugs produce an anti-remodeling effect on the failing heart? (1=Spironolactone, 2=Carvedilol, 3=Lisinopril, 4=Furosemide)</div>
+  <div class="pq-choices">A. 1,2,3 only &nbsp; B. 1,3 only &nbsp; C. 2,4 only &nbsp; D. 4 only &nbsp; E. All</div>
+  <button class="pq-btn" onclick="showAns('bq30')">Reveal answer</button>
+  <div id="bq30" class="pq-ans"><strong>Answer: A — 1, 2, and 3 (Spironolactone, Carvedilol, Lisinopril).</strong> MRA, beta blockers, and ACEi/ARNI all have proven anti-remodeling effects. Furosemide (4) is a loop diuretic — reduces congestion/symptoms only, NO anti-remodeling effect.</div>
+</div>
+</div>
+
+<script>
+function sw(i){document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',i===j));document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('active',i===j))}
+function showAns(id){const el=document.getElementById(id);el.style.display=el.style.display==='block'?'none':'block'}
+
+const a0={
+  'Frank-Starling':'↑ preload → ↑ myocyte stretch → ↑ force of contraction → ↑ CO (Starling law). Failing heart uses ↑ venous return from fluid retention to ↑ EDV → attempts to restore CO via this mechanism.',
+  'Why compensation fails':'Chronic volume overload → excessive stretch → myocytes operate on descending limb of Starling curve → less force per unit stretch → decompensation + eccentric hypertrophy',
+  'HF therapy targets':'1) Hemodynamic stabilization — optimize preload (diuretics) and afterload (vasodilators, ACEi) 2) Neurohormonal modulation — block SNS (BBs) and RAAS (ACEi/ARB/ARNI/MRA) to slow progression',
+  'Eccentric hypertrophy':'Preload/volume stress → sarcomeres added in SERIES → dilated, thin-walled ventricle → systolic dysfunction (EF ↓) → HFrEF',
+  'Concentric hypertrophy':'Afterload/pressure stress → sarcomeres added in PARALLEL → thick wall, reduced cavity → diastolic dysfunction (impaired relaxation/filling) → HFpEF',
+  'Molecular drivers of remodeling':'AngII (growth factor → myocyte hypertrophy + vascular smooth muscle growth) + aldosterone (fibrosis + collagen deposition) + chronic catecholamines (apoptosis + hypertrophy)',
+  'Anti-remodeling drugs':'ACEi/ARB/ARNI + Beta blockers (proven anti-remodeling) + Aldosterone antagonists; furosemide does NOT have anti-remodeling effects',
+  'HFrEF definition':'LVEF ≤ 40%; primarily systolic dysfunction; eccentric hypertrophy',
+  'HFpEF definition':'LVEF ≥ 50%; diastolic dysfunction; determined by Doppler echo or cardiac catheterization; concentric hypertrophy'
+};
+
+const a1={
+  'ACEi full chain':'ACEi → ↓AngII → 1) ↓aldosterone → ↓Na/water retention → ↓preload 2) ↓arterial constriction → ↓afterload → ↑CO 3) ↓cardiac remodeling',
+  'Anti-remodeling ACEi':'↓ tissue AngII (growth factor) + ↑ tissue bradykinin → ↓ vascular smooth muscle growth + ↓ myocyte hypertrophy → reverses/prevents eccentric remodeling',
+  'ACEi indication in HF':'Symptomatic AND asymptomatic HFrEF with LVEF < 40% — up-titrate to target dose; improves exercise tolerance, LV function, prevents remodeling, prolongs life, reduces hospitalizations',
+  'ACEi adverse effects':'Hypotension + orthostatic hypotension (venodilation → dose reduction indication) + dry cough (bradykinin, ~15%) + angioedema (bradykinin, life-threatening) + hyperkalemia + AKI (efferent dilation → ↓GFR)',
+  'K+ threshold for ACEi':'Do NOT start if K+ ≥ 5.5 mEq/L; discontinue K+-sparing diuretics and K+ supplements before starting',
+  'ARB MOA':'Block AT1 receptor → ↓ aldosterone → vasodilation → ↑CO, ↓ filling pressure → ↓ chronic SNS/RAAS baroreceptor response',
+  'ARB 2nd line':'ACEi = 1st line; ARBs = for patients intolerant to ACEi (cough or angioedema)',
+  'No cough with ARB':'ARBs do NOT inhibit ACE → bradykinin not increased → no cough/angioedema (less cough/angioedema than ACEi)',
+  'CHARMS trial':'ACEi + ARB combination NOT recommended — ↑↑ risk of renal failure, severe hyperkalemia, hypotension with NO proven mortality benefit',
+  'Sacubitril MOA':'Inhibits neprilysin → ↑ ANP/BNP/bradykinin/AngII (neprilysin normally degrades these) → natriuretic peptides cause vasodilation + natriuresis + diuresis + inhibit pathologic fibrosis',
+  'Valsartan in ARNI':'ARB component → blocks AT1 receptor → neutralizes the AngII that accumulates due to neprilysin inhibition',
+  'Why no ACEi + ARNI':'Double bradykinin hit: neprilysin inhibitor + ACEi both ↑ bradykinin through different pathways → dangerously high bradykinin → severe/fatal angioedema',
+  '36 hour washout':'Must discontinue ACEi and wait 36 hours before starting ARNI — to clear ACEi and normalize bradykinin before adding neprilysin inhibitor',
+  'ARNI vs ACEi/ARB':'ARNI significantly reduces mortality + hospitalization + improves cardiac reverse remodeling MORE than ACEi or ARBs alone — preferred when available/affordable',
+  'ARNI drug rules':'ARNI already contains ARB (valsartan) — cannot add another ARB or ACEi; one drug only from RAAS category'
+};
+
+const a2={
+  'Metoprolol succinate':'β1 selective; proven HF mortality benefit; MUST be succinate (extended-release) form — tartrate form NOT proven',
+  'Carvedilol':'β1/β2/α1 blocker; proven HF mortality benefit; α1 block also ↓ TPR (vasodilation — useful extra effect in HF)',
+  'Bisoprolol':'β1 selective; proven HF mortality benefit; highly cardioselective',
+  'BB rationale in HF':'Chronic HF → compensatory ↑SNS → β1 stimulation → tachycardia, ↑MVO2, apoptosis, remodeling; BBs block this cycle → ↓ HR, ↓ remodeling, ↑ LVEF over time (weeks-months)',
+  'ACEi + BB together':'Synergistic anti-remodeling — together they reverse LV remodeling + ↑ symptoms + ↓ hospitalizations + prolong life',
+  'Up-titration interval':'Every 2 WEEKS minimum for BBs (ACEi can be done more rapidly)',
+  'Timing rule':'DO NOT start/increase BBs in decompensated/fluid-overloaded HF — must optimize diuresis first; premature initiation → ↓CO → worsen congestion',
+  'Abrupt withdrawal':'BBs → upregulation of β receptors; abrupt stop → rebound ↑SNS → ↓CO + fluid retention; MUST taper',
+  'Hold threshold':'Hold/stop if HR < 50 bpm',
+  'MNT Q4 explanation':'Patient started carvedilol without adequate volume optimization; fluid-overloaded state + new BB → ↓CO → ↑ JVD, edema, fatigue; HR 58 shows bradycardia from drug; answer = C'
+};
+
+const a3={
+  'Aldosterone in HF':'Beyond Na/water retention: aldosterone promotes myocardial fibrosis + collagen deposition + structural remodeling → worsens LV compliance and function',
+  'Why aldosterone rises in HF':'↓CO → ↑RAAS → ↑AngII → ↑ aldosterone from adrenal cortex → vicious cycle',
+  'Spironolactone receptor selectivity':'Blocks mineralocorticoid receptor AND androgen/progesterone receptors → gynecomastia, impotence, menstrual irregularities',
+  'Eplerenone receptor selectivity':'Mineralocorticoid receptor SPECIFIC → no sex hormone effects → NO gynecomastia',
+  'Both K+ effect':'Both cause hyperkalemia (↓K+ excretion coupled to ↓Na+ reabsorption)',
+  'Both metabolic acidosis':'↓ H+ excretion (H+ excretion coupled to Na+ reabsorption in collecting duct)',
+  'EF threshold for MRA':'EF < 35%, already on ACEi or ARB therapy — add MRA on top',
+  'K+ threshold for MRA':'Avoid if K+ > 5.0 mEq/L',
+  'Hyperkalemia danger with ACEi+MRA':'ACEi → ↓ aldosterone → ↓ K+ excretion; MRA blocks remaining K+ excretion → additive hyperkalemia → arrhythmia risk',
+  'MNT Q3':'Spironolactone (C) — non-selective MRA blocks androgen receptors → gynecomastia + breast tenderness; eplerenone would NOT cause this',
+  'Anti-remodeling beyond diuresis':'MRA blocks aldosterone-mediated myocardial fibrosis + collagen deposition → independent structural benefit beyond just diuresis'
+};
+
+const a4={
+  'SGLT2i original use':'Type 2 diabetes treatment — inhibit SGLT2 in PCT → ↓ glucose reabsorption → glucosuria → ↓ blood glucose',
+  'SGLT2i site':'Proximal Convoluted Tubule (PCT) — SGLT2 cotransporter; ~90% of glucose reabsorbed here',
+  'SGLT2i in HF mechanism':'Glucosuria → osmotic diuresis (water follows glucose) → ↓ plasma volume → ↓ preload → ↓ volume overload; exact cardiac mechanism beyond diuresis not fully established',
+  'SGLT2i mortality evidence':'NEJM trial: adding SGLT2i to established HF regimen → reduced mortality → promoted to 4th pillar of GDMT alongside ACEi/BB/MRA',
+  'SGLT2i adverse effects':'Hypotension (volume depletion), UTI (glucose in urine = bacterial growth medium), Diabetic ketoacidosis (↓ glucose availability → ketosis, especially in T2DM)',
+  'SGLT2i drugs':'Empagliflozin + Dapagliflozin (both FDA-approved for HFrEF)',
+  'SGLT2i in HFpEF':'Yes — if diabetes contributes to HFpEF, targeting that underlying condition is the primary treatment strategy',
+  'Preload':'Ventricular filling pressure (EDV/venous return); reduced by venodilators (nitrates) and diuretics; reducing preload ↓ congestion/pulmonary edema',
+  'Afterload':'Resistance heart must overcome to eject blood (SVR); reduced by arterial dilators (hydralazine, ACEi, CCBs); reducing afterload → ↑ CO (less work for failing heart)',
+  'Why reduce both':'↓ preload = less congestion, less dyspnea; ↓ afterload = ↑ forward flow, ↑ CO, ↓ compensatory SNS/RAAS activation',
+  'Isosorbide dinitrate':'Long-acting nitrate → venodilator → ↓ preload (↓ venous return, ↓ congestion)',
+  'Hydralazine':'Arterial vasodilator → ↓ afterload → ↑ CO',
+  'Combo rationale':'Together: isosorbide reduces preload (venous) + hydralazine reduces afterload (arterial) → comprehensive hemodynamic improvement; also reduces NO depletion tolerance when combined',
+  'Special population':'Black patients — proven mortality and hospitalization reduction (V-HeFT II trial); guideline-recommended addition for Black patients not tolerating or on RAAS drugs',
+  'When prescribed':'Supplementary to 4 core GDMT drugs; also used when patient cannot tolerate ACEi/ARB/ARNI (e.g., renal impairment, severe hyperkalemia)',
+  'Hydral/isosorbide adverse':'Hypotension + lupus-like syndrome (hydralazine — more in women and slow acetylators)'
+};
+
+const a5={
+  'Digoxin step 1':'Blocks Na+/K+ ATPase in cardiomyocytes → cannot pump Na+ out of cell → ↑ intracellular Na+',
+  'Digoxin step 2':'↑ intracellular Na+ → Na+/Ca2+ exchanger cannot extrude Ca2+ (uses Na+ gradient) → ↑ intracellular Ca2+',
+  'Digoxin step 3':'↑ intracellular Ca2+ → ↑ actin-myosin crossbridges → ↑ force of contraction (positive inotropy)',
+  'Digoxin step 4':'↑ contractility → baroreceptors sense ↑ CO/BP → ↑ vagal tone (parasympathetic) → ↓ HR, slows AV node conduction',
+  'Digoxin mortality':'NO mortality benefit — reduces symptoms and hospitalization only; NOT 1st line; supplementary drug in refractory HFrEF',
+  'Digoxin indication':'EF < 30%, still symptomatic despite optimized GDMT — add digoxin for symptom control; also used for rate control in AFib with HF',
+  'Digoxin toxicity signs':'Blurred/yellow vision (classic), heart block (excess vagal tone slows AV conduction), ventricular tachycardia (↑ automaticity at toxic levels)',
+  'Digoxin + hypokalemia':'K+ competes with digoxin for Na+/K+ ATPase binding site; ↓ K+ → digoxin outcompetes more effectively → toxicity at lower digoxin levels; furosemide-induced hypokalemia → digoxin toxicity (dangerous combination → Q62)',
+  'Ivabradine MOA':'Blocks If (funny Na+ channel) in SA node; If opens at hyperpolarized states (~-90 mV) to drive pacemaker depolarization; blocking → ↓ action potential frequency → ↓ HR (pure rate reduction, no other cardiac effects)',
+  'Ivabradine when used':'Added when BB + optimal GDMT still leaves HR ≥ 70 bpm — further HR reduction',
+  'Ivabradine mortality':'NO mortality benefit — reduces hospitalization only; 2nd line/supplementary',
+  'Vericiguat MOA':'Stimulates soluble guanylate cyclase → ↑ cGMP → ↑ NO → vasodilation; very modest HF benefit'
+};
+
+const a6={
+  'HFpEF GDMT result':'ALL HFrEF GDMT drugs (ACEi, ARBs, BBs, MRAs) show NO mortality or symptom benefit in HFpEF clinical trials',
+  'HFpEF treatment strategy':'Treat contributing conditions: diabetes (SGLT2i), hypertension (antihypertensives), obesity (weight loss) — addressing these reduces myocardial inflammation and abnormal remodeling',
+  '3 HFpEF contributors':'Diabetes + Hypertension + Obesity → myocardial inflammation → abnormal remodeling → impaired ventricular relaxation/diastolic filling',
+  'Why HFpEF different from HFrEF':'HFrEF = homogeneous SNS/RAAS-driven (neurohormonal); HFpEF = heterogeneous, metabolic/inflammatory — those neurohormonal pathways less central',
+  'Eccentric vs concentric':'Eccentric (volume/preload stress, series sarcomeres, dilated) = HFrEF systolic; Concentric (pressure/afterload stress, parallel sarcomeres, thick wall) = HFpEF diastolic',
+  'ADHF definition':'Acute exacerbation of HF with extreme congestion — extreme volume overload state, especially pulmonary edema; patient typically hypertensive',
+  'ADHF first step':'Decongestion FIRST — loop diuretic (strongest diuretic) before any GDMT adjustments',
+  '1st line ADHF diuretic':'Furosemide (Lasix) — most commonly prescribed loop diuretic; blocks Na+/K+/2Cl- symport in TAL → powerful natriuresis/diuresis',
+  'If furosemide fails':'Switch to Bumetanide or Torsemide (especially if RV failure present)',
+  'If loop not enough':'Add thiazide: Hydrochlorothiazide or Metolazone (metolazone works even in renal insufficiency)',
+  'Vasodilators in ADHF':'ADHF patients often hypertensive; vasodilators (nitrates, nitroprusside) ↓ afterload → ↑ forward flow → relieve congestion',
+  'No BB in ADHF':'Starting BB in volume-overloaded state → ↓CO → worsens congestion; optimize diuresis first then start BB',
+  'Mortality benefit drugs':'ACEi + ARB + ARNI + 3 proven BBs + MRA + SGLT2i + Hydralazine/isosorbide (Black patients)',
+  'Symptom only drugs':'Digoxin (NO mortality) + Ivabradine (NO mortality, reduces hospitalization only) + Furosemide (NO mortality)'
+};
+
+function rev(id,obj){const el=document.getElementById(id);el.style.display='block';el.innerHTML='<strong>Answer key:</strong><br><br>'+Object.entries(obj).map(([k,v])=>`<b>${k}:</b> ${v}`).join('<br><br>')}
+</script>
+</body></html>
