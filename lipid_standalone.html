@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lipid Lowering Drugs — Georgetown SOM</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #f9fafb; color: #111; min-height: 100vh; }
+  :root {
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f3f4f6;
+    --color-text-primary: #111827;
+    --color-text-secondary: #6b7280;
+    --color-text-tertiary: #9ca3af;
+    --color-border-tertiary: #e5e7eb;
+    --color-border-secondary: #d1d5db;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+const T = {
+  purple: { bg: "#EEEDFE", txt: "#3C3489", bdr: "#534AB7" },
+  teal:   { bg: "#E1F5EE", txt: "#085041", bdr: "#0F6E56" },
+  coral:  { bg: "#FAECE7", txt: "#712B13", bdr: "#993C1D" },
+  blue:   { bg: "#E6F1FB", txt: "#0C447C", bdr: "#185FA5" },
+  amber:  { bg: "#FAEEDA", txt: "#633806", bdr: "#854F0B" },
+  green:  { bg: "#EAF3DE", txt: "#27500A", bdr: "#3B6D11" },
+  red:    { bg: "#FCEBEB", txt: "#791F1F", bdr: "#A32D2D" },
+  pink:   { bg: "#FBEAF0", txt: "#72243E", bdr: "#993556" },
+};
+
+const Pill = ({ text, color = "purple" }) => {
+  const c = T[color];
+  return <span style={{ background:c.bg, color:c.txt, border:`0.5px solid ${c.bdr}`, borderRadius:20, padding:"2px 10px", fontSize:12, fontWeight:500, display:"inline-block", marginRight:4, marginBottom:2 }}>{text}</span>;
+};
+const Lbl = ({ t }) => <p style={{ fontSize:11, fontWeight:500, color:"var(--color-text-tertiary)", textTransform:"uppercase", letterSpacing:"0.06em", margin:"8px 0 2px" }}>{t}</p>;
+const Card = ({ children, style }) => <div style={{ background:"var(--color-background-primary)", border:"0.5px solid var(--color-border-tertiary)", borderRadius:12, padding:"1rem 1.25rem", marginBottom:10, ...style }}>{children}</div>;
+const Inset = ({ children, color }) => {
+  const c = color ? T[color] : null;
+  return <div style={{ background: c ? c.bg : "var(--color-background-secondary)", borderRadius:8, padding:"10px 12px", marginTop:6 }}>{children}</div>;
+};
+
+const STUDY_TABS = [
+  { id:"angles",     label:"Testing Angles", icon:"🎯" },
+  { id:"mindmap",    label:"Mind Map",        icon:"🗺️" },
+  { id:"studyguide", label:"Study Guide",     icon:"📖" },
+  { id:"vignettes",  label:"Vignettes",       icon:"🏥" },
+  { id:"questions",  label:"Practice Qs",     icon:"❓" },
+  { id:"diagrams",   label:"Diagrams",        icon:"📊" },
+];
+
+const ANGLES = [
+  {
+    number:1, theme:"Dyslipidemia Mechanisms & Types",
+    objectives:["LO1: Understand broadly key mechanisms in dyslipidemia that lead to abnormal LDL levels","LO2: Distinguish types of hyperlipidemias (primary & secondary)"],
+    mechanism:"LDL elevation results from overproduction (↑ HMG-CoA reductase activity), reduced clearance (↓ LDL receptors), or both. Primary hyperlipidemias are genetic; secondary are due to underlying conditions (hypothyroidism, DM, nephrotic syndrome, obesity).",
+    why_testable:"Step 1 tests mechanism-to-drug matching and distinguishing primary vs. secondary causes before initiating therapy",
+    angles:[
+      { title:"Primary vs. secondary hyperlipidemia", tested_concept:"Secondary causes must be ruled out/treated before drug therapy — hypothyroidism (↑ LDL), DM type 2 (↑ TG, ↓ HDL), nephrotic syndrome (↑ LDL), obesity", vignette_pattern:"Patient with new hyperlipidemia and weight gain/fatigue — check TSH before starting a statin", key_clues:"New hyperlipidemia + systemic symptoms = rule out secondary cause first", trap:"Jumping straight to statin therapy without identifying and treating the underlying secondary cause", disciplines:"Pharmacology, Endocrinology, Nephrology" },
+      { title:"LDL metabolism and HMG-CoA reductase pathway", tested_concept:"Liver makes cholesterol via HMG-CoA reductase → packages into VLDL → becomes LDL → taken up by LDL receptors. Statins block HMG-CoA reductase → ↓ hepatic cholesterol → ↑ LDL receptors → ↓ circulating LDL", vignette_pattern:"Patient started on a statin — why does LDL fall?", key_clues:"↓ intracellular cholesterol → compensatory ↑ LDL receptors → ↑ LDL clearance from blood", trap:"Thinking statins work only by blocking synthesis — the compensatory upregulation of LDL receptors is equally important", disciplines:"Pharmacology, Biochemistry" },
+    ]
+  },
+  {
+    number:2, theme:"Statin MOA, Efficacy & Adverse Effects",
+    objectives:["LO3: Discuss pharmacological choices for lowering cholesterol and their advantages/disadvantages","LO4: Recognize adverse effects of different lipid lowering drugs"],
+    mechanism:"Statins inhibit HMG-CoA reductase (rate-limiting step in cholesterol synthesis) → ↓ hepatic cholesterol → ↑ LDL receptor expression → ↓ serum LDL. Most effective class for LDL lowering.",
+    why_testable:"Statins are the highest-yield lipid drug class; adverse effects (myopathy, hepatotoxicity) and drug interactions are classic Step 1 questions",
+    angles:[
+      { title:"Statin-induced myopathy and rhabdomyolysis", tested_concept:"Statins → myopathy (muscle pain, weakness) → rhabdomyolysis (↑ CK, myoglobinuria, AKI) especially with high-dose simvastatin or gemfibrozil co-administration", vignette_pattern:"Patient on simvastatin + gemfibrozil presents with muscle pain, dark urine, elevated CK and creatinine", key_clues:"Myalgia + ↑ CK + dark urine (myoglobinuria) + AKI = rhabdomyolysis; simvastatin has MORE side effects than pravastatin", trap:"Not recognizing the simvastatin + gemfibrozil combination as dangerous — gemfibrozil inhibits statin glucuronidation → ↑ statin levels", disciplines:"Pharmacology, Nephrology" },
+      { title:"Statin intensity and LDL targets", tested_concept:"High-intensity statins (atorvastatin, rosuvastatin) reduce LDL ≥50%; moderate-intensity reduce 30–50%; low-intensity <30%. Pravastatin has lower side effect profile; simvastatin has more.", vignette_pattern:"Patient with ASCVD — which statin and intensity?", key_clues:"ASCVD → high-intensity statin (atorvastatin or rosuvastatin); side effect concerns → consider pravastatin", trap:"Choosing simvastatin for high-risk patients — it has more side effects and less LDL lowering than atorvastatin/rosuvastatin at equivalent doses", disciplines:"Pharmacology, Cardiology" },
+    ]
+  },
+  {
+    number:3, theme:"Non-Statin Lipid Drugs: MOA & Adverse Effects",
+    objectives:["LO3: Discuss pharmacological choices for lowering cholesterol","LO4: Recognize adverse effects of different lipid lowering drugs"],
+    mechanism:"Multiple non-statin mechanisms: bile acid sequestrants (↑ BA excretion → ↑ LDL receptors), fibrates (↑ LPL via PPARα → ↓ TG), ezetimibe (↓ intestinal cholesterol absorption), PCSK9 inhibitors (prevent LDL receptor degradation → ↑ LDL receptor availability), omega-3 FA (↓ hepatic TG synthesis)",
+    why_testable:"Step 1 tests which drug to add when statins alone are insufficient, and which drug is best for hypertriglyceridemia vs. hypercholesterolemia",
+    angles:[
+      { title:"Fibrates vs. statins: hypertriglyceridemia and dangerous combination", tested_concept:"Fibrates (fenofibrate, gemfibrozil) primarily ↓ TG (activate PPARα → ↑ LPL) and ↑ HDL; first-line for severe hypertriglyceridemia (pancreatitis risk). Gemfibrozil + statin = rhabdomyolysis risk.", vignette_pattern:"Patient with TG >1000 mg/dL and recurrent pancreatitis — best drug?", key_clues:"Very high TG → fibrate (or omega-3 FA). Gemfibrozil + statin = dangerous. Fenofibrate safer with statins.", trap:"Using gemfibrozil with a statin — prefer fenofibrate if combination required", disciplines:"Pharmacology, Gastroenterology" },
+      { title:"Bile acid sequestrants: LDL lowering and drug interactions", tested_concept:"Cholestyramine/colesevelam bind bile acids in gut → ↓ BA reabsorption → ↑ conversion of hepatic cholesterol to BA → ↑ LDL receptors → ↓ LDL. Side effects: GI (constipation, bloating). Impair absorption of fat-soluble vitamins (A, D, E, K) and other drugs.", vignette_pattern:"Patient on warfarin + cholestyramine has subtherapeutic INR", key_clues:"Bile acid sequestrants bind other drugs in gut → reduced absorption; take other medications 1 hr before or 4 hrs after", trap:"Forgetting that cholestyramine can raise triglycerides — avoid in patients with high baseline TG", disciplines:"Pharmacology" },
+      { title:"Ezetimibe and PCSK9 inhibitors: add-on therapy", tested_concept:"Ezetimibe: blocks NPC1L1 transporter in intestinal brush border → ↓ dietary and biliary cholesterol absorption → modest LDL ↓ (~18–25%). PCSK9 inhibitors (evolocumab): monoclonal antibody → prevents PCSK9 from degrading LDL receptors → ↑ LDL receptor recycling → marked LDL ↓ (50–60%)", vignette_pattern:"Patient with FH or ASCVD on max-dose statin still above LDL goal — next step?", key_clues:"Add ezetimibe first (oral, cheaper); if still not at goal → add PCSK9 inhibitor (injectable, expensive)", trap:"PCSK9 inhibitors are not first-line — used when statins ± ezetimibe are insufficient or not tolerated", disciplines:"Pharmacology, Cardiology" },
+    ]
+  },
+  {
+    number:4, theme:"Adverse Effects & Drug Interactions Summary",
+    objectives:["LO4: Recognize adverse effects of different lipid lowering drugs"],
+    mechanism:"Each drug class has a distinct adverse effect profile; some interactions are life-threatening (statin + gemfibrozil → rhabdomyolysis)",
+    why_testable:"ADR recognition and drug interaction questions are heavily tested on Step 1",
+    angles:[
+      { title:"Drug-specific adverse effects", tested_concept:"Statins: myopathy/rhabdomyolysis, ↑ LFTs, teratogenic (avoid in pregnancy). Fibrates: myopathy, cholelithiasis (↑ cholesterol in bile), ↑ LFTs. Bile acid sequestrants: constipation, ↑ TG, impaired drug/fat-soluble vitamin absorption. Niacin: flushing (↓ by aspirin), hyperglycemia, hyperuricemia, hepatotoxicity.", vignette_pattern:"Patient on a lipid drug develops gout flare — which drug?", key_clues:"Hyperuricemia → niacin. Cholelithiasis → fibrates. Constipation → bile acid sequestrants.", trap:"Attributing muscle pain only to statins — fibrates also cause myopathy, and the combination is the highest risk", disciplines:"Pharmacology" },
+    ]
+  },
+];
+
+const MINDMAP = [
+  { number:1, theme:"Statins", objectives:["LO1, LO3, LO4"], mechanism:"Inhibit HMG-CoA reductase → ↓ hepatic cholesterol synthesis → ↑ LDL receptor expression → ↓ serum LDL", nodes:{ pathway:"HMG-CoA → mevalonate (blocked) → ↓ cholesterol → ↑ LDL-R → ↓ serum LDL", disease:"ASCVD prevention (primary & secondary), familial hypercholesterolemia, any high LDL", pharmacology:"High intensity: atorvastatin, rosuvastatin. Moderate: pravastatin (↓ SE). More SE: simvastatin. All metabolized by CYP3A4 except pravastatin.", clinical:"Myopathy, rhabdomyolysis (↑ CK, myoglobinuria, AKI), ↑ LFTs, teratogenic", labs:"Monitor CK if myalgia; LFTs at baseline; avoid in pregnancy (Category X)", trap:"Simvastatin + gemfibrozil = rhabdomyolysis. Pravastatin safest combo with gemfibrozil if needed." }, links:["Fibrates (dangerous combo: gemfibrozil)","Ezetimibe (safe add-on)","PCSK9 inhibitors (add-on for FH)"] },
+  { number:2, theme:"Fibrates", objectives:["LO3, LO4"], mechanism:"Activate PPARα → ↑ lipoprotein lipase (LPL) → ↑ TG clearance → ↓ TG 40–60%; also ↑ HDL 10–20%", nodes:{ pathway:"PPARα activation → ↑ LPL → ↑ VLDL hydrolysis → ↓ TG; ↑ ApoA-I → ↑ HDL", disease:"Severe hypertriglyceridemia (TG >500 mg/dL, pancreatitis prevention); mixed dyslipidemia", pharmacology:"Fenofibrate — safer with statins. Gemfibrozil — AVOID with statins (inhibits glucuronidation → ↑ statin levels)", clinical:"Myopathy, cholelithiasis (↑ biliary cholesterol), ↑ LFTs, GI upset", labs:"↑ CK (myopathy); LFTs; gallstones on imaging", trap:"Gemfibrozil + any statin = rhabdomyolysis risk. Use fenofibrate if fibrate + statin combination needed." }, links:["Statins (dangerous combo)","Omega-3 FA (alternative for high TG)"] },
+  { number:3, theme:"Bile Acid Sequestrants", objectives:["LO3, LO4"], mechanism:"Anion exchange resins bind bile acids in intestine → ↓ BA reabsorption → ↑ hepatic BA synthesis from cholesterol → ↑ LDL receptors → ↓ LDL 15–30%", nodes:{ pathway:"Bind BA in gut → ↓ enterohepatic circulation → ↑ cholesterol → BA conversion → ↑ LDL-R → ↓ LDL", disease:"Primary hypercholesterolemia; safe in pregnancy (not absorbed); pediatric use", pharmacology:"Cholestyramine — powder. Colesevelam — tablets, fewer GI side effects, safe in DM (↓ glucose)", clinical:"Constipation, bloating, nausea; ↑ TG (avoid if TG elevated); impaired absorption of fat-soluble vitamins (A,D,E,K) and drugs (warfarin, digoxin, levothyroxine)", labs:"Monitor INR if on warfarin; TG levels", trap:"Can raise TG — contraindicated in hypertriglyceridemia. Drug interactions: take other meds 1 hr before or 4 hrs after." }, links:["Statins (safe add-on for LDL)","Ezetimibe (alternative for LDL)"] },
+  { number:4, theme:"Ezetimibe & PCSK9 Inhibitors", objectives:["LO3, LO4"], mechanism:"Ezetimibe: blocks NPC1L1 (intestinal cholesterol transporter) → ↓ cholesterol absorption → ↓ LDL 18–25%. Evolocumab: anti-PCSK9 antibody → prevents LDL receptor degradation → ↑ LDL-R → ↓ LDL 50–60%", nodes:{ pathway:"Ezetimibe: NPC1L1 block → ↓ gut cholesterol → ↑ hepatic LDL-R. Evolocumab: ↓ PCSK9 → LDL-R recycled → ↑ LDL clearance", disease:"Add-on to statin; familial hypercholesterolemia; statin intolerance", pharmacology:"Ezetimibe: oral, once daily, well tolerated. Evolocumab: injectable (SQ), every 2–4 weeks, expensive", clinical:"Ezetimibe: generally well tolerated, rare myopathy (additive with statin). Evolocumab: injection site reactions", labs:"LDL-C monitoring; no routine safety labs required for ezetimibe", trap:"Ezetimibe alone has modest LDL-lowering effect — most benefit is as add-on to statin, not monotherapy" }, links:["Statins (first-line, always start first)","Fibrates (for TG, not LDL)"] },
+  { number:5, theme:"Omega-3 Fatty Acids", objectives:["LO3, LO4"], mechanism:"Omega-3 FA (EPA/DHA) → ↓ hepatic TG synthesis and VLDL secretion → ↓ TG 30–50% at high doses; minimal effect on LDL", nodes:{ pathway:"↓ VLDL synthesis → ↓ TG; may slightly ↑ LDL-C in some patients", disease:"Severe hypertriglyceridemia (TG >500 mg/dL); adjunct to fibrates", pharmacology:"Prescription omega-3 FA (Vascepa/icosapentaenoic acid) at 4g/day; OTC fish oils variable potency", clinical:"GI upset, fishy breath/aftertaste, ↑ bleeding time (mild antiplatelet effect)", labs:"TG monitoring; note: may ↑ LDL-C — watch in mixed dyslipidemia", trap:"OTC fish oils have variable and unreliable potency — prescription formulations needed for therapeutic TG lowering" }, links:["Fibrates (alternative for high TG)"] },
+];
+
+const STUDYGUIDE = [
+  { objectives:["LO3, LO4 — Statins: MOA, intensity, adverse effects"], mechanism:"HMG-CoA reductase inhibition → ↓ hepatic cholesterol → compensatory ↑ LDL receptors → ↓ serum LDL. Most potent class for LDL reduction.", high_yield_facts:["High-intensity: atorvastatin, rosuvastatin (LDL ↓ ≥50%)","Moderate/lower SE: pravastatin (not CYP3A4 — fewer drug interactions)","More SE: simvastatin (avoid high doses; max 20mg with amlodipine)","All statins: teratogenic (Category X) — avoid in pregnancy","Myopathy risk ↑ with: high dose, CYP3A4 inhibitors, gemfibrozil co-administration","Rhabdomyolysis: myalgia + ↑ CK + myoglobinuria + AKI"], vignette_clues:["Muscle pain + dark urine + new statin = rhabdomyolysis → stop statin","Patient on simvastatin + gemfibrozil = highest rhabdomyolysis risk","Pregnancy + hyperlipidemia = bile acid sequestrant (safe) NOT statin"], trap:"Simvastatin + gemfibrozil is the classic dangerous combo. Pravastatin is the safest statin to combine with fibrates if necessary.", if_you_see:"Muscle pain on statin → check CK; if markedly elevated → stop statin; if rhabdomyolysis → hydrate aggressively", integration:["Biochem: mevalonate pathway","Cardiology: ASCVD risk reduction","Pharm: CYP3A4 drug interactions"] },
+  { objectives:["LO3, LO4 — Fibrates: MOA, use in hypertriglyceridemia, adverse effects"], mechanism:"PPARα activation → ↑ LPL expression → ↑ VLDL/TG hydrolysis → ↓ TG 40–60%; also ↑ HDL 10–20%. Primary use: hypertriglyceridemia.", high_yield_facts:["First-line for severe hypertriglyceridemia (TG >500 mg/dL, pancreatitis prevention)","Gemfibrozil: AVOID with statins (inhibits statin glucuronidation → ↑ statin plasma levels → myopathy/rhabdomyolysis)","Fenofibrate: preferred if fibrate + statin combination needed (safer)","Adverse effects: myopathy, cholelithiasis (↑ biliary cholesterol saturation), ↑ LFTs","Fibrates can slightly ↑ LDL in some patients"], vignette_clues:["TG >500 + recurrent pancreatitis = fibrate or omega-3 FA","Patient on gemfibrozil + statin + muscle pain = rhabdomyolysis","Gallstones on imaging + fibrate use = expected adverse effect"], trap:"Gemfibrozil is NOT safely combined with statins. If a patient needs both, use fenofibrate + statin instead.", if_you_see:"Very high TG (>500) + pancreatitis risk → fibrate first; for mixed dyslipidemia add statin later", integration:["Pharm: PPARα pathway","GI: hypertriglyceridemia-induced pancreatitis","Pharm: drug interactions (glucuronidation inhibition)"] },
+  { objectives:["LO3, LO4 — Bile acid sequestrants: MOA, use, drug interactions"], mechanism:"Anion exchange resins bind bile acids in gut → ↓ enterohepatic circulation → ↑ hepatic BA synthesis from cholesterol → ↑ LDL receptor expression → ↓ LDL 15–30%", high_yield_facts:["Safe in pregnancy (not systemically absorbed)","Colesevelam: also approved for type 2 DM (modestly ↓ glucose)","Major drug interaction: impair absorption of fat-soluble vitamins (A,D,E,K) and drugs (warfarin, digoxin, levothyroxine)","AVOID in hypertriglyceridemia — can raise TG further","GI side effects: constipation, bloating, nausea"], vignette_clues:["Pregnant woman with hypercholesterolemia = bile acid sequestrant (safest)","Patient on cholestyramine + warfarin with low INR = reduced warfarin absorption","Constipation after new lipid drug = bile acid sequestrant"], trap:"Bile acid sequestrants raise TG — contraindicated if TG is already elevated. Also: take all other meds 1 hr before or 4 hrs after.", if_you_see:"Pregnancy + high LDL → bile acid sequestrant. Drug interaction question → separate by ≥4 hours.", integration:["Pharm: enterohepatic circulation","Pharm: fat-soluble vitamin absorption","OB: safe drugs in pregnancy"] },
+  { objectives:["LO3, LO4 — Ezetimibe and PCSK9 inhibitors: add-on therapy"], mechanism:"Ezetimibe: blocks NPC1L1 transporter → ↓ intestinal cholesterol absorption → ↓ LDL 18–25%. Evolocumab: anti-PCSK9 mAb → prevents LDL receptor degradation → ↑ LDL receptor recycling → ↓ LDL 50–60%", high_yield_facts:["Ezetimibe: add to statin when LDL goal not reached; oral, well-tolerated","Ezetimibe alone: modest effect (~18%); synergistic with statin","Evolocumab: injectable (SQ biweekly/monthly); used in FH or very high ASCVD risk","PCSK9 inhibitors: most potent LDL lowering available","Step-up approach: statin → + ezetimibe → + PCSK9 inhibitor"], vignette_clues:["Max-dose statin + still above LDL goal → add ezetimibe next","FH patient on max statin + ezetimibe still not at goal → evolocumab","Injectable lipid-lowering drug = PCSK9 inhibitor"], trap:"PCSK9 inhibitors are never first-line — always exhaust statin ± ezetimibe options first (unless statin intolerant).", if_you_see:"Statin-intolerant patient needing LDL reduction → ezetimibe ± PCSK9 inhibitor", integration:["Pharm: NPC1L1 pathway (intestinal)","Pharm: PCSK9 biology (LDL receptor recycling)","Cardiology: FH management"] },
+  { objectives:["LO3 — Omega-3 fatty acids: MOA and use"], mechanism:"EPA/DHA → ↓ hepatic VLDL-TG synthesis and secretion → ↓ TG 30–50% at prescription doses. Minimal direct LDL lowering.", high_yield_facts:["Best used for severe hypertriglyceridemia (TG >500 mg/dL)","Prescription formulations (e.g., Vascepa) needed for reliable TG lowering","OTC fish oil: variable potency, less reliable","May modestly ↑ LDL in some patients (paradoxical)","Mild antiplatelet effect — caution with anticoagulants","Adverse effects: GI upset, fishy aftertaste"], vignette_clues:["TG >500 and patient cannot tolerate fibrates → omega-3 FA","OTC fish oil vs. prescription → prescription for actual TG-lowering benefit"], trap:"OTC fish oils are NOT equivalent to prescription omega-3 FA — dose and purity are unreliable.", if_you_see:"Severe hypertriglyceridemia → fibrate OR prescription omega-3 FA", integration:["Pharm: VLDL metabolism","GI: pancreatitis prevention","Cardiology: TG and CV risk"] },
+];
+
+const VIGNETTES = [
+  { number:1, cluster:"Statin Rhabdomyolysis", objectives_tested:["LO3, LO4 — Statin adverse effects; dangerous drug combinations"], vignette:"A 58-year-old man with mixed dyslipidemia is started on simvastatin 40 mg/day. Two weeks later, his physician adds gemfibrozil for persistent hypertriglyceridemia. Three weeks after starting gemfibrozil, he presents with severe bilateral leg pain, weakness, and tea-colored urine. Labs: CK 12,000 U/L (normal <200), creatinine 2.8 mg/dL (baseline 0.9 mg/dL).", question:"Which of the following best explains the mechanism of this patient's acute kidney injury?", answer:"Gemfibrozil inhibits the glucuronidation of simvastatin → ↑ simvastatin plasma levels → severe myopathy/rhabdomyolysis → myoglobin release → renal tubular toxicity → AKI.", why_correct:"Gemfibrozil inhibits the glucuronidation pathway that metabolizes statins, dramatically increasing statin levels. High statin levels cause mitochondrial dysfunction in muscle → rhabdomyolysis → myoglobinuria → acute tubular necrosis.", key_clues:"Simvastatin + gemfibrozil combination, ↑ CK, tea-colored urine (myoglobinuria), rising creatinine = rhabdomyolysis-induced AKI.", why_missed:"Students may attribute the AKI to a direct drug nephrotoxicity rather than recognizing the drug interaction → rhabdomyolysis → myoglobinuria chain.", trap:"The exam may ask about ANY statin + gemfibrozil — but simvastatin is the classic pairing. If the question shows this combo and muscle symptoms, the answer is always rhabdomyolysis." },
+  { number:2, cluster:"Drug Selection: Hypertriglyceridemia", objectives_tested:["LO3 — Pharmacological choices; advantages/disadvantages by indication"], vignette:"A 45-year-old woman with type 2 diabetes mellitus presents for follow-up. Her fasting lipid panel shows: LDL 110 mg/dL, HDL 38 mg/dL, TG 820 mg/dL. She has had two prior episodes of acute pancreatitis. She is not currently on any lipid-lowering therapy. Physical exam reveals eruptive xanthomas on her buttocks.", question:"Which of the following is the most appropriate initial pharmacotherapy for this patient?", answer:"Fibrate (e.g., fenofibrate) — first-line for severe hypertriglyceridemia with pancreatitis risk. Omega-3 fatty acids are an alternative.", why_correct:"Her TG of 820 mg/dL poses an immediate risk for recurrent pancreatitis. Fibrates (via PPARα activation → ↑ LPL → ↑ TG clearance) are the most effective class for TG reduction. LDL is elevated but the acute TG-related pancreatitis risk takes priority.", key_clues:"TG >500 mg/dL + prior pancreatitis + eruptive xanthomas = severe hypertriglyceridemia. Fibrate is first-line, not a statin.", why_missed:"Students may reach for a statin because LDL is also elevated. On Step 1, when TG >500, fibrate (or omega-3 FA) takes priority over statin due to pancreatitis risk.", trap:"Bile acid sequestrants are CONTRAINDICATED here — they raise TG further, worsening the patient's condition." },
+  { number:3, cluster:"Bile Acid Sequestrant Drug Interaction", objectives_tested:["LO4 — Adverse effects and drug interactions of bile acid sequestrants"], vignette:"A 34-year-old woman with antiphospholipid syndrome on warfarin (INR goal 2.5–3.5) develops hypercholesterolemia. Her physician adds cholestyramine to her regimen. One month later her INR is 1.4 and she develops a DVT. Her warfarin dose has not changed.", question:"Which of the following best explains the decrease in this patient's anticoagulant effect?", answer:"Cholestyramine binds warfarin in the gastrointestinal tract, reducing its absorption and bioavailability, leading to subtherapeutic anticoagulation.", why_correct:"Bile acid sequestrants are anion exchange resins that nonspecifically bind negatively charged compounds in the gut, including warfarin, digoxin, thyroid hormones, and fat-soluble vitamins. This dramatically reduces the absorption of co-administered drugs.", key_clues:"New cholestyramine + unchanged warfarin dose + subtherapeutic INR + thrombotic event = drug absorption interaction.", why_missed:"Students may not remember that cholestyramine binds drugs beyond just bile acids. The rule is: take all other medications ≥1 hour before or ≥4 hours after cholestyramine.", trap:"The exam may frame this as 'warfarin resistance' — the correct mechanism is reduced absorption (pharmacokinetic), not pharmacodynamic resistance or increased metabolism." },
+];
+
+const QUESTIONS = [
+  { number:1, cluster:"Statin MOA", objectives_tested:["LO1, LO3 — Mechanism of statins; HMG-CoA pathway"], stem:"A 52-year-old man with hypercholesterolemia is started on atorvastatin. After 6 weeks, his LDL has decreased from 185 mg/dL to 95 mg/dL. Which of the following best explains the primary mechanism by which atorvastatin reduces serum LDL levels?", choices:{ A:"Decreased intestinal absorption of dietary cholesterol", B:"Increased fecal excretion of bile acids", C:"Inhibition of HMG-CoA reductase leading to upregulation of hepatic LDL receptors", D:"Activation of lipoprotein lipase increasing VLDL clearance", E:"Inhibition of PCSK9 preventing LDL receptor degradation" }, correct:"C", tested_concept:"Statin MOA — HMG-CoA reductase inhibition → ↑ LDL receptors", why_correct:"Statins inhibit HMG-CoA reductase → ↓ hepatic cholesterol synthesis → compensatory ↑ LDL receptor expression → ↑ clearance of LDL from circulation. The upregulation of LDL receptors is the key step responsible for serum LDL reduction.", why_wrong:{ A:"Mechanism of ezetimibe (NPC1L1 blockade), not statins", B:"Mechanism of bile acid sequestrants", D:"Mechanism of fibrates (PPARα → ↑ LPL)", E:"Mechanism of PCSK9 inhibitors (evolocumab)" }, trap:"Students often stop at 'inhibit HMG-CoA reductase' without completing the chain — the LDL receptor upregulation is the reason serum LDL actually falls." },
+  { number:2, cluster:"Fibrate Adverse Effect", objectives_tested:["LO4 — Adverse effects of fibrates; dangerous drug combinations"], stem:"A 61-year-old man with type 2 diabetes and mixed dyslipidemia is on rosuvastatin 20 mg/day. His TG remains at 650 mg/dL. His physician decides to add gemfibrozil. Three weeks later the patient presents with severe myalgias and CK of 8,500 U/L. Which of the following is the most likely explanation?", choices:{ A:"Rosuvastatin-induced direct mitochondrial toxicity unrelated to gemfibrozil", B:"Gemfibrozil inhibition of statin glucuronidation leading to elevated statin levels", C:"Gemfibrozil-induced PPARα activation causing muscle inflammation", D:"Additive renal toxicity from rosuvastatin and gemfibrozil", E:"Fibrate-induced hypothyroidism worsening dyslipidemia and causing myopathy" }, correct:"B", tested_concept:"Gemfibrozil inhibits glucuronidation of statins → ↑ statin levels → myopathy/rhabdomyolysis", why_correct:"Gemfibrozil inhibits the glucuronidation pathway (UGT enzymes) responsible for statin metabolism. This pharmacokinetic interaction raises statin plasma levels dramatically, causing myopathy and potentially rhabdomyolysis. This is why fenofibrate is preferred over gemfibrozil when a fibrate must be combined with a statin.", why_wrong:{ A:"Statins can cause myopathy, but the mechanism here is drug interaction — the timing (after adding gemfibrozil) is key", C:"PPARα activation does not directly cause myopathy", D:"Neither drug is primarily nephrotoxic at therapeutic doses in this context", E:"Gemfibrozil does not cause hypothyroidism" }, trap:"The question tests whether you know the specific mechanism (glucuronidation inhibition) rather than just knowing 'statin + fibrate = bad.'" },
+  { number:3, cluster:"Bile Acid Sequestrants", objectives_tested:["LO3, LO4 — Bile acid sequestrant indications, adverse effects, contraindications"], stem:"A 28-year-old woman who is 16 weeks pregnant is found to have an LDL of 210 mg/dL on routine labs. She has no prior history of cardiovascular disease. Which of the following is the most appropriate pharmacological treatment?", choices:{ A:"Atorvastatin", B:"Gemfibrozil", C:"Cholestyramine", D:"Ezetimibe", E:"Evolocumab" }, correct:"C", tested_concept:"Bile acid sequestrants are safe in pregnancy; statins are teratogenic (Category X)", why_correct:"All statins are contraindicated in pregnancy (Category X — teratogenic). Bile acid sequestrants are not systemically absorbed and are considered safe in pregnancy. Cholestyramine is the appropriate choice for LDL reduction in a pregnant patient.", why_wrong:{ A:"Atorvastatin is Category X — absolutely contraindicated in pregnancy", B:"Gemfibrozil is not indicated for elevated LDL; safety in pregnancy not established", D:"Ezetimibe's safety in pregnancy is not established", E:"Evolocumab's safety in pregnancy is not established" }, trap:"On Step 1, whenever pregnancy + hypercholesterolemia appears → bile acid sequestrant. Statins = always contraindicated in pregnancy." },
+  { number:4, cluster:"Drug Selection: Step-Up Therapy", objectives_tested:["LO3 — Pharmacological choices; step-up approach for LDL lowering"], stem:"A 67-year-old man with established ASCVD is on atorvastatin 80 mg/day (maximum dose). His LDL is 78 mg/dL and his goal is <70 mg/dL. He tolerates atorvastatin well. Which of the following is the most appropriate next step?", choices:{ A:"Switch to rosuvastatin 40 mg/day", B:"Add gemfibrozil", C:"Add ezetimibe", D:"Add cholestyramine", E:"Add evolocumab" }, correct:"C", tested_concept:"Ezetimibe is the first add-on agent when maximum-dose statin alone is insufficient", why_correct:"The step-up approach for LDL lowering: start with maximum-tolerated statin → add ezetimibe if goal not reached → add PCSK9 inhibitor if still not at goal. Ezetimibe is oral, inexpensive, well-tolerated, and provides an additional ~18–25% LDL reduction via complementary mechanism.", why_wrong:{ A:"Switching to rosuvastatin is not expected to provide significantly more LDL lowering than max-dose atorvastatin", B:"Gemfibrozil is for hypertriglyceridemia and is dangerous with statins", D:"Cholestyramine can be added but is less well-tolerated and less effective than ezetimibe as add-on", E:"Evolocumab is appropriate only after ezetimibe fails" }, trap:"Students may jump to PCSK9 inhibitor, but the correct step-up sequence is: max statin → ezetimibe → PCSK9 inhibitor." },
+  { number:5, cluster:"Adverse Effects Comparison", objectives_tested:["LO4 — Recognize adverse effects of different lipid-lowering drugs"], stem:"A 55-year-old man with hypertriglyceridemia (TG 620 mg/dL) is started on fenofibrate. Six months later, he presents to his urologist with a new kidney stone and imaging reveals cholelithiasis. Which of the following best explains the gallstone formation?", choices:{ A:"Fenofibrate increases biliary cholesterol saturation by diverting excess cholesterol into bile", B:"Fenofibrate inhibits bile acid synthesis leading to bile stasis", C:"Fenofibrate causes increased intestinal cholesterol absorption", D:"Fenofibrate directly crystallizes in the gallbladder", E:"Fenofibrate causes dehydration leading to bile concentration" }, correct:"A", tested_concept:"Fibrates cause cholelithiasis by increasing biliary cholesterol secretion", why_correct:"Fibrates increase cholesterol excretion into bile (by reducing hepatic cholesterol esterification and increasing biliary cholesterol saturation). This supersaturates bile with cholesterol → promotes cholesterol gallstone formation.", why_wrong:{ B:"Fibrates do not inhibit bile acid synthesis — they activate PPARα", C:"Fibrates do not increase intestinal cholesterol absorption (that's the mechanism ezetimibe blocks)", D:"Drugs do not physically crystallize in the gallbladder", E:"Fenofibrate does not cause significant dehydration" }, trap:"Students confuse the mechanism — fibrates don't block bile acid synthesis, they increase biliary cholesterol saturation. The result is cholesterol gallstones." },
+];
+
+const DIAGRAMS = [
+  { title:"Lipid-Lowering Drug Selection by Indication", type:"comparison", objectives:["LO3 — Pharmacological choices and advantages/disadvantages"], content:`┌──────────────────────┬──────────────┬──────────────┬────────────────┬──────────────────────┐\n│ Drug Class           │ ↓ LDL        │ ↓ TG         │ ↑ HDL          │ Best Use             │\n├──────────────────────┼──────────────┼──────────────┼────────────────┼──────────────────────┤\n│ Statins              │ ★★★★★ 30–50% │ ↓ modest     │ ↑ modest       │ 1st line: high LDL   │\n│ Bile acid sequestrant│ ★★★ 15–30%   │ ↑ (worsens!) │ ↑ modest       │ Pregnancy; add-on    │\n│ Ezetimibe            │ ★★ 18–25%    │ ↓ minimal    │ —              │ Add-on to statin     │\n│ Fibrates             │ ↑ (variable) │ ★★★★ 40–60%  │ ★★★ 10–20%     │ 1st line: high TG    │\n│ Omega-3 FA           │ may ↑ LDL    │ ★★★ 30–50%   │ ↑ modest       │ Severe hypertriglyd  │\n│ PCSK9 inhibitors     │ ★★★★★ 50–60% │ ↓ modest     │ ↑ modest       │ FH; add-on after max │\n└──────────────────────┴──────────────┴──────────────┴────────────────┴──────────────────────┘\n\nKEY RULES:\n• TG >500 mg/dL + pancreatitis risk → fibrate FIRST (not statin)\n• Bile acid sequestrants RAISE TG → contraindicated in hypertriglyceridemia\n• Pregnancy → bile acid sequestrant ONLY (statins = Category X)\n• Step-up: statin → + ezetimibe → + PCSK9 inhibitor` },
+  { title:"Statin Step-Up & Dangerous Combinations", type:"flowchart", objectives:["LO3, LO4 — Statin therapy escalation; drug interactions"], content:`STEP-UP APPROACH FOR LDL LOWERING:\n  1. Start high-intensity statin (atorvastatin or rosuvastatin)\n        ↓ LDL goal not reached?\n  2. Add ezetimibe (oral, affordable, well-tolerated)\n        ↓ Still not at goal? (or statin intolerant)\n  3. Add PCSK9 inhibitor (evolocumab — injectable, expensive)\n\nSTATIN INTENSITY:\n  High    → atorvastatin 40–80mg, rosuvastatin 20–40mg  (LDL ↓ ≥50%)\n  Moderate → pravastatin, moderate-dose simvastatin      (LDL ↓ 30–50%)\n  Lower SE  → pravastatin (not CYP3A4; safest combo)\n  More SE   → simvastatin (avoid high doses; more interactions)\n\nDANGEROUS COMBINATIONS ✗\n  Simvastatin + gemfibrozil → rhabdomyolysis (CLASSIC)\n  Any statin + gemfibrozil  → ↑ rhabdomyolysis risk\n  Statins + CYP3A4 inhibitors (azoles, macrolides) → ↑ statin levels\n\nSAFE COMBINATIONS ✓\n  Any statin + ezetimibe    → additive LDL lowering\n  Any statin + fenofibrate  → safer than gemfibrozil combo\n  Any statin + bile acid sequestrant → additive (space doses)` },
+  { title:"Adverse Effects Quick Reference", type:"comparison", objectives:["LO4 — Adverse effects of lipid-lowering drugs"], content:`DRUG                    KEY ADVERSE EFFECTS                    CLASSIC CLUE\n──────────────────────────────────────────────────────────────────────────────\nStatins (all)           Myopathy → rhabdomyolysis              ↑ CK + muscle pain\n                        ↑ LFTs (rare, monitor)                 Tea-colored urine = myoglobinuria\n                        Teratogenic (Category X)               Avoid in pregnancy\n\nSimvastatin (specific)  MORE myopathy risk                     Avoid with gemfibrozil\nPravastatin (specific)  LESS myopathy risk                     Safest with fibrates\n\nFibrates (all)          Myopathy (additive with statins)       ↑ CK\n                        Cholelithiasis (↑ biliary cholesterol)  Gallstones on imaging\nGemfibrozil (specific)  Inhibits statin glucuronidation        DO NOT combine with statins\nFenofibrate (specific)  Safer with statins                     Preferred fibrate in combo\n\nBile acid sequestrants  Constipation, bloating                 GI complaints\n                        ↑ TG (contraind. if TG elevated)       Can worsen hypertriglyceridemia\n                        Drug binding (warfarin, digoxin, etc.) Subtherapeutic drug levels\n                        ↓ Fat-soluble vitamins (A,D,E,K)       Space other drugs ≥4 hours\n\nEzetimibe               Generally well tolerated               Rare myopathy (additive)\n\nPCSK9 inhibitors        Injection site reactions               Injectable drug\n\nOmega-3 FA              GI upset, fishy aftertaste             Mild antiplatelet effect` },
+  { title:"Primary vs. Secondary Hyperlipidemia", type:"comparison", objectives:["LO2 — Distinguish types of hyperlipidemias"], content:`SECONDARY CAUSES TO RULE OUT BEFORE STARTING THERAPY:\n  Hypothyroidism       → ↑ LDL (↓ LDL receptor expression)   → Check TSH\n  Diabetes mellitus    → ↑ TG, ↓ HDL                         → Check HbA1c/glucose\n  Nephrotic syndrome   → ↑ LDL, ↑ VLDL                       → Check urine protein\n  Chronic kidney disease → ↑ TG                               → Check GFR\n  Obesity              → ↑ TG, ↓ HDL                         → BMI, waist circumference\n  Alcohol excess       → ↑ TG, ↑ VLDL                        → History, LFTs\n  Medications          → Thiazides (↑ LDL, ↑ TG)             → Medication review\n                         β-blockers (↑ TG, ↓ HDL)\n                         Glucocorticoids (↑ LDL)\n\nPRIMARY (GENETIC) HYPERLIPIDEMIAS:\n  Familial hypercholesterolemia (FH)\n    → Autosomal dominant, ↓ LDL receptor\n    → LDL very high (>190 mg/dL); tendon xanthomas; premature ASCVD\n    → Tx: high-intensity statin + ezetimibe + PCSK9 inhibitor\n\n  Familial hypertriglyceridemia\n    → ↑ VLDL/TG; risk of pancreatitis\n    → Tx: fibrate or omega-3 FA` },
+];
+
+function AnglesTab() {
+  return ANGLES.map((c,i) => (
+    <Card key={i}>
+      <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap", marginBottom:6 }}>
+        <Pill text={`Cluster ${c.number}`} color="purple"/>
+        <span style={{ fontWeight:500, fontSize:15 }}>{c.theme}</span>
+      </div>
+      {c.objectives.map((o,j) => <p key={j} style={{ margin:"0 0 2px", fontSize:13, color:"var(--color-text-secondary)", paddingLeft:10, borderLeft:"2px solid #AFA9EC" }}>{o}</p>)}
+      <Lbl t="Core mechanism"/><p style={{ fontSize:13, margin:"0 0 4px" }}>{c.mechanism}</p>
+      <p style={{ fontSize:12, color:"var(--color-text-secondary)", fontStyle:"italic", margin:"0 0 10px" }}>{c.why_testable}</p>
+      {c.angles.map((a,j) => (
+        <Inset key={j}>
+          <p style={{ fontWeight:500, fontSize:14, margin:"0 0 6px" }}>Angle {j+1}: {a.title}</p>
+          {[["Tested concept",a.tested_concept],["Vignette pattern",a.vignette_pattern],["Key clues",a.key_clues],["Common trap",a.trap],["Disciplines",a.disciplines]].map(([l,v]) =>
+            v ? <div key={l}><Lbl t={l}/><p style={{ fontSize:13, margin:"0 0 4px" }}>{v}</p></div> : null
+          )}
+        </Inset>
+      ))}
+    </Card>
+  ));
+}
+
+function MindMapTab() {
+  return MINDMAP.map((c,i) => (
+    <Card key={i}>
+      <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap", marginBottom:6 }}>
+        <Pill text={`Cluster ${c.number}`} color="teal"/>
+        <span style={{ fontWeight:500, fontSize:15 }}>{c.theme}</span>
+      </div>
+      <p style={{ fontSize:13, color:"var(--color-text-secondary)", margin:"0 0 8px", paddingLeft:10, borderLeft:"2px solid #5DCAA5", fontStyle:"italic" }}>{c.mechanism}</p>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(140px,1fr))", gap:8, marginBottom:8 }}>
+        {Object.entries(c.nodes).filter(([,v])=>v).map(([k,v]) => (
+          <div key={k} style={{ background:"var(--color-background-secondary)", borderRadius:8, padding:"8px 10px" }}>
+            <Lbl t={k}/><p style={{ fontSize:12, margin:0 }}>{v}</p>
+          </div>
+        ))}
+      </div>
+      <Lbl t="Links to"/>{c.links.map((l,j) => <Pill key={j} text={l} color="teal"/>)}
+    </Card>
+  ));
+}
+
+function StudyGuideTab() {
+  return STUDYGUIDE.map((s,i) => (
+    <Card key={i}>
+      <Lbl t="Objectives covered"/>
+      {s.objectives.map((o,j) => <p key={j} style={{ fontSize:13, color:"var(--color-text-secondary)", margin:"0 0 2px", paddingLeft:10, borderLeft:"2px solid #7F77DD" }}>{o}</p>)}
+      <Lbl t="Core mechanism"/><p style={{ fontSize:14, fontWeight:500, margin:"0 0 8px" }}>{s.mechanism}</p>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+        <div><Lbl t="High-yield facts"/>{s.high_yield_facts.map((f,j) => <p key={j} style={{ fontSize:13, margin:"0 0 3px" }}>• {f}</p>)}</div>
+        <div><Lbl t="Vignette clues"/>{s.vignette_clues.map((f,j) => <p key={j} style={{ fontSize:13, margin:"0 0 3px" }}>• {f}</p>)}</div>
+      </div>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginTop:8 }}>
+        <div style={{ background:T.coral.bg, borderRadius:8, padding:"8px 10px" }}><Lbl t="Common trap"/><p style={{ fontSize:13, color:T.coral.txt, margin:0 }}>{s.trap}</p></div>
+        <div style={{ background:T.teal.bg, borderRadius:8, padding:"8px 10px" }}><Lbl t="If you see → think"/><p style={{ fontSize:13, color:T.teal.txt, margin:0 }}>{s.if_you_see}</p></div>
+      </div>
+      <Lbl t="Integration links"/>{s.integration.map((l,j) => <Pill key={j} text={l} color="blue"/>)}
+    </Card>
+  ));
+}
+
+function VignettesTab() {
+  const [open, setOpen] = useState({});
+  return VIGNETTES.map((v,i) => (
+    <Card key={i}>
+      <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:8 }}>
+        <Pill text={`Vignette ${v.number}`} color="blue"/><Pill text={v.cluster} color="purple"/>
+      </div>
+      <Inset><p style={{ fontSize:13, lineHeight:1.7, margin:"0 0 8px" }}>{v.vignette}</p><p style={{ fontSize:14, fontWeight:500, margin:0 }}>{v.question}</p></Inset>
+      <button onClick={()=>setOpen(o=>({...o,[i]:!o[i]}))} style={{ marginTop:10, fontSize:13, padding:"6px 14px", cursor:"pointer", borderRadius:6, background:"transparent", border:"0.5px solid var(--color-border-secondary)", color:"var(--color-text-primary)" }}>
+        {open[i]?"Hide answer ↑":"Show answer ↓"}
+      </button>
+      {open[i] && (
+        <div style={{ marginTop:8 }}>
+          <div style={{ background:T.green.bg, borderRadius:8, padding:"8px 12px", marginBottom:8 }}>
+            <Lbl t="Correct answer"/><p style={{ fontSize:13, fontWeight:500, color:T.green.txt, margin:0 }}>{v.answer}</p>
+          </div>
+          {[["Why correct",v.why_correct],["Key clues",v.key_clues],["Why a student might miss it",v.why_missed],["Exam writer trap",v.trap]].map(([l,val]) =>
+            val ? <div key={l}><Lbl t={l}/><p style={{ fontSize:13, margin:"0 0 6px" }}>{val}</p></div> : null
+          )}
+        </div>
+      )}
+    </Card>
+  ));
+}
+
+function QuestionsTab() {
+  const [sel, setSel] = useState({});
+  const [shown, setShown] = useState({});
+  return QUESTIONS.map((q,i) => (
+    <Card key={i}>
+      <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:6 }}>
+        <Pill text={`Q${q.number}`} color="amber"/><Pill text={q.cluster} color="amber"/>
+      </div>
+      <p style={{ fontSize:14, lineHeight:1.7, margin:"10px 0" }}>{q.stem}</p>
+      {Object.entries(q.choices).map(([letter,txt]) => {
+        const picked=sel[i]===letter, revealed=shown[i], isCorrect=letter===q.correct;
+        let bg="var(--color-background-secondary)", border="0.5px solid var(--color-border-tertiary)";
+        if(!revealed&&picked){bg=T.blue.bg;border=`0.5px solid ${T.blue.bdr}`;}
+        if(revealed&&isCorrect){bg=T.green.bg;border=`0.5px solid ${T.green.bdr}`;}
+        if(revealed&&picked&&!isCorrect){bg=T.red.bg;border=`0.5px solid ${T.red.bdr}`;}
+        return <div key={letter} onClick={()=>!revealed&&setSel(s=>({...s,[i]:letter}))} style={{ background:bg, border, borderRadius:8, padding:"8px 12px", marginBottom:4, cursor:revealed?"default":"pointer", display:"flex", gap:10 }}>
+          <span style={{ fontWeight:500, fontSize:13, minWidth:16 }}>{letter}.</span>
+          <span style={{ fontSize:13 }}>{txt}</span>
+        </div>;
+      })}
+      <button disabled={!sel[i]||shown[i]} onClick={()=>setShown(s=>({...s,[i]:true}))} style={{ marginTop:6, padding:"6px 14px", borderRadius:6, fontSize:13, cursor:sel[i]&&!shown[i]?"pointer":"default", background:sel[i]&&!shown[i]?T.blue.bg:"var(--color-background-secondary)", color:sel[i]&&!shown[i]?T.blue.txt:"var(--color-text-tertiary)", border:`0.5px solid ${sel[i]&&!shown[i]?T.blue.bdr:"var(--color-border-tertiary)"}` }}>
+        Submit answer
+      </button>
+      {shown[i] && (
+        <div style={{ marginTop:8 }}>
+          <div style={{ background:T.green.bg, borderRadius:8, padding:"8px 12px", marginBottom:6 }}>
+            <Lbl t="Correct answer"/>
+            <p style={{ fontSize:13, fontWeight:500, color:T.green.txt, margin:"0 0 2px" }}>{q.correct} — {q.tested_concept}</p>
+            <p style={{ fontSize:13, color:T.green.txt, margin:0 }}>{q.why_correct}</p>
+          </div>
+          {Object.entries(q.why_wrong).map(([l,e]) => <p key={l} style={{ fontSize:12, color:"var(--color-text-secondary)", margin:"0 0 2px" }}><strong>{l}:</strong> {e}</p>)}
+          <div style={{ background:T.coral.bg, borderRadius:8, padding:"8px 12px", marginTop:6 }}>
+            <Lbl t="Main trap"/><p style={{ fontSize:13, color:T.coral.txt, margin:0 }}>{q.trap}</p>
+          </div>
+        </div>
+      )}
+    </Card>
+  ));
+}
+
+function DiagramsTab() {
+  return DIAGRAMS.map((d,i) => (
+    <Card key={i}>
+      <div style={{ display:"flex", gap:6, flexWrap:"wrap", alignItems:"center", marginBottom:6 }}>
+        <Pill text={d.type} color="pink"/><span style={{ fontWeight:500, fontSize:15 }}>{d.title}</span>
+      </div>
+      {d.objectives.map((o,j) => <p key={j} style={{ fontSize:12, color:"var(--color-text-secondary)", margin:"0 0 2px", paddingLeft:8, borderLeft:"2px solid #ED93B1" }}>{o}</p>)}
+      <pre style={{ background:"var(--color-background-secondary)", borderRadius:8, padding:"12px", marginTop:8, fontSize:12, color:"var(--color-text-primary)", whiteSpace:"pre-wrap", fontFamily:"monospace", lineHeight:1.7, overflowX:"auto" }}>{d.content}</pre>
+    </Card>
+  ));
+}
+
+const STUDY_RENDERERS = { angles:AnglesTab, mindmap:MindMapTab, studyguide:StudyGuideTab, vignettes:VignettesTab, questions:QuestionsTab, diagrams:DiagramsTab };
+
+function App() {
+  const [activeTab, setActiveTab] = useState("angles");
+  const Comp = STUDY_RENDERERS[activeTab];
+  return (
+    <div style={{ padding:"0.5rem 0.75rem", maxWidth:860, margin:"0 auto" }}>
+      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:10 }}>
+        <div>
+          <p style={{ fontSize:15, fontWeight:500, margin:0 }}>💊 Lipid Lowering Drugs</p>
+          <p style={{ fontSize:11, color:"var(--color-text-secondary)", margin:0 }}>Georgetown SOM · Cardio Exam 2</p>
+        </div>
+      </div>
+      <div style={{ display:"flex", gap:4, overflowX:"auto", paddingBottom:6, marginBottom:12 }}>
+        {STUDY_TABS.map(t => {
+          const active=activeTab===t.id;
+          return <button key={t.id} onClick={()=>setActiveTab(t.id)} style={{ flexShrink:0, padding:"5px 12px", borderRadius:8, border:active?`1px solid ${T.purple.bdr}`:"0.5px solid var(--color-border-tertiary)", background:active?T.purple.bg:"transparent", color:active?T.purple.txt:"var(--color-text-secondary)", fontSize:12, fontWeight:active?500:400, cursor:"pointer", display:"flex", alignItems:"center", gap:5 }}>
+            <span style={{ fontSize:13 }}>{t.icon}</span>{t.label}
+          </button>;
+        })}
+      </div>
+      <Comp/>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
