@@ -1,0 +1,465 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:sans-serif}
+body{background:#fff;color:#111;padding:16px;font-size:13px}
+h2{font-size:16px;font-weight:600;margin-bottom:4px}
+.sub{color:#666;font-size:12px;margin-bottom:14px}
+.resource-banner{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#1E40AF}
+.resource-banner strong{display:block;margin-bottom:2px;font-size:13px}
+.tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.tab{padding:7px 14px;border-radius:20px;border:1.5px solid #CBD5E1;font-size:12px;cursor:pointer;background:#fff;color:#475569;font-weight:500}
+.tab.active{background:#0F766E;color:#fff;border-color:#0F766E}
+.panel{display:none}.panel.active{display:block}
+.sec{font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.05em;margin:14px 0 6px}
+table{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:12px}
+th{background:#F1F5F9;text-align:left;padding:7px 8px;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:#475569;border:1px solid #E2E8F0;font-weight:600}
+td{padding:6px 8px;border:1px solid #E2E8F0;vertical-align:top}
+td input{width:100%;border:none;border-bottom:1.5px solid #e2e8f0;font-size:11px;background:transparent;outline:none;padding:1px 0;color:#1e293b}
+td input:focus{border-bottom-color:#0F766E}
+tr:nth-child(even) td{background:#FAFAFA}
+.rl{font-weight:600;font-size:11px;color:#1e293b;background:#F8FAFC!important;white-space:nowrap}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.f{margin-bottom:6px}
+.f label{font-size:10px;color:#94a3b8;display:block;margin-bottom:2px;text-transform:uppercase;letter-spacing:.03em}
+.f input{width:100%;border:none;border-bottom:1.5px solid #CBD5E1;font-size:12px;background:transparent;outline:none;padding:2px 0;color:#1e293b}
+.f input:focus{border-bottom-color:#0F766E}
+.f textarea{width:100%;border:1px solid #CBD5E1;border-radius:6px;font-size:12px;background:transparent;outline:none;padding:4px 6px;color:#1e293b;resize:vertical;min-height:48px}
+.f textarea:focus{border-color:#0F766E}
+.btn{background:#0F766E;color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;cursor:pointer;font-weight:500;margin-top:8px}
+.btn:hover{background:#0D9488}
+.fb{margin-top:12px;font-size:12px;line-height:1.9;padding:10px 14px;border-radius:8px;display:none;background:#F0FDF4;color:#14532D;border:1px solid #86EFAC}
+.warn{background:#FFFBEB;border-left:3px solid #F59E0B;padding:7px 10px;border-radius:0 6px 6px 0;font-size:11px;color:#92400E;margin:8px 0}
+.on-exam{background:#FEE2E2;border:1px solid #FDA4AF;border-radius:6px;padding:4px 10px;font-size:11px;color:#991B1B;font-weight:700;display:inline-block;margin-bottom:8px}
+.card{border:1px solid #E2E8F0;border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.pq-box{background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:12px}
+.pq-box .pq-q{font-weight:600;margin-bottom:6px;color:#92400E}
+.pq-box .pq-choices{margin-left:12px;margin-bottom:6px;color:#78350F}
+.pq-ans{display:none;background:#F0FDF4;border:1px solid #86EFAC;border-radius:6px;padding:6px 10px;font-size:11px;color:#14532D;margin-top:4px}
+.pq-btn{font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid #D97706;background:#FEF3C7;color:#92400E;cursor:pointer}
+.pq-btn:hover{background:#FDE68A}
+</style></head><body>
+<h2>HTN Pharm — Active Recall</h2>
+<p class="sub">From your Georgetown CV Pharm lecture + practice questions. Close your notes. Fill from memory. Then reveal.</p>
+
+<div class="resource-banner">
+  <strong>📺 Watch first: Bootcamp — Antihypertensive Drugs (diuretics, RAAS, CCBs, beta blockers, vasodilators)</strong>
+  Use this tool immediately after watching — close Bootcamp and attempt recall before checking answers.
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="sw(0)">Diuretics</div>
+  <div class="tab" onclick="sw(1)">RAAS Drugs</div>
+  <div class="tab" onclick="sw(2)">CCBs</div>
+  <div class="tab" onclick="sw(3)">Beta Blockers</div>
+  <div class="tab" onclick="sw(4)">Other Drugs</div>
+  <div class="tab" onclick="sw(5)">Special Populations</div>
+  <div class="tab" onclick="sw(6)">Hemodynamics</div>
+  <div class="tab" onclick="sw(7)">Practice Qs</div>
+</div>
+
+<!-- DIURETICS -->
+<div class="panel active" id="p0">
+<div class="on-exam">ON EXAM — Electrolyte effects, calcium effects, and drug combos tested repeatedly (Qs 1, 3, 11–21)</div>
+<div class="sec">Thiazides — Site, MOA, and key electrolyte effects</div>
+<table>
+  <tr><th>Drug</th><th>Site of action</th><th>Transporter blocked</th><th>K+ effect</th><th>Ca2+ effect</th><th>Uric acid</th><th>Glucose</th></tr>
+  <tr><td class="rl">Hydrochlorothiazide</td><td><input placeholder="which tubule?"></td><td><input placeholder="Na/? symport"></td><td><input placeholder="↑/↓?"></td><td><input placeholder="↑/↓? — clinical use?"></td><td><input placeholder="↑/↓? why?"></td><td><input placeholder="↑/↓? why?"></td></tr>
+  <tr><td class="rl">Chlorthalidone</td><td><input placeholder="same or different?"></td><td><input placeholder="same transporter?"></td><td><input placeholder="more or less K+ loss vs HCTZ?"></td><td><input placeholder="same as HCTZ?"></td><td><input placeholder="same?"></td><td><input placeholder="same?"></td></tr>
+  <tr><td class="rl">Furosemide (loop)</td><td><input placeholder="which limb?"></td><td><input placeholder="Na/K/? symport"></td><td><input placeholder="↑/↓?"></td><td><input placeholder="↑/↓? opposite of thiazide?"></td><td><input placeholder="↑/↓?"></td><td><input placeholder="↑/↓?"></td></tr>
+  <tr><td class="rl">Spironolactone</td><td><input placeholder="which tubule?"></td><td><input placeholder="blocks what receptor?"></td><td><input placeholder="↑/↓? — why?"></td><td><input placeholder="effect?"></td><td><input placeholder="—"></td><td><input placeholder="—"></td></tr>
+  <tr><td class="rl">Eplerenone</td><td><input placeholder="same as spiro?"></td><td><input placeholder="same MOA?"></td><td><input placeholder="same?"></td><td><input placeholder="—"></td><td><input placeholder="—"></td><td><input placeholder="why preferred over spiro in men?"></td></tr>
+  <tr><td class="rl">Triamterene</td><td><input placeholder="same as spiro?"></td><td><input placeholder="blocks Na+ channels — luminal or basolateral?"></td><td><input placeholder="↑/↓?"></td><td><input placeholder="—"></td><td><input placeholder="—"></td><td><input placeholder="—"></td></tr>
+</table>
+
+<div class="sec">Thiazide clinical pearls — from your notes</div>
+<div class="fg">
+  <div class="f"><label>Why are thiazides ineffective when GFR &lt;30?</label><input placeholder="less Na reaches...?"></div>
+  <div class="f"><label>Exception — which thiazide works in renal insufficiency?</label><input placeholder="which drug?"></div>
+  <div class="f"><label>Why does ALLHAT recommend chlorthalidone over HCTZ?</label><input placeholder="trials show... and longer half-life..."></div>
+  <div class="f"><label>What 3 compensatory mechanisms ↑renin after thiazides?</label><input placeholder="macula densa, baroreceptor, SNS..."></div>
+  <div class="f"><label>Why do thiazides cause hypokalemia? (2-step chain)</label><input placeholder="↑NaCl to collecting tubule → ↑K+ excretion AND ↑renin → ↑aldosterone → ↑K+ excretion"></div>
+  <div class="f"><label>NSAIDs counteract thiazides — but what does NOT?</label><input placeholder="low dose aspirin does NOT counteract thiazides"></div>
+  <div class="f"><label>Lithium toxicity — why?</label><input placeholder="Li reabsorbed like Na in PCT; thiazide → less Na → more Li reabsorbed..."></div>
+  <div class="f"><label>Triamterene blocks Na+ channels on which side of principal cell?</label><input placeholder="luminal (apical) side — Q12 answer"></div>
+  <div class="f"><label>Spironolactone blocks what on the basolateral side? (Q13 answer)</label><input placeholder="↓ number of Na/K ATPase pumps (by blocking aldosterone effects)"></div>
+</div>
+<button class="btn" onclick="rev('fb0',a0)">Reveal answers</button>
+<div id="fb0" class="fb"></div>
+</div>
+
+<!-- RAAS -->
+<div class="panel" id="p1">
+<div class="on-exam">ON EXAM — ACEi vs ARB differences, renal protection mechanism, and when to use each (Qs 1, 5, 7, 8)</div>
+<div class="sec">ACE Inhibitors vs ARBs — fill differences</div>
+<table>
+  <tr><th>Feature</th><th>ACE Inhibitors</th><th>ARBs (e.g. Losartan)</th></tr>
+  <tr><td class="rl">MOA</td><td><input placeholder="inhibit conversion of AngI → AngII"></td><td><input placeholder="block AT1 receptor"></td></tr>
+  <tr><td class="rl">Effect on bradykinin</td><td><input placeholder="↑ bradykinin — why?"></td><td><input placeholder="no effect — why?"></td></tr>
+  <tr><td class="rl">Cough</td><td><input placeholder="yes/no? why?"></td><td><input placeholder="yes/no? why?"></td></tr>
+  <tr><td class="rl">AT2 receptor stimulation</td><td><input placeholder="↑/↓/same?"></td><td><input placeholder="↑/↓/same? — clinical effect?"></td></tr>
+  <tr><td class="rl">Angiotensin II levels</td><td><input placeholder="↑/↓?"></td><td><input placeholder="↑/↓? — why higher?"></td></tr>
+  <tr><td class="rl">Renin levels</td><td><input placeholder="↑/↓? why?"></td><td><input placeholder="↑/↓? why?"></td></tr>
+  <tr><td class="rl">Aldosterone</td><td><input placeholder="↑/↓?"></td><td><input placeholder="↑/↓?"></td></tr>
+  <tr><td class="rl">K+ effect</td><td><input placeholder="↑/↓?"></td><td><input placeholder="same?"></td></tr>
+  <tr><td class="rl">Angioedema</td><td><input placeholder="common/rare? mechanism?"></td><td><input placeholder="common/rare?"></td></tr>
+  <tr><td class="rl">Pregnancy</td><td><input placeholder="safe/contraindicated?"></td><td><input placeholder="safe/contraindicated?"></td></tr>
+  <tr><td class="rl">Can you combine them?</td><td colspan="2"><input placeholder="yes/no? from your notes?"></td></tr>
+</table>
+
+<div class="sec">ACEi renal protection mechanism — Q7 exact reasoning</div>
+<div class="fg">
+  <div class="f"><label>Primary mechanism of ACEi renal protection (Q7 answer A)</label><input placeholder="preferentially dilates efferent arteriole → ↓ intraglomerular pressure"></div>
+  <div class="f"><label>Why efferent, not afferent?</label><input placeholder="AngII normally constricts efferent more; ACEi removes this → efferent dilates more than afferent"></div>
+  <div class="f"><label>What does ↓ intraglomerular pressure reduce?</label><input placeholder="albuminuria / slows progression of diabetic nephropathy"></div>
+  <div class="f"><label>When is ACEi/ARB preferred in CKD? (eGFR threshold + albumin threshold)</label><input placeholder="eGFR &lt;60 ml/min/1.73m2 OR albuminuria ≥30 mg/g"></div>
+</div>
+
+<div class="sec">Q5 — AT2 receptor stimulation: which drug causes the GREATEST?</div>
+<div class="warn">ARBs block AT1 → AngII accumulates → MORE AngII available to stimulate AT2. Losartan = GREATEST AT2 stimulation. ACEi REDUCE AngII so AT2 is not stimulated extra. This is Q5 answer C.</div>
+
+<div class="sec">Q6 — Identify the drug from hemodynamic profile</div>
+<div class="card">
+  <div style="font-size:12px;margin-bottom:8px">A drug produces: ↓TPR, ↓HR, ↓plasma renin, ↑plasma NE. Which class?</div>
+  <div class="f"><label>↓ TPR + ↓ HR + ↓ renin all together → which class does this?</label><input placeholder="beta blocker? CCB? think through each..."></div>
+  <div class="f"><label>Why does plasma NE go UP?</label><input placeholder="reflex SNS activation in response to ↓ BP? OR blocked NE reuptake?"></div>
+  <div class="f"><label>Answer: which drug? (Q6 answer)</label><input placeholder="Carvedilol — alpha+beta blocker → ↓TPR (alpha) + ↓HR (beta) + ↓renin (beta) → reflex ↑NE release"></div>
+</div>
+<button class="btn" onclick="rev('fb1',a1)">Reveal answers</button>
+<div id="fb1" class="fb"></div>
+</div>
+
+<!-- CCBs -->
+<div class="panel" id="p2">
+<div class="on-exam">ON EXAM — DHP vs non-DHP differences, edema mechanism, drug combinations (Qs 6, 14, 51, 52)</div>
+<div class="sec">DHP vs non-DHP CCBs — fill all differences</div>
+<table>
+  <tr><th>Feature</th><th>DHP (amlodipine)</th><th>Non-DHP (verapamil/diltiazem)</th></tr>
+  <tr><td class="rl">Primary site of action</td><td><input placeholder="vasculature only or also heart?"></td><td><input placeholder="vasculature AND heart?"></td></tr>
+  <tr><td class="rl">Effect on HR</td><td><input placeholder="↑/↓/→ ? reflex?"></td><td><input placeholder="↑/↓/→ ? direct?"></td></tr>
+  <tr><td class="rl">AV node conduction</td><td><input placeholder="effect?"></td><td><input placeholder="slows? useful for?"></td></tr>
+  <tr><td class="rl">Cardiac contractility</td><td><input placeholder="effect?"></td><td><input placeholder="↓ — clinical implication?"></td></tr>
+  <tr><td class="rl">Use in atrial arrhythmias</td><td><input placeholder="yes/no?"></td><td><input placeholder="yes/no? why?"></td></tr>
+  <tr><td class="rl">Use in heart failure</td><td><input placeholder="safe/avoid?"></td><td><input placeholder="safe/avoid?"></td></tr>
+  <tr><td class="rl">Combine with beta blocker?</td><td><input placeholder="caution or avoid?"></td><td><input placeholder="DO NOT — why?"></td></tr>
+  <tr><td class="rl">Peripheral edema</td><td><input placeholder="common? mechanism?"></td><td><input placeholder="same? reversed by diuretics?"></td></tr>
+  <tr><td class="rl">CYP3A4 interaction</td><td><input placeholder="effect?"></td><td><input placeholder="verapamil inhibits — which drugs affected?"></td></tr>
+</table>
+
+<div class="sec">Q14 — Amlodipine edema mechanism (high-yield)</div>
+<div class="warn">Amlodipine causes peripheral edema via PRECAPILLARY DILATION + reflex POST-CAPILLARY CONSTRICTION → ↑ hydrostatic pressure → edema. This is NOT fluid retention. NOT reversed by diuretics. Q14 answer = A (Amlodipine).</div>
+<div class="fg">
+  <div class="f"><label>Q8 — Patient on high-dose NSAIDs, HTN not controlled. Best drug?</label><input placeholder="NSAIDs blunt thiazides, ACEi, beta-blockers but less effect on CCBs → answer = Amlodipine (A)"></div>
+  <div class="f"><label>Q4 — Isolated systolic HTN (elderly). Mechanism? Best drug target?</label><input placeholder="↓ compliance of large arteries (collagen replaces elastin) → ↑ pulse wave → augments SBP; target = ↑ arterial compliance → CCBs (D)"></div>
+  <div class="f"><label>Q52 — What's INCORRECT about CCBs?</label><input placeholder="Nifedipine is NOT effective for AFib — only non-DHPs suppress AV node. Answer = A"></div>
+  <div class="f"><label>Q51 — Diltiazem hemodynamics: PVR, AV conduction, coronary flow?</label><input placeholder="↓PVR (vasodilation), ↓AV conduction (blocks Ca2+ in AV node), ↑coronary flow (dilates coronary arteries). Answer = E"></div>
+</div>
+<button class="btn" onclick="rev('fb2',a2)">Reveal answers</button>
+<div id="fb2" class="fb"></div>
+</div>
+
+<!-- BETA BLOCKERS -->
+<div class="panel" id="p3">
+<div class="on-exam">ON EXAM — Subtypes, special populations, compensatory mechanisms after vasodilators (Qs 2, 6, 9, 10, 22)</div>
+<div class="sec">Beta blocker subtypes — fill from memory</div>
+<table>
+  <tr><th>Drug</th><th>Selectivity</th><th>Extra property</th><th>Lipid solubility</th><th>Elimination</th><th>Key use</th></tr>
+  <tr><td class="rl">Propranolol</td><td><input placeholder="β1 + β2?"></td><td><input placeholder="none?"></td><td><input placeholder="high/mod/low?"></td><td><input placeholder="liver?"></td><td><input placeholder="prototype"></td></tr>
+  <tr><td class="rl">Metoprolol</td><td><input placeholder="β1 selective?"></td><td><input placeholder="none?"></td><td><input placeholder="high/mod/low?"></td><td><input placeholder="liver?"></td><td><input placeholder="HTN, HF, post-MI"></td></tr>
+  <tr><td class="rl">Atenolol</td><td><input placeholder="β1 selective?"></td><td><input placeholder="none?"></td><td><input placeholder="high/mod/low?"></td><td><input placeholder="renal?"></td><td><input placeholder="avoid in pregnancy — why?"></td></tr>
+  <tr><td class="rl">Carvedilol</td><td><input placeholder="β1 + β2 + α1?"></td><td><input placeholder="α1 blockade → vasodilation"></td><td><input placeholder="?"></td><td><input placeholder="?"></td><td><input placeholder="HF, HTN"></td></tr>
+  <tr><td class="rl">Labetalol</td><td><input placeholder="β > α?"></td><td><input placeholder="α1 blockade"></td><td><input placeholder="low?"></td><td><input placeholder="?"></td><td><input placeholder="pregnancy HTN, hypertensive emergency IV"></td></tr>
+  <tr><td class="rl">Nebivolol</td><td><input placeholder="β1 selective?"></td><td><input placeholder="releases NO → vasodilation"></td><td><input placeholder="low?"></td><td><input placeholder="?"></td><td><input placeholder="most cardioselective — asthma patients"></td></tr>
+</table>
+
+<div class="sec">Beta blocker contraindications and clinical traps</div>
+<div class="fg">
+  <div class="f"><label>Why avoid non-selective BB in asthma?</label><input placeholder="β2 blockade → bronchoconstriction in airways"></div>
+  <div class="f"><label>Why avoid non-selective BB in insulin-dependent diabetes?</label><input placeholder="masks tachycardia (hypoglycemia warning sign) + delays return of glucose (blocks β2 gluconeogenesis)"></div>
+  <div class="f"><label>3 BBs proven to reduce mortality in HF (name them)</label><input placeholder="carvedilol, metoprolol succinate, bisoprolol ONLY"></div>
+  <div class="f"><label>Sudden withdrawal risk — mechanism</label><input placeholder="upregulation of β-receptors during chronic BB → sudden excess stimulation → angina, MI, death; must taper"></div>
+  <div class="f"><label>Q2 — Metoprolol for pheochromocytoma: appropriate? Why/why not?</label><input placeholder="NO — must give alpha blocker FIRST (phenoxybenzamine); giving β alone leaves α unopposed → severe vasoconstriction. Q2 answer = C"></div>
+  <div class="f"><label>Q10 — Which drug causes orthostatic hypotension (dizziness on standing)?</label><input placeholder="Labetalol (α1 blockade → venodilation → postural hypotension). Answer = C"></div>
+  <div class="f"><label>Q9 — Drug where peak plasma ≠ peak effect (delayed effect curve). Which class?</label><input placeholder="Prodrug — Enalapril (converted to enalaprilat, delayed onset). Answer = B"></div>
+  <div class="f"><label>Q22 — Which drugs lower standing BP MORE than supine?</label><input placeholder="Drugs causing venodilation: Doxazosin (α1) and Labetalol (α1 component) → pool blood in veins when upright. Answer = C (2 and 4)"></div>
+</div>
+<button class="btn" onclick="rev('fb3',a3)">Reveal answers</button>
+<div id="fb3" class="fb"></div>
+</div>
+
+<!-- OTHER DRUGS -->
+<div class="panel" id="p4">
+<div class="on-exam">ON EXAM — MOA of vasodilators, compensatory mechanisms, K+ channel openers (Qs 15–17)</div>
+<div class="sec">Direct vasodilators — fill MOA and compensatory mechanisms</div>
+<table>
+  <tr><th>Drug</th><th>MOA</th><th>Compensatory response (2 parts)</th><th>What to combine with</th><th>Key side effect</th></tr>
+  <tr><td class="rl">Hydralazine</td><td><input placeholder="↓ intracellular Ca2+ in arterial smooth muscle?"></td><td><input placeholder="↑SNS → ↑HR/CO AND ↑renin → fluid retention"></td><td><input placeholder="diuretic + ACEI/ARB + beta blocker"></td><td><input placeholder="lupus-like syndrome"></td></tr>
+  <tr><td class="rl">Minoxidil</td><td><input placeholder="opens K+ ATP channel → hyperpolarization → ↓Ca2+ entry"></td><td><input placeholder="same 2 compensatory mechanisms?"></td><td><input placeholder="LOOP diuretic (severe fluid retention) + BB + ACEI/ARB"></td><td><input placeholder="hypertrichosis / hirsutism"></td></tr>
+  <tr><td class="rl">Nitroprusside</td><td><input placeholder="releases NO → ↑cGMP → vasodilation"></td><td><input placeholder="fast onset/offset — IV only"></td><td><input placeholder="hypertensive emergency use"></td><td><input placeholder="cyanide toxicity (from NO metabolism)"></td></tr>
+</table>
+
+<div class="sec">Q15-17 matching — from your practice questions</div>
+<div class="fg">
+  <div class="f"><label>Q15 — Irreversible, non-competitive α1 AND α2 antagonist</label><input placeholder="Phenoxybenzamine — for pheochromocytoma (Q15 = D)"></div>
+  <div class="f"><label>Q16 — Safe in pregnancy (with record of safety)</label><input placeholder="Methyldopa (Q16 = B) — centrally acting α2 agonist"></div>
+  <div class="f"><label>Q17 — K+ATP channel opener</label><input placeholder="Minoxidil (Q17 = C) — opens K+ channels → hyperpolarization → vasodilation"></div>
+  <div class="f"><label>Q57 — Minoxidil receptor coupling: opens K+ channels sensitive to what?</label><input placeholder="intracellular ATP (K+ATP channels). Answer = C"></div>
+  <div class="f"><label>Q56 — Nitroprusside MOA: stimulates what enzyme?</label><input placeholder="stimulates guanylate cyclase → ↑cGMP. Answer = E"></div>
+  <div class="f"><label>Q59 — Angiotensin II receptor coupling</label><input placeholder="AT1 coupled to Gq → PLC → IP3 → ↑Ca2+. Answer = B"></div>
+  <div class="f"><label>Clonidine MOA</label><input placeholder="activates central α2A receptors → ↓SNS outflow → ↓HR, ↓CO, ↓TPR, ↓renin"></div>
+  <div class="f"><label>Clonidine withdrawal — what happens?</label><input placeholder="rebound ↑SNS → ↑HR, tremors, sweating → must taper dose; patch reduces this risk"></div>
+</div>
+<button class="btn" onclick="rev('fb4',a4)">Reveal answers</button>
+<div id="fb4" class="fb"></div>
+</div>
+
+<!-- SPECIAL POPULATIONS -->
+<div class="panel" id="p5">
+<div class="on-exam">ON EXAM — Pregnancy drugs, compelling indications, hypertensive emergency drugs (Q2, LO 21-24)</div>
+<div class="sec">Compelling indications — fill preferred drug class for each condition</div>
+<table>
+  <tr><th>Condition</th><th>Preferred drug(s)</th><th>Rationale</th><th>What to AVOID</th></tr>
+  <tr><td class="rl">Diabetes + microalbuminuria</td><td><input placeholder="ACEi or ARB?"></td><td><input placeholder="↓ efferent resistance → ↓ intraglomerular pressure → ↓ albuminuria"></td><td><input placeholder="?"></td></tr>
+  <tr><td class="rl">Heart failure (EF reduced)</td><td><input placeholder="ACEi/ARB, BB (which 3?), MRA, SGLT2i, ARNI"></td><td><input placeholder="reduce mortality / anti-remodeling"></td><td><input placeholder="non-DHP CCBs, doxazosin"></td></tr>
+  <tr><td class="rl">Post-MI</td><td><input placeholder="BB + ACEi/ARB + statin + aspirin"></td><td><input placeholder="reduce remodeling + arrhythmia risk"></td><td><input placeholder="non-DHP CCBs if LV dysfunction"></td></tr>
+  <tr><td class="rl">Isolated systolic HTN (elderly)</td><td><input placeholder="thiazide or DHP CCB?"></td><td><input placeholder="↑ arterial compliance / respond to these better"></td><td><input placeholder="?"></td></tr>
+  <tr><td class="rl">BPH + HTN</td><td><input placeholder="use 1st-line drug for HTN AND α1A blocker (tamsulosin) for BPH separately"></td><td><input placeholder="α1 blockade relaxes prostate — do NOT use doxazosin as sole HTN agent"></td><td><input placeholder="alpha blockers as sole antihypertensive"></td></tr>
+  <tr><td class="rl">Pheochromocytoma</td><td><input placeholder="phenoxybenzamine FIRST (non-selective α), THEN BB"></td><td><input placeholder="must block α first — BB alone leaves α unopposed → severe ↑BP"></td><td><input placeholder="BB first"></td></tr>
+  <tr><td class="rl">Gout</td><td><input placeholder="avoid thiazides — use what instead?"></td><td><input placeholder="thiazides ↑uric acid → exacerbate gout"></td><td><input placeholder="thiazides, loop diuretics"></td></tr>
+  <tr><td class="rl">Asthma</td><td><input placeholder="avoid all BB or only non-selective?"></td><td><input placeholder="β2 blockade → bronchoconstriction; if must use BB, choose nebivolol (most cardioselective)"></td><td><input placeholder="non-selective BB, labetalol (has β2 block)"></td></tr>
+</table>
+
+<div class="sec">Pregnancy — safe vs contraindicated</div>
+<div class="fg3">
+  <div class="f"><label>1st line for HTN in pregnancy (2 drugs)</label><input placeholder="labetalol (IV/oral) AND nifedipine ER"></div>
+  <div class="f"><label>Urgent BP control in pregnancy (IV/IM)</label><input placeholder="hydralazine IV or IM"></div>
+  <div class="f"><label>Preeclampsia/eclampsia add-on</label><input placeholder="magnesium sulfate (not antihypertensive but anticonvulsant)"></div>
+  <div class="f"><label>Safe but limited by side effects</label><input placeholder="methyldopa"></div>
+  <div class="f"><label>Contraindicated — why (ACEi/ARB)?</label><input placeholder="teratogenic: IUGR, oligohydramnios, renal failure, bone ossification defects — FDA class X"></div>
+  <div class="f"><label>Atenolol in pregnancy — contraindicated because?</label><input placeholder="IUGR — reduces blood flow through placenta"></div>
+</div>
+
+<div class="sec">Hypertensive emergency IV drugs — Q2</div>
+<div class="warn">Q2 answer = C: Metoprolol (β1 selective) is NOT appropriate for pheochromocytoma because it leaves α-receptors unopposed. Must use non-selective α-blocker first.</div>
+<div class="fg">
+  <div class="f"><label>Drug for hypertensive emergency in pregnancy</label><input placeholder="labetalol IV"></div>
+  <div class="f"><label>Drug for acute aortic dissection</label><input placeholder="labetalol (or esmolol + vasodilator)"></div>
+  <div class="f"><label>Drug for acute coronary syndrome</label><input placeholder="nitroglycerin IV → reduces preload/afterload + ↑coronary flow"></div>
+  <div class="f"><label>Nitroprusside: cyanide risk — when?</label><input placeholder="liver/kidney failure impairs cyanide clearance — relative contraindication"></div>
+</div>
+<button class="btn" onclick="rev('fb5',a5)">Reveal answers</button>
+<div id="fb5" class="fb"></div>
+</div>
+
+<!-- HEMODYNAMICS -->
+<div class="panel" id="p6">
+<div class="on-exam">ON EXAM — Long-term hemodynamic table; renin effects of each drug class (Table 32-3 from Goodman)</div>
+<div class="sec">Long-term hemodynamic effects — fill ↑/↓/↔ for each</div>
+<table>
+  <tr><th>Drug class</th><th>HR</th><th>CO</th><th>TPR</th><th>Plasma volume</th><th>Plasma renin</th></tr>
+  <tr><td class="rl">ACE inhibitors</td><td><input placeholder="↔?"></td><td><input placeholder="↔?"></td><td><input placeholder="↓?"></td><td><input placeholder="↔?"></td><td><input placeholder="↑? why?"></td></tr>
+  <tr><td class="rl">ARBs (AT1 blockers)</td><td><input placeholder="same as ACEi?"></td><td><input placeholder="same?"></td><td><input placeholder="↓?"></td><td><input placeholder="↔?"></td><td><input placeholder="↑? same reason?"></td></tr>
+  <tr><td class="rl">DHP CCBs (amlodipine)</td><td><input placeholder="↓ or ↑? reflex?"></td><td><input placeholder="↓ or ↑?"></td><td><input placeholder="↓?"></td><td><input placeholder="~↑?"></td><td><input placeholder="~↑?"></td></tr>
+  <tr><td class="rl">Diuretics</td><td><input placeholder="↔?"></td><td><input placeholder="↔?"></td><td><input placeholder="↓?"></td><td><input placeholder="~↓?"></td><td><input placeholder="↑? 3 mechanisms?"></td></tr>
+  <tr><td class="rl">Beta blockers (no ISA)</td><td><input placeholder="↓?"></td><td><input placeholder="↓?"></td><td><input placeholder="~↓?"></td><td><input placeholder="~↑?"></td><td><input placeholder="↓? mechanism?"></td></tr>
+  <tr><td class="rl">Alpha1 blockers</td><td><input placeholder="~↑?"></td><td><input placeholder="~↑?"></td><td><input placeholder="↓?"></td><td><input placeholder="~↑?"></td><td><input placeholder="↔?"></td></tr>
+  <tr><td class="rl">Arteriolar vasodilators (hydralazine/minoxidil)</td><td><input placeholder="↑ — compensatory?"></td><td><input placeholder="↑?"></td><td><input placeholder="↓?"></td><td><input placeholder="↑ — fluid retention?"></td><td><input placeholder="↑?"></td></tr>
+  <tr><td class="rl">Central sympatholytics (clonidine)</td><td><input placeholder="~↓?"></td><td><input placeholder="~↓?"></td><td><input placeholder="↓?"></td><td><input placeholder="~↑?"></td><td><input placeholder="~↓?"></td></tr>
+</table>
+
+<div class="sec">ALLHAT and SPRINT — key conclusions</div>
+<div class="fg">
+  <div class="f"><label>ALLHAT conclusion (1 sentence)</label><input placeholder="Thiazide-type diuretics (chlorthalidone) superior in preventing CVD — preferred for 1st-line HTN therapy"></div>
+  <div class="f"><label>ALLHAT: which drug had MORE HF than chlorthalidone?</label><input placeholder="Amlodipine had significantly more HF than chlorthalidone"></div>
+  <div class="f"><label>ALLHAT: which drug had MORE strokes and combined CVD than chlorthalidone?</label><input placeholder="Lisinopril had significantly more stroke and combined CVD than chlorthalidone"></div>
+  <div class="f"><label>SPRINT trial: what was compared? Key population exclusion?</label><input placeholder="SBP target &lt;120 vs &lt;140 mmHg; EXCLUDED patients with diabetes"></div>
+  <div class="f"><label>SPRINT result: intensive treatment (&lt;120) reduced what significantly?</label><input placeholder="Primary CV outcomes ↓25%, heart failure ↓38%, CV death ↓43%, all-cause mortality ↓27%"></div>
+  <div class="f"><label>2025 ACC/AHA BP goal for most patients</label><input placeholder="&lt;130/80 mmHg; &lt;120/80 encouraged for high CVD risk patients"></div>
+</div>
+<button class="btn" onclick="rev('fb6',a6)">Reveal answers</button>
+<div id="fb6" class="fb"></div>
+</div>
+
+<!-- PRACTICE Qs -->
+<div class="panel" id="p7">
+<p style="font-size:11px;color:#94a3b8;margin-bottom:12px">Selected practice questions from your CV Pharm Part 2 bank. Attempt each before revealing. Answer key from your provided document.</p>
+
+<div class="pq-box">
+  <div class="pq-q">Q1. Patient on lisinopril for 5 years. K+ = 4.9 mEq/L (upper limit). BP 138/85. Adding a second drug — which is LEAST likely to cause hyperkalemia?</div>
+  <div class="pq-choices">A. Amlodipine &nbsp; B. Losartan &nbsp; C. Metoprolol &nbsp; D. Spironolactone &nbsp; E. Triamterene</div>
+  <button class="pq-btn" onclick="showAns('a1q')">Reveal answer</button>
+  <div id="a1q" class="pq-ans"><strong>Answer: A — Amlodipine.</strong> CCBs have no effect on K+. Losartan (ARB), spironolactone (MRA), and triamterene (Na+ channel inhibitor) all ↑K+. Metoprolol (BB) doesn't significantly affect K+, but Amlodipine is the only one with zero K+ effect — safest choice.</div>
+</div>
+
+<div class="pq-box">
+  <div class="pq-q">Q3. Patient on chlorthalidone for 3 months. BP improved. Which lab result is LEAST likely to be present?</div>
+  <div class="pq-choices">A. Decreased serum cholesterol &nbsp; B. Decreased K+ &nbsp; C. Increased pH &nbsp; D. Increased glucose &nbsp; E. Increased uric acid</div>
+  <button class="pq-btn" onclick="showAns('a3q')">Reveal answer</button>
+  <div id="a3q" class="pq-ans"><strong>Answer: A — Decreased serum cholesterol.</strong> Thiazides cause hypokalemia (B✓), metabolic alkalosis (C✓), hyperglycemia (D✓), and hyperuricemia (E✓). They may transiently raise cholesterol but it returns to baseline — they do NOT decrease cholesterol. Statins decrease cholesterol, not diuretics.</div>
+</div>
+
+<div class="pq-box">
+  <div class="pq-q">Q5. Treatment with which drug results in the GREATEST degree of AT2 receptor stimulation?</div>
+  <div class="pq-choices">A. Amlodipine &nbsp; B. Lisinopril &nbsp; C. Losartan &nbsp; D. Metoprolol &nbsp; E. Spironolactone</div>
+  <button class="pq-btn" onclick="showAns('a5q')">Reveal answer</button>
+  <div id="a5q" class="pq-ans"><strong>Answer: C — Losartan (ARB).</strong> ARBs block AT1 receptors → AngII accumulates (no negative feedback) AND cannot act at AT1 → all excess AngII goes to AT2 receptors. ACEi (lisinopril) reduces AngII production so LESS AngII is available for either receptor. ARBs = greatest AT2 stimulation.</div>
+</div>
+
+<div class="pq-box">
+  <div class="pq-q">Q7. Diabetic with microalbuminuria. Which mechanism explains how the preferred drug class protects kidneys?</div>
+  <div class="pq-choices">A. ↓ intraglomerular pressure by preferentially reducing efferent arteriole resistance &nbsp; B. ↓ intraglomerular pressure by ↑ afferent arteriole resistance &nbsp; C. ↓ insulin resistance in renal tubule &nbsp; D. ↑ insulin release from beta cells</div>
+  <button class="pq-btn" onclick="showAns('a7q')">Reveal answer</button>
+  <div id="a7q" class="pq-ans"><strong>Answer: A — ACEi/ARB preferentially dilate the EFFERENT arteriole.</strong> AngII normally constricts efferent > afferent. Blocking AngII → efferent dilates more → ↓ hydrostatic pressure in glomerular capillaries → ↓ GFR/filtration pressure → ↓ albuminuria → slows CKD progression.</div>
+</div>
+
+<div class="pq-box">
+  <div class="pq-q">Q21. Which drugs can counteract thiazide-induced hypokalemia? (1=Eplerenone, 2=Losartan, 3=Triamterene, 4=Amlodipine)</div>
+  <div class="pq-choices">A. 1,2,3 only &nbsp; B. 1,3 only &nbsp; C. 2,4 only &nbsp; D. 4 only &nbsp; E. All</div>
+  <button class="pq-btn" onclick="showAns('a21q')">Reveal answer</button>
+  <div id="a21q" class="pq-ans"><strong>Answer: A — 1, 2, and 3 (Eplerenone, Losartan, Triamterene).</strong> All three ↑ K+ via different mechanisms. Eplerenone (MRA) and triamterene (Na channel blocker) directly cause K+ retention. Losartan (ARB) → ↓ aldosterone → ↓ K+ excretion. Amlodipine (CCB) has NO effect on K+.</div>
+</div>
+
+<div class="pq-box">
+  <div class="pq-q">Q8. Patient on high-dose NSAIDs for osteoarthritis pain. Which antihypertensive is MOST effective?</div>
+  <div class="pq-choices">A. Amlodipine &nbsp; B. HCTZ &nbsp; C. Lisinopril &nbsp; D. Losartan &nbsp; E. Metoprolol</div>
+  <button class="pq-btn" onclick="showAns('a8q')">Reveal answer</button>
+  <div id="a8q" class="pq-ans"><strong>Answer: A — Amlodipine (CCB).</strong> NSAIDs blunt the effect of thiazides, ACEi, ARBs, and beta blockers (via inhibiting prostaglandins needed for their mechanism). CCBs' antihypertensive effect is LEAST affected by NSAIDs — they act via L-type Ca2+ channel blockade, not prostaglandin-dependent.</div>
+</div>
+</div>
+
+<script>
+function sw(i){document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',i===j));document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('active',i===j))}
+function showAns(id){const el=document.getElementById(id);el.style.display=el.style.display==='block'?'none':'block'}
+
+const a0={
+  hctz_site:"Distal convoluted tubule (DCT)",hctz_trans:"Na+/Cl- symport (NCC)",hctz_k:"↓ K+ (hypokalemia)",hctz_ca:"↑ Ca2+ reabsorption (retained) → used for kidney stones",hctz_ua:"↑ Uric acid (competes with UA secretion) → gout",hctz_glu:"↑ Glucose (↓ insulin secretion from hypokalemia)",
+  chlort_k:"MORE K+ loss than HCTZ — requires careful monitoring; higher risk hypokalemia",
+  furo_site:"Thick ascending limb of Loop of Henle",furo_trans:"Na+/K+/2Cl- symport (NKCC2)",furo_k:"↓ K+ (hypokalemia)",furo_ca:"↓ Ca2+ and Mg2+ (washes them out) — OPPOSITE of thiazides",
+  spiro_site:"Collecting tubule",spiro_moa:"Blocks aldosterone receptor (mineralocorticoid receptor)",spiro_k:"↑ K+ (hyperkalemia) — because less Na reabsorption → less coupled K+ excretion",
+  eple_why:"Eplerenone is more selective for mineralocorticoid receptor (vs androgen receptor) → NO gynecomastia, impotence",
+  triam_side:"LUMINAL (apical/lumenal) side of the principal cell — Q12 answer = E (Triamterene)",
+  gfr30:"Thiazides ineffective GFR <30 because less Na+ enters tubule and reaches DCT (less drug substrate)",
+  metolazone:"Metolazone — remains effective in renal insufficiency",
+  chlor_allhat:"Chlorthalidone used in ALLHAT and SPRINT trials; longer half-life (50-60 hrs vs 9-10 hrs); better 24-hr BP control; more potent",
+  renin3:"1) Macula densa senses ↓NaCl in tubule 2) Intrarenal baroreceptor senses ↓BP 3) SNS activation stimulates β1 on JG cells",
+  hypoK_chain:"↑NaCl to collecting tubule → ↑K+ excretion (tubular mechanism) PLUS ↑renin → ↑AngII → ↑aldosterone → ↑Na+ reabsorption/K+ excretion in collecting tubule",
+  aspirin_no:"Low-dose aspirin does NOT counteract thiazides (only high-dose NSAIDs do)",
+  lithium:"Li+ is reabsorbed like Na+ in PCT; thiazide → ↓Na+ → more Li+ reabsorbed → Li+ toxicity",
+  q13_spiro:"Spironolactone blocks aldosterone → ↓ number of Na+/K+ ATPase pumps on basolateral side (Q13 = B, Eplerenone also does this)"
+};
+
+const a1={
+  acei_moa:"Inhibit ACE (kininase II) → ↓AngI→AngII conversion → ↓AngII effects at AT1",
+  arb_moa:"Block AT1 receptor directly → same downstream effects as ACEi except NO effect on bradykinin",
+  acei_brady:"↑ bradykinin — ACE also degrades bradykinin; inhibit ACE → bradykinin accumulates",
+  arb_brady:"No increase in bradykinin — ARBs don't affect ACE activity",
+  acei_cough:"YES — due to bradykinin accumulation in airways (~15% patients)",
+  arb_cough:"NO or rare — no bradykinin accumulation (reason to switch from ACEi)",
+  acei_at2:"↓ AT2 stimulation — because ACEi reduces AngII production (less for EITHER receptor)",
+  arb_at2:"↑ AT2 stimulation — blocks AT1 → AngII accumulates → more AngII available for AT2 → vasodilation/antiproliferative",
+  acei_angII:"↓ AngII (blocks production)",
+  arb_angII:"↑ AngII (blocked AT1 feedback → renin ↑ → more AngI/AngII; but can't act at AT1)",
+  both_renin:"↑ Renin — both drugs block negative feedback of AngII on JG cells → renin release ↑",
+  both_aldo:"↓ Aldosterone (both)",
+  both_k:"↑ K+ (hyperkalemia) — both ↓ aldosterone → ↓ K+ excretion",
+  acei_angio:"COMMON (~1 in 500) — life-threatening angioedema due to bradykinin",
+  arb_angio:"Rare — no bradykinin effect; can try ARB after ACEi angioedema but wait ≥6 weeks",
+  preg:"BOTH CONTRAINDICATED in pregnancy — teratogenic (IUGR, oligohydramnios, renal failure)",
+  combo:"Do NOT combine ACEi + ARB — little added benefit, double side effects (NEJM 2008)",
+  efferent:"ACEi preferentially dilates efferent arteriole (AngII normally constricts efferent more than afferent); removing AngII → efferent dilates → ↓ glomerular capillary pressure → ↓ albuminuria",
+  q6_drug:"Carvedilol — blocks α1 (→↓TPR) + β1 (→↓HR, ↓renin); reflex ↑NE from baroreceptors sensing ↓BP"
+};
+
+const a2={
+  dhp_site:"Vasculature ONLY (peripheral arteries) — does NOT significantly act on heart at therapeutic doses",
+  ndhp_site:"Vasculature AND heart (SA node, AV node, myocardium)",
+  dhp_hr:"May ↑HR (reflex tachycardia with fast-onset like nifedipine); amlodipine slow onset minimizes this",
+  ndhp_hr:"↓ HR (direct SA node depression)",
+  ndhp_av:"Slows AV conduction — useful for rate control in atrial tachyarrhythmias",
+  dhp_contract:"No significant effect on contractility",
+  ndhp_contract:"↓ contractility — AVOID in heart failure (↓EF patients)",
+  dhp_arrhyth:"No — no AV node effect",
+  ndhp_arrhyth:"YES — diltiazem/verapamil for rate control in AFib/AFL",
+  both_hf:"Avoid non-DHPs. Caution with amlodipine too (ALLHAT showed more HF vs chlorthalidone)",
+  dhp_bb:"Caution — can add beta blocker to DHP carefully for angina (monitor HR)",
+  ndhp_bb:"DO NOT COMBINE — both ↓AV conduction + ↓HR + ↓contractility → severe bradycardia/heart block",
+  edema:"CCB edema = precapillary dilation + reflex postcapillary constriction → ↑hydrostatic pressure → NOT fluid retention → NOT reversed by diuretics",
+  cyp:"Verapamil inhibits p-glycoprotein + CYP3A4 → ↑plasma levels of digoxin, simvastatin, atorvastatin"
+};
+
+const a3={
+  propranolol:"Non-selective β1+β2; high lipid solubility; liver metabolism; prototype",
+  metoprolol:"β1 selective; moderate lipid; liver; used in HF, post-MI, HTN",
+  atenolol:"β1 selective; low lipid; renal elimination; CONTRAINDICATED in pregnancy (IUGR)",
+  carvedilol:"β1+β2+α1 block; vasodilation; HF mortality reduction (one of 3 proven)",
+  labetalol:"β>α1 block; low lipid; 1st line HTN in pregnancy (IV for emergency); NOT for pheo alone",
+  nebivolol:"β1 + NO release → vasodilation; MOST cardioselective — safest if must use BB in asthmatic",
+  asthma_why:"β2 blockade in airways → bronchoconstriction; does not occur in non-asthmatics",
+  dm_why:"Masks tachycardia (epinephrine-mediated sign of hypoglycemia) AND delays glucose recovery (blocks β2-mediated hepatic gluconeogenesis); effect more pronounced with non-selective BBs",
+  hf_3:"ONLY carvedilol, metoprolol SUCCINATE (not tartrate), and bisoprolol proven to ↓ mortality in HF",
+  withdrawal:"Chronic BB → upregulation of β receptors → sudden discontinuation → overstimulation → angina, MI, death; MUST TAPER dose",
+  q2:"Metoprolol inappropriate for pheo: β1-only blockade leaves α receptors unopposed → catecholamine surge → severe vasoconstriction/↑BP; must give phenoxybenzamine (non-selective α blocker) FIRST",
+  q10:"Labetalol — α1 blockade causes venodilation → blood pools when standing → orthostatic hypotension; Q10 = C",
+  q9:"Enalapril is a PRODRUG → converted to enalaprilat (active) → delayed peak effect relative to plasma concentration peak; Q9 = B",
+  q22:"Doxazosin (4) and Labetalol (2) — α1 blockade causes venodilation → standing reduces venous return → greater BP drop standing vs supine. Captopril and Amlodipine lower BP similarly in both positions. Q22 = C (2 and 4)"
+};
+
+const a4={
+  hydral_moa:"Relaxes arterial smooth muscle via ↓intracellular Ca2+ (mechanism not fully understood; may involve NO release or ↓IP3)",
+  hydral_comp:"↑SNS → ↑HR/↑CO (baroreflex) + ↑renin → ↑AngII → ↑aldosterone → fluid retention",
+  hydral_combo:"Combine with: diuretic (fluid) + beta blocker (↑HR) + ACEi/ARB (↑renin/AngII)",
+  hydral_se:"Lupus-like syndrome (more in women, slow acetylators); reflex tachycardia → angina",
+  minox_moa:"Opens K+ATP channels in arterial smooth muscle → hyperpolarization → voltage-gated Ca2+ channels stay closed → relaxation → ↓TPR",
+  minox_se:"Severe fluid retention (use LOOP diuretic) + hirsutism/hypertrichosis (Rogaine topical for hair loss)",
+  nitro_moa:"Releases NO → activates guanylate cyclase → ↑cGMP → smooth muscle relaxation (veins > arteries at low doses)",
+  q15:"Phenoxybenzamine — irreversible non-competitive blocker of α1 AND α2 receptors; used for pheo",
+  q16:"Methyldopa — centrally acting α2 agonist; safe in pregnancy (but side effects limit use)",
+  q17:"Minoxidil — K+ATP channel opener; opens K+ channels in arterial smooth muscle",
+  q57:"Minoxidil opens K+ channels sensitive to intracellular ATP (K+ATP channels). Answer C",
+  q56:"Nitroprusside releases NO → stimulates guanylate cyclase → ↑cGMP. Answer E",
+  q59:"AngII acts at AT1 receptor coupled to Gq → activates PLC → ↑IP3 → ↑intracellular Ca2+. Answer B",
+  clonidine:"Activates central α2A receptors in vasomotor center → ↓sympathetic outflow → ↓HR, ↓CO, ↓TPR, ↓NE release, ↓renin",
+  clonidine_wd:"Abrupt withdrawal → rebound ↑SNS → ↑HR, tremors, sweating, ↑BP → must taper; patch reduces risk"
+};
+
+const a5={
+  dm_micro:"ACEi or ARB — preferentially dilate efferent arteriole → ↓intraglomerular pressure → ↓albuminuria",
+  hf_drugs:"ACEi/ARB (or ARNI), beta blockers (carvedilol/metoprolol succinate/bisoprolol), MRA (spironolactone/eplerenone), SGLT2i (empagliflozin/dapagliflozin)",
+  postmi:"BB + ACEi/ARB; reduce remodeling and arrhythmia/sudden death risk",
+  isohtn:"Thiazide or DHP-CCB; effective for ↑SBP due to ↓arterial compliance; effective in elderly low-renin patients",
+  bph:"Use 1st-line antihypertensive (thiazide/ACEi/CCB/ARB) for BP + tamsulosin (α1A selective) for BPH separately; do NOT use doxazosin monotherapy for HTN",
+  pheo:"Phenoxybenzamine FIRST (blocks α1+α2) → THEN add BB (do NOT give BB first — leaves α unopposed → ↑BP)",
+  gout:"Avoid thiazides and loop diuretics (↑uric acid); use CCB, ACEi, ARB, or losartan (losartan actually ↓uric acid — bonus)",
+  asthma_se:"Avoid non-selective BB (propranolol); if BB absolutely needed use nebivolol (most cardioselective)",
+  preg1st:"Labetalol (IV/oral) and Nifedipine ER — both 1st line",
+  preg_urgent:"Hydralazine IV or IM for urgent BP control",
+  preg_pre:"Magnesium sulfate (anticonvulsant for seizure prevention in preeclampsia/eclampsia)",
+  preg_safe:"Methyldopa — safe but side effects (sedation, etc.) limit use",
+  preg_contra:"ACEi, ARBs, renin inhibitors: teratogenic (IUGR, oligohydramnios, renal failure, bone ossification); FDA class X",
+  atenolol_preg:"Atenolol: IUGR — possibly reduces uteroplacental blood flow",
+  pheo_emergency:"Labetalol IV (has some α component); for true pheo crisis give phenoxybenzamine first",
+  aortic:"Labetalol or esmolol + nitroprusside for aortic dissection (↓HR and BP)",
+  acs:"Nitroglycerin IV — reduces preload (↓PCWP) and afterload + dilates coronary arteries",
+  nitroprusside_ci:"Liver/kidney failure → impaired cyanide clearance → cyanide toxicity"
+};
+
+const a6={
+  acei_hemo:"HR ↔, CO ↔, TPR ↓, Plasma vol ↔, Renin ↑ (lose negative AngII feedback on JG cells)",
+  arb_hemo:"Same as ACEi: HR ↔, CO ↔, TPR ↓; Renin ↑ even more (AngII accumulates but can't suppress via AT1)",
+  dhp_hemo:"HR ↓ or ↑ (amlodipine slow onset → minimal reflex; nifedipine IR → reflex ↑HR), CO similar, TPR ↓; Renin ~↑ (from ↓BP but CCBs have direct natriuretic effect so renin rise is modest)",
+  diuretic_hemo:"HR ↔, CO ↔ (long-term), TPR ↓ (long-term), Plasma vol ~↓, Renin ↑ (3 mechanisms)",
+  bb_hemo:"HR ↓ (β1 block SA node), CO ↓ (↓HR + ↓contractility), TPR ~↓ (long-term prostaglandin-mediated), Plasma vol ~↑, Renin ↓ (blocks β1 on JG cells)",
+  alpha_hemo:"HR ~↑ (reflex), CO ~↑, TPR ↓, Plasma vol ~↑ (fluid retention), Renin ↔",
+  vasodil_hemo:"HR ↑ (compensatory), CO ↑, TPR ↓, Plasma vol ↑ (fluid retention), Renin ↑",
+  central_hemo:"HR ~↓, CO ~↓, TPR ↓, Plasma vol ~↑, Renin ~↓ (less SNS → less β1 stimulation of JG cells)",
+  allhat_concl:"Thiazide-type diuretics (chlorthalidone) are superior to ACEi (lisinopril) and CCBs (amlodipine) in preventing ≥1 major CVD outcomes; should be preferred 1st-line therapy",
+  allhat_hf:"Amlodipine had significantly MORE heart failure than chlorthalidone",
+  allhat_stroke:"Lisinopril had significantly more stroke and combined CVD than chlorthalidone",
+  sprint_design:"Compared SBP target <120 mmHg (intensive) vs <140 mmHg (standard); excluded patients with diabetes",
+  sprint_result:"Intensive treatment: ↓primary CV events 25%, ↓HF 38%, ↓CV death 43%, ↓all-cause mortality 27%; BUT more hypotension, syncope, AKI in intensive group",
+  goal_2025:"<130/80 mmHg for most patients; <120/80 mmHg encouraged for high CVD risk"
+};
+
+function rev(id,obj){const el=document.getElementById(id);el.style.display='block';el.innerHTML='<strong>Answer key:</strong><br><br>'+Object.entries(obj).map(([k,v])=>`<b>${k.replace(/_/g,' ')}:</b> ${v}`).join('<br>')}
+</script>
+</body></html>
