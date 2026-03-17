@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Treatment of Hypertension — Georgetown SOM</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #f9fafb; color: #111; min-height: 100vh; }
+  :root {
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f3f4f6;
+    --color-text-primary: #111827;
+    --color-text-secondary: #6b7280;
+    --color-text-tertiary: #9ca3af;
+    --color-border-tertiary: #e5e7eb;
+    --color-border-secondary: #d1d5db;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+const T = {
+  purple: { bg: "#EEEDFE", txt: "#3C3489", bdr: "#534AB7" },
+  teal:   { bg: "#E1F5EE", txt: "#085041", bdr: "#0F6E56" },
+  coral:  { bg: "#FAECE7", txt: "#712B13", bdr: "#993C1D" },
+  blue:   { bg: "#E6F1FB", txt: "#0C447C", bdr: "#185FA5" },
+  amber:  { bg: "#FAEEDA", txt: "#633806", bdr: "#854F0B" },
+  green:  { bg: "#EAF3DE", txt: "#27500A", bdr: "#3B6D11" },
+  red:    { bg: "#FCEBEB", txt: "#791F1F", bdr: "#A32D2D" },
+  pink:   { bg: "#FBEAF0", txt: "#72243E", bdr: "#993556" },
+};
+
+const Pill = ({ text, color = "purple" }) => {
+  const c = T[color];
+  return <span style={{ background:c.bg, color:c.txt, border:`0.5px solid ${c.bdr}`, borderRadius:20, padding:"2px 10px", fontSize:12, fontWeight:500, display:"inline-block", marginRight:4, marginBottom:2 }}>{text}</span>;
+};
+const Lbl = ({ t }) => <p style={{ fontSize:11, fontWeight:500, color:"var(--color-text-tertiary)", textTransform:"uppercase", letterSpacing:"0.06em", margin:"8px 0 2px" }}>{t}</p>;
+const Card = ({ children, style }) => <div style={{ background:"var(--color-background-primary)", border:"0.5px solid var(--color-border-tertiary)", borderRadius:12, padding:"1rem 1.25rem", marginBottom:10, ...style }}>{children}</div>;
+const Inset = ({ children, color }) => {
+  const c = color ? T[color] : null;
+  return <div style={{ background: c ? c.bg : "var(--color-background-secondary)", borderRadius:8, padding:"10px 12px", marginTop:6 }}>{children}</div>;
+};
+
+const STUDY_TABS = [
+  { id:"angles",     label:"Testing Angles", icon:"🎯" },
+  { id:"mindmap",    label:"Mind Map",        icon:"🗺️" },
+  { id:"studyguide", label:"Study Guide",     icon:"📖" },
+  { id:"vignettes",  label:"Vignettes",       icon:"🏥" },
+  { id:"questions",  label:"Practice Qs",     icon:"❓" },
+  { id:"diagrams",   label:"Diagrams",        icon:"📊" },
+];
+
+const ANGLES = [
+  {
+    number:1, theme:"BP Classification, Pathophysiology & Mechanisms",
+    objectives:["LO1: 2017 BP classification","LO3: Rationale for treating HTN","LO4: BP changes with age","LO5: Four mechanisms controlling BP"],
+    mechanism:"BP = CO × SVR. Four control mechanisms: (1) SNS (baroreceptors → HR/contractility/vasoconstriction), (2) RAAS (Ang II → vasoconstriction + aldosterone → Na/water retention), (3) renal fluid control (pressure natriuresis), (4) local vascular autoregulation. 2017 ACC/AHA: Normal <120/80; Elevated 120–129/<80; Stage 1 HTN 130–139/80–89; Stage 2 HTN ≥140/90.",
+    why_testable:"Step 1 tests mechanism-to-drug matching — knowing BP control mechanisms explains why each drug class works",
+    angles:[
+      { title:"2017 ACC/AHA BP classification and SPRINT trial", tested_concept:"2017 guideline: Stage 1 HTN = 130–139/80–89 (lower than old 140/90). SPRINT trial: targeting SBP <120 mmHg reduced CV events and mortality vs. <140 target in non-diabetic high-risk patients.", vignette_pattern:"Patient with SBP 134 mmHg — does this require treatment per 2017 guidelines?", key_clues:"Stage 1 HTN starts at 130/80 per 2017 guidelines (previously 140/90). SPRINT supports aggressive targets in high-risk patients.", trap:"Using old thresholds (140/90) — the 2017 guidelines lowered the definition of HTN to 130/80", disciplines:"Cardiology, Pharmacology, Epidemiology" },
+      { title:"BP = CO × SVR — drug mechanisms", tested_concept:"Drugs lower BP by reducing CO (β-blockers, diuretics) or reducing SVR (vasodilators, CCBs, ACEi/ARBs) or both. Understanding this links mechanism to clinical effect.", vignette_pattern:"Why does atenolol lower BP differently than amlodipine?", key_clues:"β-blockers: ↓ CO (↓ HR, ↓ contractility). Vasodilators/CCBs/ACEi: ↓ SVR. Diuretics: ↓ CO (↓ plasma volume)", trap:"Thinking all antihypertensives work the same way — the mechanism determines side effects, contraindications, and compelling indications", disciplines:"Pharmacology, Physiology" },
+    ]
+  },
+  {
+    number:2, theme:"Diuretics in HTN: Thiazides, Loop, K+-Sparing",
+    objectives:["LO7: Site of action of diuretics in nephron","LO8: Thiazides and K+-sparing diuretics","LO9: HCTZ, chlorthalidone, metolazone"],
+    mechanism:"Thiazides (HCTZ, chlorthalidone, metolazone): block NCC in DCT → ↓ Na/Cl reabsorption → ↓ volume → ↓ CO → ↓ BP. Also cause hypokalemia, hyponatremia, hyperglycemia, hyperuricemia, hypercalcemia. K+-sparing (triamterene: blocks ENaC; spironolactone/eplerenone: MRA) → ↑ K+. Loop diuretics (furosemide): NKCC2 block → massive diuresis; for ADHF not routine HTN.",
+    why_testable:"ALLHAT trial showed thiazides are first-line for most HTN. Thiazide side effects (hypokalemia, hyperuricemia, hyperglycemia) are heavily tested.",
+    angles:[
+      { title:"Thiazide diuretics: MOA, adverse effects, ALLHAT", tested_concept:"Thiazides: block NCC in DCT → ↓ NaCl reabsorption → ↓ extracellular volume → ↓ CO → ↓ BP. ALLHAT trial: chlorthalidone (thiazide-like) as good as or better than CCBs/ACEi for preventing CV events → first-line for most uncomplicated HTN. Adverse effects: hypokalemia (most common), hyponatremia, hyperglycemia, hyperuricemia (gout), hypercalcemia (↓ Ca²⁺ excretion), hyperlipidemia.", vignette_pattern:"Patient on HCTZ develops gout flare and hyperglycemia — expected?", key_clues:"HCTZ → hyperuricemia (gout), hyperglycemia (avoid/caution in DM), hypokalemia, hypercalcemia (useful in hypercalciuria/osteoporosis).", trap:"Thinking thiazides are second-line — ALLHAT showed chlorthalidone (thiazide-like) is first-line. Chlorthalidone has longer half-life and more evidence than HCTZ.", disciplines:"Pharmacology, Nephrology, Cardiology" },
+      { title:"K+-sparing diuretics: triamterene vs. spironolactone", tested_concept:"Triamterene: blocks ENaC (epithelial Na channel) in collecting duct → ↓ Na reabsorption → ↓ K+ secretion. Spironolactone/eplerenone: block aldosterone receptor → same downstream effect. Both cause hyperkalemia. Combine with thiazide to counteract hypokalemia.", vignette_pattern:"Patient on HCTZ develops low K+ — what to add?", key_clues:"Add K+-sparing diuretic or K+ supplement. Spironolactone → gynecomastia (non-selective MRA). Eplerenone → selective, fewer sex hormone effects.", trap:"Combining K+-sparing diuretic + ACEi/ARB → severe hyperkalemia risk — both ↑ K+", disciplines:"Pharmacology, Nephrology" },
+    ]
+  },
+  {
+    number:3, theme:"RAAS Blockers: ACEi, ARBs, Renin Inhibitor",
+    objectives:["LO10: Three mechanisms controlling renin release","LO11: Four effects of RAAS on BP","LO12: ACEi and ARBs in HTN","LO13: Distinguish ACEi vs. ARB effects"],
+    mechanism:"Renin release triggered by: (1) ↓ renal perfusion pressure, (2) ↓ NaCl delivery to macula densa, (3) ↑ SNS activity (β₁ receptors on JGA). RAAS effects: (1) Ang II → vasoconstriction, (2) aldosterone → Na/water retention, (3) ADH potentiation, (4) SNS potentiation → ↑ BP. ACEi block ACE → ↓ Ang II + ↑ bradykinin. ARBs block AT1 receptor → ↓ Ang II effects (no bradykinin effect). Renin inhibitor (aliskiren): directly blocks renin.",
+    why_testable:"ACEi vs. ARB distinction (cough, angioedema) is a classic Step 1 question; compelling indications (DM nephropathy, HF, post-MI) are heavily tested",
+    angles:[
+      { title:"ACEi: MOA, adverse effects, compelling indications", tested_concept:"ACEi (captopril, lisinopril, enalapril): block ACE → ↓ Ang II → ↓ vasoconstriction + ↓ aldosterone + ↑ bradykinin. Bradykinin → dry cough (10–15%), angioedema (rare but life-threatening). Hyperkalemia, AKI (bilateral RAS). Compelling indications: DM with proteinuria, HFrEF, post-MI, CKD with proteinuria.", vignette_pattern:"Diabetic patient with proteinuria — best antihypertensive?", key_clues:"ACEi/ARB: first-line in DM + proteinuria (reduce intraglomerular pressure → ↓ proteinuria). Dry cough → switch to ARB.", trap:"Giving ACEi in bilateral renal artery stenosis — both kidneys dependent on Ang II for efferent arteriolar tone → AKI. Also contraindicated in pregnancy (Category D/X).", disciplines:"Pharmacology, Nephrology, Cardiology" },
+      { title:"ACEi vs. ARB: key pharmacological distinctions", tested_concept:"ACEi: ↑ bradykinin → cough + angioedema (bradykinin-mediated, NOT allergic). ARBs: no effect on bradykinin → no cough, very rare angioedema. Both: ↓ Ang II effects, hyperkalemia, AKI in bilateral RAS, teratogenic. ARNI (sacubitril/valsartan): ARB + neprilysin inhibitor; used in HFrEF.", vignette_pattern:"Patient switched from lisinopril to losartan because of cough — will cough resolve?", key_clues:"Cough from ACEi is due to bradykinin accumulation → resolves completely when switched to ARB (no bradykinin effect).", trap:"Thinking ARBs also commonly cause cough — they do NOT. Cough is specific to ACEi via bradykinin. Angioedema from ACEi is also bradykinin-mediated (not IgE-mediated).", disciplines:"Pharmacology" },
+    ]
+  },
+  {
+    number:4, theme:"CCBs, β-Blockers, α-Blockers & Central Sympatholytics",
+    objectives:["LO15: CCBs as antihypertensives","LO16: DHP vs. non-DHP CCBs","LO17: β-blockers, α-blockers, centrally-acting drugs","LO18: Subtypes of β-blockers"],
+    mechanism:"CCBs: block L-type Ca²⁺ channels. DHP (amlodipine, nicardipine): vascular smooth muscle → ↓ SVR. Non-DHP (verapamil): cardiac > vascular → ↓ HR + ↓ contractility + ↓ AV conduction. β-blockers: ↓ HR + ↓ CO. α₁-blockers (prazosin, doxazosin): ↓ SVR (venous + arterial dilation). Central sympatholytics (clonidine, methyldopa): ↓ central SNS outflow.",
+    why_testable:"β-blocker subtypes, CCB distinctions, α-blocker first-dose effect, clonidine rebound, and methyldopa in pregnancy are all classic Step 1 targets",
+    angles:[
+      { title:"DHP vs. non-DHP CCBs in HTN", tested_concept:"DHP (amlodipine, nicardipine): primarily vascular → ↓ SVR → reflex tachycardia, peripheral edema, flushing. Non-DHP (verapamil, diltiazem): cardiac + vascular → bradycardia, AV block, constipation (verapamil). Non-DHP + β-blocker = contraindicated (additive AV block).", vignette_pattern:"Hypertensive patient with Afib — best single antihypertensive?", key_clues:"Afib rate control needed → non-DHP CCB (verapamil) or β-blocker. NOT amlodipine (no AV nodal effect).", trap:"Using amlodipine for rate control in Afib — DHP CCBs have NO AV nodal effect. For HTN + Afib → non-DHP CCB or β-blocker.", disciplines:"Pharmacology, Cardiology" },
+      { title:"β-blocker subtypes: nonselective, β₁-selective, labetalol, nebivolol", tested_concept:"Propranolol: nonselective (β₁+β₂) → bronchoconstriction (avoid asthma), masks hypoglycemia. Metoprolol: β₁-selective → safer in asthma (but not at high doses). Labetalol/carvedilol: α₁+β → ↓ SVR + ↓ CO → first-line for HTN in pregnancy (labetalol). Nebivolol: β₁ + NO release → vasodilation, least metabolic side effects.", vignette_pattern:"Hypertensive pregnant patient — which antihypertensive?", key_clues:"Pregnancy HTN: labetalol (IV/oral), methyldopa, or nifedipine. AVOID ACEi/ARBs (teratogenic). Labetalol IV for hypertensive emergency in pregnancy.", trap:"Using ACEi or ARB in pregnancy — absolutely contraindicated (fetal renal agenesis, oligohydramnios). Labetalol is the IV drug of choice for HTN emergency in pregnancy.", disciplines:"Pharmacology, OB, Cardiology" },
+      { title:"α₁-blockers and central sympatholytics", tested_concept:"Prazosin/doxazosin: α₁ blockade → venous + arterial dilation → first-dose orthostatic hypotension (classic). Useful in BPH (tamsulosin: α₁A selective → prostate smooth muscle). Clonidine: α₂ agonist (central) → ↓ SNS outflow → ↓ BP. Abrupt withdrawal → rebound hypertension. Methyldopa: converts to α-methylnorepinephrine → central α₂ agonist → ↓ SNS; safe in pregnancy.", vignette_pattern:"Patient started on prazosin for HTN, collapses after first dose — why?", key_clues:"First-dose phenomenon: α₁ blockade → venous pooling → orthostatic hypotension. Start low at bedtime. Clonidine: NEVER stop abruptly → rebound HTN crisis.", trap:"Abrupt clonidine withdrawal → rebound hypertensive urgency (worse than before treatment). Always taper.", disciplines:"Pharmacology, Cardiology" },
+    ]
+  },
+  {
+    number:5, theme:"Direct Vasodilators, Compelling Indications & Hypertensive Emergencies",
+    objectives:["LO19: Direct vasodilators: hydralazine and minoxidil","LO20: Compensatory mechanisms and rationale for combination","LO21: Compelling indications","LO22: Contraindications","LO23: HTN in pregnancy","LO24: IV drugs for hypertensive emergencies","LO25: ALLHAT trial"],
+    mechanism:"Hydralazine: arteriolar vasodilator → ↓ SVR → reflex tachycardia + Na/water retention (combine with β-blocker + diuretic). Minoxidil: opens K+ channels → hyperpolarization → vasodilation; causes hypertrichosis, Na/water retention. Nitroprusside: NO donor → balanced pre+afterload reduction; cyanide toxicity at high/prolonged doses.",
+    why_testable:"Compensatory mechanisms explain why combination therapy is needed; compelling indications and contraindications are the highest-yield clinical application of HTN pharmacology",
+    angles:[
+      { title:"Compensatory mechanisms and combination therapy rationale", tested_concept:"Vasodilators → reflex SNS activation (↑ HR) + RAAS activation (Na/water retention) → blunts BP lowering. Solution: triple therapy = vasodilator + β-blocker (blocks reflex tachy) + diuretic (blocks fluid retention). ACEi/ARBs → reactive hyperreninemia if used alone → less effective → combine with diuretic.", vignette_pattern:"Patient on hydralazine alone — why is BP not adequately controlled?", key_clues:"Reflex tachycardia + Na retention blunt hydralazine's effect → add β-blocker + diuretic for triple therapy.", trap:"Using direct vasodilators as monotherapy — compensatory mechanisms will limit their effectiveness; always combine", disciplines:"Pharmacology, Physiology" },
+      { title:"Compelling indications and contraindications", tested_concept:"ACEi/ARB: DM+proteinuria, HFrEF, post-MI, CKD. β-blockers: post-MI, HFrEF, angina, rate control. Thiazides: elderly, osteoporosis (↑ Ca reabsorption), uncomplicated HTN (ALLHAT). CCBs: elderly, isolated systolic HTN, angina, Raynaud's. α-blockers: BPH+HTN. Methyldopa/labetalol: pregnancy.", vignette_pattern:"Hypertensive patient with DM, proteinuria, HFrEF, and post-MI — what drug covers most?", key_clues:"ACEi (or ARB) covers: DM nephropathy, HFrEF, post-MI → one drug, multiple compelling indications.", trap:"Choosing thiazide for a patient with gout (contraindicated — ↑ uric acid) or choosing β-blocker for asthma/COPD patient (non-selective β-blockers contraindicated)", disciplines:"Pharmacology, Cardiology, Nephrology" },
+      { title:"Hypertensive emergencies: nicardipine, labetalol, nitroprusside", tested_concept:"Hypertensive emergency = severe HTN + end-organ damage. IV drugs: Nicardipine (DHP CCB IV) → ↓ SVR, titratable; Labetalol (IV α+β blocker) → ↓ HR + ↓ SVR; drug of choice in pregnancy HTN emergency. Nitroprusside: NO donor → ↓ preload + afterload; risk: cyanide toxicity (prolonged use/renal failure).", vignette_pattern:"Patient presents with BP 220/130 + papilledema — what IV drug and why?", key_clues:"HTN emergency with encephalopathy → IV nicardipine or labetalol. Avoid nitroprusside in pregnancy. Labetalol: IV drug of choice in pregnancy.", trap:"Giving oral meds for a true hypertensive emergency — requires IV therapy. Nitroprusside: cyanide toxicity risk with prolonged use.", disciplines:"Pharmacology, Emergency Medicine, Cardiology" },
+    ]
+  },
+];
+
+const MINDMAP = [
+  { number:1, theme:"Thiazide Diuretics", objectives:["LO7, LO8, LO9"], mechanism:"Block NCC in DCT → ↓ NaCl reabsorption → ↓ ECF volume → ↓ CO → ↓ BP. Also ↑ Ca²⁺ reabsorption (↓ Ca²⁺ excretion).", nodes:{ pathway:"DCT NCC blockade → ↓ Na/Cl reabsorption → ↓ volume → ↓ CO → ↓ BP", disease:"First-line uncomplicated HTN (ALLHAT), elderly, isolated systolic HTN, osteoporosis/hypercalciuria, HF (add-on)", pharmacology:"HCTZ (short t½); Chlorthalidone (longer t½, more CV evidence, preferred); Metolazone (potent, used with loop for resistant HTN)", clinical:"Hypokalemia (most common), hyponatremia, hyperglycemia, hyperuricemia (gout), hypercalcemia, hyperlipidemia", labs:"BMP: K⁺, Na⁺, glucose, uric acid, Ca²⁺. Lipid panel.", trap:"Contraindicated in gout. Causes hyperglycemia — caution in DM. Hypercalcemia useful (osteoporosis). Metolazone: powerful — monitor electrolytes closely." }, links:["K+-sparing diuretics (counteract hypokalemia)","Loop diuretics (add for resistant HTN)","ACEi/ARBs (K⁺ balance when combined)"] },
+  { number:2, theme:"ACEi & ARBs", objectives:["LO10, LO11, LO12, LO13"], mechanism:"ACEi: block ACE → ↓ Ang II + ↑ bradykinin. ARBs: block AT1R → ↓ Ang II effects (no bradykinin change).", nodes:{ pathway:"ACEi: ↓ Ang II → ↓ vasoconstriction + ↓ aldosterone + ↑ bradykinin. ARBs: same downstream minus bradykinin.", disease:"DM+proteinuria (first-line), HFrEF, post-MI, CKD with proteinuria, HTN", pharmacology:"ACEi: captopril, lisinopril, enalapril. ARBs: losartan, valsartan. All renally cleared (adjust in CKD).", clinical:"ACEi: dry cough (bradykinin), angioedema (rare, bradykinin-mediated, life-threatening), hyperkalemia, AKI. ARBs: same minus cough/angioedema.", labs:"Monitor K⁺, creatinine (Cr ↑ <30% acceptable), BP.", trap:"Bilateral RAS = contraindicated. Pregnancy = contraindicated (Category D/X). Combine ACEi+ARB: no added benefit, ↑ harm. Angioedema: switch to ARB (NOT another ACEi)." }, links:["Diuretics (counteract RAAS reactive hyperreninemia)","β-Blockers (complementary in post-MI/HF)","MRAs (watch K⁺ — hyperkalemia)"] },
+  { number:3, theme:"Calcium Channel Blockers", objectives:["LO15, LO16"], mechanism:"Block L-type Ca²⁺ channels. DHP → vascular smooth muscle (↓ SVR). Non-DHP → cardiac + vascular (↓ HR, ↓ contractility, ↓ AV conduction).", nodes:{ pathway:"L-type Ca²⁺ block → vascular: ↓ smooth muscle contraction → ↓ SVR. Cardiac (non-DHP): ↓ SA/AV node activity.", disease:"DHP: elderly, isolated systolic HTN, angina, Raynaud's, HTN emergency (nicardipine IV). Non-DHP: Afib rate control, angina, HTN (where rate control also needed).", pharmacology:"DHP: amlodipine (oral), nicardipine (IV for HTN emergency). Non-DHP: verapamil (most cardiac effect), diltiazem (intermediate).", clinical:"DHP: peripheral edema, reflex tachycardia, flushing. Non-DHP: bradycardia, AV block, constipation (verapamil), ↑ digoxin levels.", labs:"HR, BP monitoring. Digoxin level if on digoxin + verapamil.", trap:"Non-DHP + β-blocker = dangerous (complete heart block). DHP CCBs have NO AV nodal effect — cannot rate-control Afib. Non-DHP contraindicated in HFrEF (worsen systolic function)." }, links:["β-Blockers (non-DHP: avoid combo; DHP: safe combo)","Digoxin (verapamil ↑ digoxin levels)","ACEi (complementary for DM/HTN)"] },
+  { number:4, theme:"β-Blockers in HTN", objectives:["LO17, LO18"], mechanism:"β₁ blockade → ↓ HR + ↓ contractility → ↓ CO → ↓ BP. Also ↓ renin release (β₁ in JGA).", nodes:{ pathway:"β₁ → ↓ HR + ↓ CO. β₂ (non-selective) → bronchoconstriction, mask hypoglycemia. α₁ (labetalol/carvedilol) → ↓ SVR.", disease:"Post-MI (survival benefit), HFrEF (carvedilol/metoprolol succinate/bisoprolol), angina, HTN with tachycardia, Afib rate control", pharmacology:"Nonselective: propranolol (β₁+β₂). β₁-selective: metoprolol (atenolol less favored). α+β: labetalol (IV — HTN emergency in pregnancy), carvedilol. NO effects: nebivolol (β₁ + ↑ NO → vasodilation).", clinical:"Bradycardia, fatigue, sexual dysfunction, cold extremities, hyperglycemia/hypertriglyceridemia (non-selective), masks hypoglycemia signs (tachycardia) — sweating preserved.", labs:"HR, BP. Lipids (non-selective ↑ TG, ↓ HDL).", trap:"Avoid in asthma (non-selective). Never stop abruptly → rebound HTN/angina/MI. Not preferred as first-line in uncomplicated HTN (less CV event reduction than thiazides per ALLHAT)." }, links:["Diuretics (complementary: diuretic ↓ volume, β-blocker ↓ CO)","Non-DHP CCBs (dangerous combo)","ACEi (post-MI/HF combination)"] },
+  { number:5, theme:"α-Blockers & Central Sympatholytics", objectives:["LO17"], mechanism:"α₁-blockers: ↓ SVR (venous + arterial). Central: ↓ SNS outflow via central α₂ agonism.", nodes:{ pathway:"α₁ block → ↓ arteriolar + venous tone → ↓ SVR → ↓ BP (+ orthostatic hypotension). Clonidine/methyldopa: central α₂ agonism → ↓ NE release → ↓ HR + ↓ SVR.", disease:"α₁ blockers: HTN + BPH (prazosin, doxazosin). Tamsulosin: BPH only (α₁A selective). Clonidine: refractory HTN, opioid withdrawal. Methyldopa: HTN in pregnancy.", pharmacology:"Prazosin: short-acting, first-dose risk. Doxazosin: longer-acting. Clonidine: patch (7-day) or oral. Methyldopa: prodrug (→ α-methylNE).", clinical:"α₁: first-dose orthostatic hypotension (syncope), reflex tachycardia. Clonidine: dry mouth, sedation, rebound HTN on abrupt withdrawal. Methyldopa: sedation, positive Coombs test, hepatotoxicity.", labs:"BP (orthostatic), LFTs (methyldopa).", trap:"First-dose phenomenon (prazosin) → start at low dose at bedtime. Clonidine: NEVER stop abruptly. Methyldopa causes positive Coombs test (hemolytic anemia). Tamsulosin: selective α₁A (prostate) → less hypotension." }, links:["β-Blockers (clonidine: both ↓ SNS — additive bradycardia)","Diuretics (add with direct vasodilators for fluid retention)"] },
+  { number:6, theme:"Direct Vasodilators & HTN Emergencies", objectives:["LO19, LO20, LO23, LO24"], mechanism:"Hydralazine: arteriolar dilation. Minoxidil: K+-channel opener → hyperpolarization → vasodilation. Nitroprusside: NO donor → balanced vasodilation.", nodes:{ pathway:"Hydralazine: ↓ SVR → reflex tachycardia + RAAS activation. Minoxidil: K+ channel → hyperpolarization → ↓ Ca²⁺ → vasodilation. Nitroprusside: ↑ NO → ↑ cGMP → ↓ SVR + ↓ venous tone.", disease:"Hydralazine: resistant HTN (triple therapy), HFrEF (with ISDN, esp. Black patients), IV in pregnancy emergency. Minoxidil: severe resistant HTN, alopecia (topical). Nitroprusside: hypertensive emergency (ICU only).", pharmacology:"Always combine hydralazine with β-blocker + diuretic (compensatory mechanisms). Nitroprusside: IV infusion only; monitor cyanide toxicity.", clinical:"Hydralazine: reflex tachycardia, Na/water retention, drug-induced lupus (high dose). Minoxidil: hypertrichosis, Na/water retention, pericardial effusion, reflex tachycardia. Nitroprusside: cyanide → thiocyanate toxicity (prolonged use).", labs:"ANA (hydralazine-induced lupus), electrolytes, thiocyanate levels (nitroprusside).", trap:"Hydralazine alone → compensation blunts effect. Minoxidil → hypertrichosis (topical use as Rogaine). Nitroprusside cyanide toxicity in prolonged use/renal failure." }, links:["β-Blockers (block reflex tachycardia from vasodilators)","Diuretics (block fluid retention from vasodilators)"] },
+];
+
+const STUDYGUIDE = [
+  { objectives:["LO7–LO9 — Diuretics: thiazides, loop, K+-sparing"], mechanism:"Thiazides: DCT NCC blockade → ↓ NaCl reabsorption → ↓ volume. K+-sparing: ENaC block (triamterene) or MRA (spironolactone/eplerenone) → ↑ K+. Loop: NKCC2 blockade → most potent diuresis.", high_yield_facts:["Chlorthalidone > HCTZ in CV outcome evidence (longer t½, more potent)", "ALLHAT: chlorthalidone (thiazide-like) = first-line for most uncomplicated HTN", "Thiazide ADRs: hypoK+, hypoNa+, hyperglycemia, hyperuricemia (gout), hypercalcemia (useful!), hyperlipidemia", "Metolazone: very potent thiazide-like; add to loop for diuretic resistance", "K+-sparing: triamterene (ENaC) vs. spironolactone (MRA). NEVER combine with ACEi/ARB alone → hyperkalemia", "Loop diuretics (furosemide): for ADHF/volume overload, not routine HTN"], vignette_clues:["HTN + gout → AVOID thiazide", "Elderly woman with osteoporosis + HTN → thiazide (↑ Ca²⁺ reabsorption)", "Patient on HCTZ develops weakness + low K⁺ → add K+-sparing diuretic or K+ supplement", "Resistant HTN on loop diuretic → add metolazone (synergistic)"], trap:"Thiazides are first-line for uncomplicated HTN per ALLHAT — not β-blockers, not ACEi alone. Contraindicated in gout.", if_you_see:"Elderly + uncomplicated HTN → chlorthalidone (thiazide-like). HTN + hypercalciuria/osteoporosis → thiazide (↑ Ca reabsorption).", integration:["Pharm: nephron physiology","Cardiology: ALLHAT trial significance","Rheumatology: thiazide-induced gout"] },
+  { objectives:["LO10–LO13 — ACEi, ARBs, RAAS control"], mechanism:"ACEi: block ACE → ↓ Ang II + ↑ bradykinin → ↓ vasoconstriction + ↓ aldosterone + vasodilation. ARBs: block AT1 receptor → same but NO bradykinin change. Both: ↓ BP + renoprotective.", high_yield_facts:["ACEi: dry cough (bradykinin) in 10–15% → switch to ARB", "Angioedema from ACEi: bradykinin-mediated (NOT IgE) → life-threatening; switch to ARB (rare cross-reactivity)", "Compelling indications: DM+proteinuria, HFrEF, post-MI, CKD with proteinuria", "Contraindications: bilateral RAS (AKI), pregnancy (Category D), hyperkalemia", "ACEi acceptable Cr rise <30% — indicates reduced GFR from ↓ efferent constriction (therapeutic in CKD)", "ARBs: NO cough, very rare angioedema; otherwise same indications as ACEi"], vignette_clues:["DM + microalbuminuria → ACEi or ARB first-line", "Bilateral renal artery stenosis + HTN → AVOID ACEi/ARB (→ AKI)", "Pregnancy + HTN → AVOID ACEi/ARB → use labetalol, methyldopa, or nifedipine", "ACEi cough → switch to losartan (ARB)"], trap:"Do NOT switch from ACEi to another ACEi if angioedema occurs — the mechanism (bradykinin) is a class effect. Switch to ARB.", if_you_see:"HTN + DM + proteinuria → ACEi/ARB. ACEi cough → ARB. Bilateral RAS → avoid both.", integration:["Pharm: RAAS cascade","Nephrology: renoprotection","Cardiology: post-MI/HF management"] },
+  { objectives:["LO15–LO18 — CCBs, β-blockers, α-blockers, central sympatholytics"], mechanism:"CCBs: L-type Ca²⁺ block. DHP → vascular. Non-DHP → cardiac + vascular. β-blockers: ↓ CO + ↓ renin. α₁-blockers: ↓ SVR. Central sympatholytics: ↓ central SNS outflow.", high_yield_facts:["DHP (amlodipine, nicardipine): peripheral edema, reflex tachycardia, flushing — NO AV nodal effect", "Non-DHP (verapamil): constipation, bradycardia, AV block, ↑ digoxin levels — AVOID with β-blocker", "β-blockers NOT first-line for uncomplicated HTN (ALLHAT); compelling indications: post-MI, HFrEF, angina, Afib", "Labetalol: IV α+β blocker — drug of choice for HTN emergency in pregnancy", "Methyldopa: central α₂ agonist — safe in pregnancy; causes positive Coombs test, sedation", "Clonidine: abrupt withdrawal → rebound hypertensive crisis — always taper", "Prazosin/doxazosin: first-dose orthostatic hypotension — start low at bedtime; dual use in BPH"], vignette_clues:["HTN + BPH → doxazosin or prazosin (α₁ blocker — dual benefit)", "HTN emergency in pregnancy → IV labetalol (first choice)", "Patient on clonidine stops taking it → rebound HTN crisis", "Male patient on doxazosin for HTN develops retrograde ejaculation → expected (α₁ blockade in bladder neck)"], trap:"Non-DHP CCBs + β-blockers = complete heart block risk. DHP CCBs have NO AV nodal effect. Clonidine must be tapered.", if_you_see:"HTN + Afib rate control → non-DHP CCB or β-blocker. HTN + BPH → α₁ blocker. HTN in pregnancy → labetalol, methyldopa, or nifedipine.", integration:["Pharm: autonomic pharmacology, Ca²⁺ channels","OB: safe antihypertensives in pregnancy","Cardiology: Afib management"] },
+  { objectives:["LO19–LO25 — Direct vasodilators, combination therapy, compelling indications, HTN emergencies"], mechanism:"Hydralazine + minoxidil: direct arteriolar vasodilation → reflex SNS + RAAS activation → always combine with β-blocker + diuretic. Nitroprusside: balanced NO-mediated vasodilation for emergencies.", high_yield_facts:["Hydralazine ADRs: reflex tachycardia, Na/water retention, drug-induced lupus (ANA+, arthralgia, rash) at high doses", "Minoxidil: hypertrichosis (topical → Rogaine), Na/water retention, pericardial effusion, reflex tachycardia", "Nitroprusside: cyanide toxicity (prolonged use, renal failure) — monitor thiocyanate levels", "Nicardipine IV: DHP CCB → ↓ SVR; titratable; good for HTN emergency in neurological settings", "Labetalol IV: α+β — reduces BP without ↑ HR; ideal in pregnancy emergency and aortic dissection", "ALLHAT: thiazide-like diuretic (chlorthalidone) ≥ CCB ≥ ACEi for preventing MI/stroke → supports thiazide as first-line"], vignette_clues:["Hydralazine alone → rebound tachycardia + fluid retention → add β-blocker + diuretic", "Patient with lupus-like syndrome on antihypertensive → drug-induced lupus from hydralazine", "Minoxidil patient: hair growth on face and body → expected (hypertrichosis)", "HTN emergency: encephalopathy + papilledema → IV nicardipine or labetalol"], trap:"Never use nitroprusside in pregnancy (cyanide toxicity to fetus). Drug-induced lupus from hydralazine: ANA positive but anti-dsDNA negative (vs. idiopathic lupus: anti-dsDNA positive).", if_you_see:"Severe HTN emergency + papilledema → IV nicardipine or labetalol. HTN emergency in pregnancy → IV labetalol. Drug-induced lupus → ANA+ without anti-dsDNA.", integration:["Pharm: NO/cGMP pathway, K+ channels","Rheumatology: drug-induced lupus","Emergency medicine: HTN emergencies"] },
+];
+
+const VIGNETTES = [
+  { number:1, cluster:"ACEi Angioedema vs. Cough", objectives_tested:["LO12, LO13 — ACEi mechanism; bradykinin-mediated adverse effects"], vignette:"A 55-year-old Black man with hypertension has been on lisinopril 10 mg/day for 3 years. He presents to the ED with rapidly progressive tongue and lip swelling that began 2 hours ago. He denies hives or itching. He has no prior allergic reactions. BP is 148/92 mmHg. He has no history of angioedema. He recently started no new medications.", question:"Which of the following best explains the mechanism of this patient's adverse reaction to lisinopril?", answer:"ACE inhibitors block the degradation of bradykinin → accumulation of bradykinin → vasodilation and increased vascular permeability → angioedema. This is NOT IgE-mediated (no urticaria/pruritus).", why_correct:"ACE normally degrades bradykinin. Lisinopril blocks ACE → bradykinin accumulates → activates B2 receptors → vasodilation + ↑ vascular permeability → angioedema, especially of face/tongue/larynx. Unlike anaphylaxis, there is no urticaria because it is not IgE-mediated.", key_clues:"Angioedema without urticaria/pruritus on ACEi = bradykinin-mediated. Black patients have higher risk of ACEi-induced angioedema. Potentially life-threatening (airway compromise).", why_missed:"Students may think it is an allergic (IgE-mediated) reaction. The absence of urticaria and pruritus distinguishes bradykinin-mediated angioedema from anaphylaxis.", trap:"After ACEi-induced angioedema, switch to ARB — ARBs do NOT affect bradykinin and have very low risk of angioedema. Do NOT rechallenge with any ACEi." },
+  { number:2, cluster:"Compelling Indications: Diabetic Nephropathy", objectives_tested:["LO21: Compelling indications for specific antihypertensives"], vignette:"A 52-year-old woman with type 2 diabetes mellitus and hypertension has BP 148/92 mmHg on two visits. She has a urine albumin-to-creatinine ratio of 280 mg/g (normal <30). Her serum K+ is 4.2 mEq/L and creatinine is 1.1 mg/dL. Her physician considers which antihypertensive to start.", question:"Which of the following antihypertensive agents is most appropriate as first-line therapy for this patient and why?", answer:"ACE inhibitor (or ARB) — first-line in diabetic nephropathy because it reduces intraglomerular pressure by dilating the efferent arteriole → reduces proteinuria and slows CKD progression, independent of BP lowering.", why_correct:"In diabetic nephropathy, angiotensin II preferentially constricts efferent arterioles → ↑ intraglomerular pressure → glomerular damage and proteinuria. ACEi/ARBs block Ang II → dilate efferent arterioles → ↓ intraglomerular pressure → ↓ proteinuria → renoprotective effect beyond BP lowering.", key_clues:"DM + microalbuminuria/proteinuria → ACEi or ARB. Monitor K+ and creatinine after starting (acceptable Cr rise <30%).", why_missed:"Students may choose a thiazide (ALLHAT first-line) without recognizing the compelling indication — DM with proteinuria requires ACEi/ARB specifically for renoprotection.", trap:"Thiazide is first-line for uncomplicated HTN — but compelling indications override this general rule. ACEi/ARB is mandated by the diabetic nephropathy compelling indication." },
+  { number:3, cluster:"Hypertensive Emergency in Pregnancy", objectives_tested:["LO23: HTN in pregnancy; LO24: IV drugs for hypertensive emergencies"], vignette:"A 28-year-old woman at 36 weeks gestation presents with BP 178/114 mmHg, severe headache, and visual changes. Labs show proteinuria 3+ on urinalysis. Fetal monitoring is reassuring. The diagnosis of severe preeclampsia is made and the decision is made to manage BP acutely with IV medications while preparing for delivery.", question:"Which of the following IV antihypertensive agents is most appropriate for acute BP management in this patient?", answer:"IV labetalol — the drug of choice for hypertensive emergency in pregnancy. It is an α+β blocker that reduces SVR and HR without compromising uteroplacental blood flow.", why_correct:"Labetalol (α₁+β blocker) reduces BP via both ↓ SVR (α₁ block) and ↓ CO (β block), providing smooth BP reduction without reflex tachycardia. It is safe in pregnancy and does not cause fetal/uteroplacental compromise at standard doses.", key_clues:"Severe preeclampsia + hypertensive emergency → IV labetalol (first-line) or IV hydralazine (alternative). AVOID nitroprusside (cyanide toxicity to fetus) and ACEi/ARBs (teratogenic).", why_missed:"Students may choose hydralazine (acceptable) or miss that nitroprusside and ACEi are absolutely contraindicated in pregnancy.", trap:"Nitroprusside releases cyanide → fetal cyanide toxicity. ACEi/ARBs: fetal renal agenesis, oligohydramnios, skull hypoplasia. Labetalol is the preferred IV agent in pregnancy HTN emergency." },
+];
+
+const QUESTIONS = [
+  { number:1, cluster:"Thiazide Adverse Effects", objectives_tested:["LO8, LO9 — Thiazide diuretics: MOA and adverse effects"], stem:"A 62-year-old man with hypertension has been well-controlled on hydrochlorothiazide for 6 months. He now presents with acute right great toe pain and swelling. Uric acid level is 9.8 mg/dL (normal <7.0). Which of the following best explains this complication?", choices:{ A:"HCTZ blocks uric acid excretion by inhibiting URAT1 in the proximal tubule", B:"HCTZ increases uric acid production by activating xanthine oxidase", C:"HCTZ causes volume depletion → ↑ proximal tubule reabsorption of uric acid → hyperuricemia", D:"HCTZ directly deposits uric acid crystals in joints", E:"HCTZ inhibits the conversion of uric acid to allantoin" }, correct:"C", tested_concept:"Thiazide-induced hyperuricemia via volume depletion and increased uric acid reabsorption", why_correct:"Thiazides cause volume depletion → compensatory ↑ proximal tubule reabsorption of both Na and uric acid (uric acid follows Na) → hyperuricemia → gout in susceptible patients.", why_wrong:{ A:"HCTZ does not directly block URAT1; the mechanism is indirect via volume contraction", B:"HCTZ does not activate xanthine oxidase", D:"HCTZ does not directly deposit crystals", E:"Allantoin is not a human metabolic pathway (humans lack uricase)" }, trap:"The mechanism of thiazide-induced hyperuricemia is indirect — volume contraction → ↑ proximal tubule Na reabsorption → uric acid follows → hyperuricemia." },
+  { number:2, cluster:"ACEi vs. ARB", objectives_tested:["LO12, LO13 — ACEi vs ARBs: distinguishing pharmacological effects"], stem:"A 48-year-old woman with hypertension and type 2 diabetes mellitus is started on lisinopril. Four weeks later she develops a persistent dry cough that is interfering with sleep. Her BP is now 132/84 mmHg and her urine albumin-to-creatinine ratio has improved. Which of the following is the most appropriate next step?", choices:{ A:"Switch to propranolol to control BP while maintaining renal protection", B:"Add a cough suppressant (dextromethorphan) and continue lisinopril", C:"Switch to losartan, which provides equivalent renoprotection without the bradykinin-mediated cough", D:"Switch to amlodipine, which also has renoprotective effects in diabetic nephropathy", E:"Discontinue antihypertensive therapy and monitor BP" }, correct:"C", tested_concept:"ACEi dry cough → switch to ARB for equivalent renoprotection without bradykinin effect", why_correct:"ACEi-induced cough is caused by bradykinin accumulation. ARBs block the AT1 receptor without affecting bradykinin → no cough. ARBs provide equivalent renoprotection in diabetic nephropathy.", why_wrong:{ A:"Propranolol does not have specific renoprotective effects in diabetic nephropathy", B:"The cough is bradykinin-mediated and will persist regardless of cough suppressants", D:"Amlodipine does not have the same efferent arteriole dilation mechanism that confers renoprotection", E:"The patient has a compelling indication (DM+proteinuria) — therapy must be continued" }, trap:"Cough suppressants will NOT help ACEi-induced cough. Only switching drug class resolves it." },
+  { number:3, cluster:"β-Blocker Subtype", objectives_tested:["LO17, LO18 — β-blocker subtypes and clinical uses"], stem:"A 58-year-old man with hypertension, a 15-pack-year smoking history, and mild COPD presents for medication management. He also has benign prostatic hyperplasia. Which of the following antihypertensive regimens is most appropriate?", choices:{ A:"Propranolol for BP control and prazosin for BPH", B:"Metoprolol and doxazosin", C:"Labetalol monotherapy", D:"Verapamil for BP control and tamsulosin for BPH", E:"Amlodipine and doxazosin" }, correct:"E", tested_concept:"COPD → avoid β-blockers; BPH + HTN → α₁ blocker. Safe combo: DHP CCB + α₁ blocker", why_correct:"COPD is a relative contraindication to β-blockers (β₂ → bronchoconstriction). Amlodipine safely lowers BP. Doxazosin (α₁ blocker) treats both HTN and BPH.", why_wrong:{ A:"Propranolol is non-selective β-blocker — contraindicated in COPD", B:"Metoprolol is β₁-selective but still risky in COPD", C:"Labetalol has β₂ blocking activity — risky in COPD", D:"Verapamil acceptable, but tamsulosin (α₁A selective) primarily targets prostate with less systemic BP effect" }, trap:"Cardioselective β-blockers (metoprolol) are RELATIVELY safer in COPD but still pose risk — when COPD is a factor, prefer non-β-blocker antihypertensives." },
+  { number:4, cluster:"Direct Vasodilator Compensation", objectives_tested:["LO19, LO20 — Direct vasodilators and compensatory mechanisms"], stem:"A 45-year-old man with severe resistant hypertension is started on hydralazine monotherapy. Despite an initial modest reduction in blood pressure, his BP returns toward baseline within 2 weeks. He also develops palpitations and peripheral edema. Which of the following best explains why hydralazine monotherapy is insufficient?", choices:{ A:"Hydralazine is metabolized too rapidly in fast acetylators, reducing its duration of action", B:"Hydralazine causes downregulation of its own receptors over time", C:"Arteriolar dilation triggers baroreceptor-mediated SNS activation and RAAS activation, causing reflex tachycardia and sodium retention that counteract the BP reduction", D:"Hydralazine blocks renal prostaglandin synthesis, causing Na retention", E:"Hydralazine causes upregulation of angiotensin II receptors" }, correct:"C", tested_concept:"Vasodilator compensatory mechanisms: reflex SNS activation (tachycardia) + RAAS activation (Na/water retention)", why_correct:"Direct arteriolar vasodilation → ↓ BP → baroreceptor activation → reflex SNS ↑ (↑ HR, ↑ renin) + RAAS activation (↑ aldosterone → Na/water retention). Solution: triple therapy = hydralazine + β-blocker + diuretic.", why_wrong:{ A:"Fast acetylator status affects hydralazine metabolism but is not the primary reason for BP escape", B:"Hydralazine does not cause receptor downregulation as a primary mechanism", D:"Not the primary mechanism of fluid retention with hydralazine", E:"Ang II receptor upregulation is not a known primary mechanism" }, trap:"Vasodilator monotherapy almost always fails due to compensatory mechanisms. β-blocker + diuretic must accompany vasodilators." },
+  { number:5, cluster:"Hypertensive Emergency Drugs", objectives_tested:["LO24 — IV drugs for hypertensive emergencies"], stem:"A 40-year-old man presents to the ICU with BP 230/140 mmHg, altered mental status, and papilledema. He has no prior cardiac or renal history. After confirming hypertensive encephalopathy, the team decides to lower BP by approximately 25% over the first hour using an IV agent. Which of the following is the most appropriate IV antihypertensive?", choices:{ A:"Oral amlodipine crushed and given via NG tube", B:"IV nitroprusside at low dose for 72 hours", C:"IV nicardipine, titrated to achieve controlled BP reduction", D:"IV furosemide as the primary intervention", E:"IV hydralazine bolus repeated every 30 minutes" }, correct:"C", tested_concept:"IV nicardipine: titratable DHP CCB for hypertensive emergency including encephalopathy", why_correct:"IV nicardipine (DHP CCB) provides smooth, titratable BP reduction, ideal for hypertensive encephalopathy where a controlled ~25% reduction over the first hour is needed.", why_wrong:{ A:"Oral agents are inappropriate in hypertensive emergencies requiring IV titration", B:"IV nitroprusside risks cyanide toxicity with prolonged use and requires intensive monitoring", D:"Furosemide treats volume overload but is not the primary treatment for hypertensive encephalopathy", E:"IV hydralazine bolus causes erratic BP changes and is not preferred for encephalopathy" }, trap:"The goal in hypertensive encephalopathy is controlled BP reduction (not maximal and not too fast). Nicardipine's titratability makes it superior." },
+];
+
+const DIAGRAMS = [
+  { title:"Antihypertensive Drug Classification and Sites of Action", type:"pathway", objectives:["LO5, LO6 — BP control mechanisms and drug targets"], content:`BP = Cardiac Output (CO) × Systemic Vascular Resistance (SVR)\n\nREDUCE CO:                          REDUCE SVR:\n  β-Blockers (↓ HR, ↓ contractility)   CCBs — DHP (amlodipine, nicardipine)\n  Diuretics (↓ plasma volume)          ACEi / ARBs (↓ Ang II)\n  Central sympatholytics (↓ SNS)       α₁-Blockers (prazosin, doxazosin)\n                                        Direct vasodilators (hydralazine, minoxidil)\n\nNEPHRON SITES OF DIURETIC ACTION:\n  Proximal tubule     → Acetazolamide (carbonic anhydrase inhibitor)\n  Loop of Henle       → Loop diuretics: furosemide, torsemide (NKCC2)\n  Distal convoluted   → Thiazides: HCTZ, chlorthalidone, metolazone (NCC)\n  Collecting duct     → K+-sparing: triamterene (ENaC), spironolactone/eplerenone (MRA)` },
+  { title:"Compelling Indications for Specific Antihypertensives", type:"comparison", objectives:["LO21, LO22 — Compelling indications and contraindications"], content:`CONDITION              PREFERRED DRUG(S)              AVOID\n─────────────────────────────────────────────────────────────────────────\nDM + proteinuria       ACEi or ARB (renoprotective)   Thiazides (hyperglycemia)\nHFrEF                  ACEi/ARB/ARNI + β-blocker       Non-DHP CCBs (↓ EF)\nPost-MI                β-blocker + ACEi                Direct vasodilators alone\nAngina (stable)        β-blocker or CCB                Hydralazine alone\nAfib (rate control)    β-blocker or non-DHP CCB        DHP CCBs (no AV effect)\nBPH + HTN              α₁ blocker (doxazosin)          β-blockers\nOsteoporosis           Thiazide (↑ Ca reabsorption)    Loop diuretics (↑ Ca excretion)\nGout                   Losartan (uricosuric ARB)        Thiazides (↑ uric acid)\nPregnancy              Labetalol, methyldopa, nifedipine ACEi, ARBs, nitroprusside\nRaynaud's              DHP CCBs (amlodipine)            β-blockers\nBilateral RAS          DHP CCBs, β-blockers            ACEi, ARBs (→ AKI)\nALLHAT trial winner    Chlorthalidone (thiazide-like)   (better than CCB or ACEi\n                                                         in uncomplicated HTN)` },
+  { title:"β-Blocker Subtypes: Key Distinctions", type:"comparison", objectives:["LO17, LO18 — β-blocker subtypes and clinical uses"], content:`DRUG          RECEPTOR PROFILE           KEY FEATURES\n──────────────────────────────────────────────────────────────────────────────\nPropranolol   β₁ + β₂ (nonselective)    AVOID in asthma/COPD. Masks hypoglycemia.\n                                          Uses: migraine ppx, essential tremor,\n                                          portal HTN, thyrotoxicosis, anxiety\nMetoprolol    β₁-selective               Safer in asthma. Approved for HFrEF.\nBisoprolol    β₁-selective               Approved for HFrEF. High selectivity.\nLabetalol     α₁ + β₁ + β₂              IV: drug of choice for HTN emergency\n                                          in pregnancy. ↓ SVR + ↓ CO.\nCarvedilol    α₁ + β₁ + β₂              Approved for HFrEF. Post-MI use.\nNebivolol     β₁ + stimulates NO         Least metabolic side effects. Vasodilation.` },
+  { title:"HTN in Pregnancy and Hypertensive Emergencies", type:"comparison", objectives:["LO23, LO24 — Pregnancy HTN; IV drugs for emergencies"], content:`HTN IN PREGNANCY — SAFE DRUGS:\n  Oral: Methyldopa (central α₂ agonist), Labetalol, Nifedipine (DHP CCB)\n  IV:   Labetalol (FIRST-LINE for HTN emergency in pregnancy)\n        Hydralazine (second-line IV in obstetric emergency)\n\nHTN IN PREGNANCY — ABSOLUTELY AVOID:\n  ACEi / ARBs → fetal renal agenesis, oligohydramnios, skull hypoplasia\n  Nitroprusside → cyanide toxicity to fetus\n  Atenolol → fetal growth restriction\n\nHYPERTENSIVE EMERGENCY IV DRUGS:\n  Drug            MOA                         Best Use\n  ─────────────────────────────────────────────────────────────\n  Nicardipine IV  DHP CCB → ↓ SVR            Titratable; neurological HTN emergency\n  Labetalol IV    α₁+β blocker → ↓ HR+SVR   Pregnancy emergency; aortic dissection\n  Nitroprusside   NO donor → ↓ pre+afterload  ICU only; AVOID in pregnancy\n                                               Cyanide toxicity risk (prolonged use)` },
+];
+
+function AnglesTab() {
+  return ANGLES.map((c,i) => (
+    <Card key={i}>
+      <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap", marginBottom:6 }}>
+        <Pill text={`Cluster ${c.number}`} color="purple"/>
+        <span style={{ fontWeight:500, fontSize:15 }}>{c.theme}</span>
+      </div>
+      {c.objectives.map((o,j) => <p key={j} style={{ margin:"0 0 2px", fontSize:13, color:"var(--color-text-secondary)", paddingLeft:10, borderLeft:"2px solid #AFA9EC" }}>{o}</p>)}
+      <Lbl t="Core mechanism"/><p style={{ fontSize:13, margin:"0 0 4px" }}>{c.mechanism}</p>
+      <p style={{ fontSize:12, color:"var(--color-text-secondary)", fontStyle:"italic", margin:"0 0 10px" }}>{c.why_testable}</p>
+      {c.angles.map((a,j) => (
+        <Inset key={j}>
+          <p style={{ fontWeight:500, fontSize:14, margin:"0 0 6px" }}>Angle {j+1}: {a.title}</p>
+          {[["Tested concept",a.tested_concept],["Vignette pattern",a.vignette_pattern],["Key clues",a.key_clues],["Common trap",a.trap],["Disciplines",a.disciplines]].map(([l,v]) =>
+            v ? <div key={l}><Lbl t={l}/><p style={{ fontSize:13, margin:"0 0 4px" }}>{v}</p></div> : null
+          )}
+        </Inset>
+      ))}
+    </Card>
+  ));
+}
+
+function MindMapTab() {
+  return MINDMAP.map((c,i) => (
+    <Card key={i}>
+      <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap", marginBottom:6 }}>
+        <Pill text={`Cluster ${c.number}`} color="teal"/>
+        <span style={{ fontWeight:500, fontSize:15 }}>{c.theme}</span>
+      </div>
+      <p style={{ fontSize:13, color:"var(--color-text-secondary)", margin:"0 0 8px", paddingLeft:10, borderLeft:"2px solid #5DCAA5", fontStyle:"italic" }}>{c.mechanism}</p>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(140px,1fr))", gap:8, marginBottom:8 }}>
+        {Object.entries(c.nodes).filter(([,v])=>v).map(([k,v]) => (
+          <div key={k} style={{ background:"var(--color-background-secondary)", borderRadius:8, padding:"8px 10px" }}>
+            <Lbl t={k}/><p style={{ fontSize:12, margin:0 }}>{v}</p>
+          </div>
+        ))}
+      </div>
+      <Lbl t="Links to"/>{c.links.map((l,j) => <Pill key={j} text={l} color="teal"/>)}
+    </Card>
+  ));
+}
+
+function StudyGuideTab() {
+  return STUDYGUIDE.map((s,i) => (
+    <Card key={i}>
+      <Lbl t="Objectives covered"/>
+      {s.objectives.map((o,j) => <p key={j} style={{ fontSize:13, color:"var(--color-text-secondary)", margin:"0 0 2px", paddingLeft:10, borderLeft:"2px solid #7F77DD" }}>{o}</p>)}
+      <Lbl t="Core mechanism"/><p style={{ fontSize:14, fontWeight:500, margin:"0 0 8px" }}>{s.mechanism}</p>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+        <div><Lbl t="High-yield facts"/>{s.high_yield_facts.map((f,j) => <p key={j} style={{ fontSize:13, margin:"0 0 3px" }}>• {f}</p>)}</div>
+        <div><Lbl t="Vignette clues"/>{s.vignette_clues.map((f,j) => <p key={j} style={{ fontSize:13, margin:"0 0 3px" }}>• {f}</p>)}</div>
+      </div>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginTop:8 }}>
+        <div style={{ background:T.coral.bg, borderRadius:8, padding:"8px 10px" }}><Lbl t="Common trap"/><p style={{ fontSize:13, color:T.coral.txt, margin:0 }}>{s.trap}</p></div>
+        <div style={{ background:T.teal.bg, borderRadius:8, padding:"8px 10px" }}><Lbl t="If you see → think"/><p style={{ fontSize:13, color:T.teal.txt, margin:0 }}>{s.if_you_see}</p></div>
+      </div>
+      <Lbl t="Integration links"/>{s.integration.map((l,j) => <Pill key={j} text={l} color="blue"/>)}
+    </Card>
+  ));
+}
+
+function VignettesTab() {
+  const [open, setOpen] = useState({});
+  return VIGNETTES.map((v,i) => (
+    <Card key={i}>
+      <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:8 }}>
+        <Pill text={`Vignette ${v.number}`} color="blue"/><Pill text={v.cluster} color="purple"/>
+      </div>
+      <Inset><p style={{ fontSize:13, lineHeight:1.7, margin:"0 0 8px" }}>{v.vignette}</p><p style={{ fontSize:14, fontWeight:500, margin:0 }}>{v.question}</p></Inset>
+      <button onClick={()=>setOpen(o=>({...o,[i]:!o[i]}))} style={{ marginTop:10, fontSize:13, padding:"6px 14px", cursor:"pointer", borderRadius:6, background:"transparent", border:"0.5px solid var(--color-border-secondary)", color:"var(--color-text-primary)" }}>
+        {open[i]?"Hide answer ↑":"Show answer ↓"}
+      </button>
+      {open[i] && (
+        <div style={{ marginTop:8 }}>
+          <div style={{ background:T.green.bg, borderRadius:8, padding:"8px 12px", marginBottom:8 }}>
+            <Lbl t="Correct answer"/><p style={{ fontSize:13, fontWeight:500, color:T.green.txt, margin:0 }}>{v.answer}</p>
+          </div>
+          {[["Why correct",v.why_correct],["Key clues",v.key_clues],["Why a student might miss it",v.why_missed],["Exam writer trap",v.trap]].map(([l,val]) =>
+            val ? <div key={l}><Lbl t={l}/><p style={{ fontSize:13, margin:"0 0 6px" }}>{val}</p></div> : null
+          )}
+        </div>
+      )}
+    </Card>
+  ));
+}
+
+function QuestionsTab() {
+  const [sel, setSel] = useState({});
+  const [shown, setShown] = useState({});
+  return QUESTIONS.map((q,i) => (
+    <Card key={i}>
+      <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:6 }}>
+        <Pill text={`Q${q.number}`} color="amber"/><Pill text={q.cluster} color="amber"/>
+      </div>
+      <p style={{ fontSize:14, lineHeight:1.7, margin:"10px 0" }}>{q.stem}</p>
+      {Object.entries(q.choices).map(([letter,txt]) => {
+        const picked=sel[i]===letter, revealed=shown[i], isCorrect=letter===q.correct;
+        let bg="var(--color-background-secondary)", border="0.5px solid var(--color-border-tertiary)";
+        if(!revealed&&picked){bg=T.blue.bg;border=`0.5px solid ${T.blue.bdr}`;}
+        if(revealed&&isCorrect){bg=T.green.bg;border=`0.5px solid ${T.green.bdr}`;}
+        if(revealed&&picked&&!isCorrect){bg=T.red.bg;border=`0.5px solid ${T.red.bdr}`;}
+        return <div key={letter} onClick={()=>!revealed&&setSel(s=>({...s,[i]:letter}))} style={{ background:bg, border, borderRadius:8, padding:"8px 12px", marginBottom:4, cursor:revealed?"default":"pointer", display:"flex", gap:10 }}>
+          <span style={{ fontWeight:500, fontSize:13, minWidth:16 }}>{letter}.</span>
+          <span style={{ fontSize:13 }}>{txt}</span>
+        </div>;
+      })}
+      <button disabled={!sel[i]||shown[i]} onClick={()=>setShown(s=>({...s,[i]:true}))} style={{ marginTop:6, padding:"6px 14px", borderRadius:6, fontSize:13, cursor:sel[i]&&!shown[i]?"pointer":"default", background:sel[i]&&!shown[i]?T.blue.bg:"var(--color-background-secondary)", color:sel[i]&&!shown[i]?T.blue.txt:"var(--color-text-tertiary)", border:`0.5px solid ${sel[i]&&!shown[i]?T.blue.bdr:"var(--color-border-tertiary)"}` }}>
+        Submit answer
+      </button>
+      {shown[i] && (
+        <div style={{ marginTop:8 }}>
+          <div style={{ background:T.green.bg, borderRadius:8, padding:"8px 12px", marginBottom:6 }}>
+            <Lbl t="Correct answer"/>
+            <p style={{ fontSize:13, fontWeight:500, color:T.green.txt, margin:"0 0 2px" }}>{q.correct} — {q.tested_concept}</p>
+            <p style={{ fontSize:13, color:T.green.txt, margin:0 }}>{q.why_correct}</p>
+          </div>
+          {Object.entries(q.why_wrong).map(([l,e]) => <p key={l} style={{ fontSize:12, color:"var(--color-text-secondary)", margin:"0 0 2px" }}><strong>{l}:</strong> {e}</p>)}
+          <div style={{ background:T.coral.bg, borderRadius:8, padding:"8px 12px", marginTop:6 }}>
+            <Lbl t="Main trap"/><p style={{ fontSize:13, color:T.coral.txt, margin:0 }}>{q.trap}</p>
+          </div>
+        </div>
+      )}
+    </Card>
+  ));
+}
+
+function DiagramsTab() {
+  return DIAGRAMS.map((d,i) => (
+    <Card key={i}>
+      <div style={{ display:"flex", gap:6, flexWrap:"wrap", alignItems:"center", marginBottom:6 }}>
+        <Pill text={d.type} color="pink"/><span style={{ fontWeight:500, fontSize:15 }}>{d.title}</span>
+      </div>
+      {d.objectives.map((o,j) => <p key={j} style={{ fontSize:12, color:"var(--color-text-secondary)", margin:"0 0 2px", paddingLeft:8, borderLeft:"2px solid #ED93B1" }}>{o}</p>)}
+      <pre style={{ background:"var(--color-background-secondary)", borderRadius:8, padding:"12px", marginTop:8, fontSize:12, color:"var(--color-text-primary)", whiteSpace:"pre-wrap", fontFamily:"monospace", lineHeight:1.7, overflowX:"auto" }}>{d.content}</pre>
+    </Card>
+  ));
+}
+
+const STUDY_RENDERERS = { angles:AnglesTab, mindmap:MindMapTab, studyguide:StudyGuideTab, vignettes:VignettesTab, questions:QuestionsTab, diagrams:DiagramsTab };
+
+function App() {
+  const [activeTab, setActiveTab] = useState("angles");
+  const Comp = STUDY_RENDERERS[activeTab];
+  return (
+    <div style={{ padding:"0.5rem 0.75rem", maxWidth:860, margin:"0 auto" }}>
+      <div style={{ marginBottom:10 }}>
+        <p style={{ fontSize:15, fontWeight:500, margin:0 }}>🩺 Treatment of Hypertension</p>
+        <p style={{ fontSize:11, color:"var(--color-text-secondary)", margin:0 }}>Georgetown SOM · Dr. Hernandez · Cardio Exam 2</p>
+      </div>
+      <div style={{ display:"flex", gap:4, overflowX:"auto", paddingBottom:6, marginBottom:12 }}>
+        {STUDY_TABS.map(t => {
+          const active=activeTab===t.id;
+          return <button key={t.id} onClick={()=>setActiveTab(t.id)} style={{ flexShrink:0, padding:"5px 12px", borderRadius:8, border:active?`1px solid ${T.purple.bdr}`:"0.5px solid var(--color-border-tertiary)", background:active?T.purple.bg:"transparent", color:active?T.purple.txt:"var(--color-text-secondary)", fontSize:12, fontWeight:active?500:400, cursor:"pointer", display:"flex", alignItems:"center", gap:5 }}>
+            <span style={{ fontSize:13 }}>{t.icon}</span>{t.label}
+          </button>;
+        })}
+      </div>
+      <Comp/>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
