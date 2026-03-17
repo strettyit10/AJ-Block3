@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Antiarrhythmic Drugs — Georgetown SOM</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #f9fafb; color: #111; min-height: 100vh; }
+  :root {
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f3f4f6;
+    --color-text-primary: #111827;
+    --color-text-secondary: #6b7280;
+    --color-text-tertiary: #9ca3af;
+    --color-border-tertiary: #e5e7eb;
+    --color-border-secondary: #d1d5db;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+const T = {
+  purple: { bg: "#EEEDFE", txt: "#3C3489", bdr: "#534AB7" },
+  teal:   { bg: "#E1F5EE", txt: "#085041", bdr: "#0F6E56" },
+  coral:  { bg: "#FAECE7", txt: "#712B13", bdr: "#993C1D" },
+  blue:   { bg: "#E6F1FB", txt: "#0C447C", bdr: "#185FA5" },
+  amber:  { bg: "#FAEEDA", txt: "#633806", bdr: "#854F0B" },
+  green:  { bg: "#EAF3DE", txt: "#27500A", bdr: "#3B6D11" },
+  red:    { bg: "#FCEBEB", txt: "#791F1F", bdr: "#A32D2D" },
+  pink:   { bg: "#FBEAF0", txt: "#72243E", bdr: "#993556" },
+};
+
+const Pill = ({ text, color = "purple" }) => {
+  const c = T[color];
+  return <span style={{ background:c.bg, color:c.txt, border:`0.5px solid ${c.bdr}`, borderRadius:20, padding:"2px 10px", fontSize:12, fontWeight:500, display:"inline-block", marginRight:4, marginBottom:2 }}>{text}</span>;
+};
+const Lbl = ({ t }) => <p style={{ fontSize:11, fontWeight:500, color:"var(--color-text-tertiary)", textTransform:"uppercase", letterSpacing:"0.06em", margin:"8px 0 2px" }}>{t}</p>;
+const Card = ({ children, style }) => <div style={{ background:"var(--color-background-primary)", border:"0.5px solid var(--color-border-tertiary)", borderRadius:12, padding:"1rem 1.25rem", marginBottom:10, ...style }}>{children}</div>;
+const Inset = ({ children, color }) => {
+  const c = color ? T[color] : null;
+  return <div style={{ background: c ? c.bg : "var(--color-background-secondary)", borderRadius:8, padding:"10px 12px", marginTop:6 }}>{children}</div>;
+};
+
+const STUDY_TABS = [
+  { id:"angles",     label:"Testing Angles", icon:"🎯" },
+  { id:"mindmap",    label:"Mind Map",        icon:"🗺️" },
+  { id:"studyguide", label:"Study Guide",     icon:"📖" },
+  { id:"vignettes",  label:"Vignettes",       icon:"🏥" },
+  { id:"questions",  label:"Practice Qs",     icon:"❓" },
+  { id:"diagrams",   label:"Diagrams",        icon:"📊" },
+];
+
+const ANGLES = [
+  {
+    number:1, theme:"Vaughan-Williams Classification & Ion Channel States",
+    objectives:["Explain the basis and limitations of Vaughan-Williams classification","Integrate how conformational states of voltage-gated ion channels change during the action potential cycle and how drugs bind differentially"],
+    mechanism:"Drugs classified by primary mechanism (Na⁺ channel block, β-block, K⁺ channel block, Ca²⁺ channel block), but many drugs have multiple actions. Ion channels exist in open, closed (resting), and inactivated states — drugs bind preferentially to specific states (use-dependence).",
+    why_testable:"Step 1 tests classification as a framework for predicting drug effects and toxicities — but also loves testing the LIMITATIONS of this classification.",
+    angles:[
+      { title:"Vaughan-Williams class → mechanism → expected effect", tested_concept:"Class I: Na⁺ channel block (IA slow conduction + prolong repolarization; IB shorten repolarization; IC markedly slow conduction). Class II: β-block. Class III: K⁺ channel block → ↑ APD. Class IV: Ca²⁺ channel block → ↓ AV conduction.", vignette_pattern:"Patient given drug X → ECG shows widened QRS or prolonged QT. Which class?", key_clues:"Widened QRS = Na⁺ channel block (Class I or IC). Prolonged QT = K⁺ channel block (Class IA or III).", trap:"Amiodarone has Class I, II, III, AND IV properties — it does NOT fit neatly into one class. Sotalol is Class III but also a β-blocker (Class II properties).", disciplines:"Pharmacology, Cardiology" },
+      { title:"Use-dependence and state-dependent binding", tested_concept:"Class IB drugs (lidocaine) bind preferentially to inactivated Na⁺ channels — most effective at rapid heart rates (ischemia, tachycardia) where channels spend more time in the inactivated state.", vignette_pattern:"Patient with ventricular tachycardia post-MI given IV lidocaine — why is this drug effective here?", key_clues:"Rapid rate → more inactivated channels → greater lidocaine binding → more effective. Use-dependence.", trap:"Lidocaine is ineffective for atrial arrhythmias (atrial tissue has shorter action potentials — less time in inactivated state).", disciplines:"Pharmacology, Physiology" },
+    ]
+  },
+  {
+    number:2, theme:"Mechanisms of Arrhythmias → Drug Class Linkage",
+    objectives:["Interpret how mechanisms of arrhythmias (altered automaticity, re-entry, conduction block) are linked to various classes of antiarrhythmic drugs"],
+    mechanism:"Arrhythmias arise from: (1) altered automaticity (abnormal pacemaker activity), (2) re-entry (unidirectional block + slow conduction allowing a circuit to sustain), or (3) triggered activity (EADs/DADs). Drugs target these by slowing conduction or prolonging refractory periods.",
+    why_testable:"Classic Step 1: identify the mechanism of arrhythmia from the clinical scenario, then match to the correct drug class.",
+    angles:[
+      { title:"Re-entry arrhythmias and drug treatment", tested_concept:"Re-entry requires: slow conduction + unidirectional block + excitable tissue. Drugs terminate re-entry by: (1) slowing conduction further until block (Class I), or (2) prolonging refractory period so tissue is refractory when impulse returns (Class III).", vignette_pattern:"Patient with WPW syndrome (accessory pathway re-entry) — which drugs are safe vs dangerous?", key_clues:"AV nodal blockers (verapamil, digoxin, adenosine) are DANGEROUS in WPW with Afib — block AV node → force all impulses through accessory pathway → VF. Use procainamide or cardioversion.", trap:"Using verapamil or adenosine in WPW + Afib = potentially lethal. This is a classic killer trap.", disciplines:"Pharmacology, Electrophysiology" },
+      { title:"Slowing conduction vs. increasing refractory period", tested_concept:"Slowing conduction velocity (Class I Na⁺ block): allows wavefront to die out before completing re-entry circuit. Increasing refractory period (Class III K⁺ block, Class II): tissue is inexcitable when re-entrant impulse returns → circuit breaks.", vignette_pattern:"Which property of antiarrhythmic drugs is most important for terminating re-entry?", key_clues:"Either mechanism can work. Class I slows conduction. Class III extends refractory period. Both interrupt re-entry circuit.", trap:"Slowing conduction alone can WORSEN re-entry if it allows the circuit to sustain — proarrhythmic risk of Class IC drugs.", disciplines:"Pharmacology, Physiology" },
+    ]
+  },
+  {
+    number:3, theme:"Class I Subclasses: IA vs IB vs IC",
+    objectives:["Identify most common side effects, limitations and toxicities of antiarrhythmic drugs in each class"],
+    mechanism:"All Class I drugs block Na⁺ channels, but differ in kinetics and effect on repolarization. IA: intermediate kinetics, ↑ APD, ↑ QT. IB: fast kinetics, ↓ APD, minimal ECG changes. IC: slow kinetics, markedly ↑ PR and QRS, NO effect on QT.",
+    why_testable:"High-yield drug-specific toxicity profiles and ECG changes are classic Step 1 material.",
+    angles:[
+      { title:"Procainamide toxicity — drug-induced lupus", tested_concept:"Procainamide (Class IA) → drug-induced lupus erythematosus (DILE). Presents with ANA+, anti-histone antibodies (NOT anti-dsDNA), arthralgia, rash, fever. Reversible on stopping drug.", vignette_pattern:"Patient on procainamide for arrhythmia develops joint pain, rash, positive ANA — diagnosis?", key_clues:"Anti-histone antibodies (NOT anti-dsDNA), reversible, procainamide or hydralazine context", trap:"Drug-induced lupus: anti-histone (+), anti-dsDNA (−). Real SLE: anti-dsDNA (+). This distinction is a classic Step 1 trap.", disciplines:"Pharmacology, Immunology, Rheumatology" },
+      { title:"Class IC proarrhythmia (CAST trial)", tested_concept:"Flecainide and propafenone (Class IC) are CONTRAINDICATED post-MI and in structural heart disease. CAST trial: increased mortality when used in post-MI patients despite suppressing PVCs. Use-dependent Na⁺ block → proarrhythmic at rapid rates.", vignette_pattern:"Post-MI patient with frequent PVCs given flecainide — what is the risk?", key_clues:"CAST trial, post-MI, structural heart disease, increased sudden death", trap:"IC drugs suppress PVCs but INCREASE mortality post-MI — treating the PVCs does not improve outcomes; the drug itself is dangerous.", disciplines:"Pharmacology, Cardiology" },
+    ]
+  },
+  {
+    number:4, theme:"Amiodarone — The Multi-Class Drug",
+    objectives:["Identify most common side effects, limitations and toxicities of antiarrhythmic drugs","Explain Vaughan-Williams limitations"],
+    mechanism:"Amiodarone blocks Na⁺ channels (I), has α/β-blocking properties (II), blocks K⁺ channels (III), and blocks Ca²⁺ channels (IV). Most effective antiarrhythmic overall but has extensive multi-organ toxicity due to iodine content and tissue accumulation.",
+    why_testable:"Amiodarone toxicity is one of the most-tested antiarrhythmic topics on Step 1. Multiple organ systems, each with distinctive features.",
+    angles:[
+      { title:"Amiodarone multi-organ toxicity", tested_concept:"Pulmonary toxicity (most serious — interstitial pneumonitis), thyroid (hypo OR hyperthyroid — contains iodine), hepatotoxicity, corneal microdeposits (reversible), blue-gray skin discoloration (sun-exposed areas), peripheral neuropathy.", vignette_pattern:"Patient on amiodarone for years develops progressive dyspnea, ground-glass opacities on CT — diagnosis?", key_clues:"Ground-glass opacities + amiodarone = pulmonary toxicity. Iodine → thyroid dysfunction. Blue-gray skin = pathognomonic.", trap:"Thyroid effects go BOTH ways — amiodarone causes hypothyroidism (iodine load suppresses thyroid) AND hyperthyroidism (iodine substrate + direct toxicity). Monitor TFTs.", disciplines:"Pharmacology, Pulmonology, Endocrinology" },
+      { title:"Amiodarone drug interactions", tested_concept:"Amiodarone inhibits CYP2C9 → ↑ warfarin levels (↑ INR). Inhibits P-glycoprotein → ↑ digoxin levels. Long half-life (40–55 days) → interactions persist weeks after stopping.", vignette_pattern:"Patient started on amiodarone; INR suddenly elevated — why?", key_clues:"CYP2C9 inhibition → ↑ warfarin. Must reduce warfarin dose. Half-life of amiodarone is 40–55 days.", trap:"Because of amiodarone's extremely long half-life, toxicity and drug interactions can persist for months after the drug is stopped.", disciplines:"Pharmacology, Hematology" },
+    ]
+  },
+  {
+    number:5, theme:"Adenosine, Digoxin & Other Agents",
+    objectives:["Identify most common side effects, limitations and toxicities of antiarrhythmic drugs in each class"],
+    mechanism:"Adenosine: endogenous nucleoside → activates K⁺ channels → hyperpolarizes AV node → transiently blocks AV conduction (drug of choice for acute SVT termination). Digoxin: inhibits Na⁺/K⁺-ATPase → ↑ intracellular Ca²⁺ → ↑ vagal tone → ↓ AV conduction.",
+    why_testable:"Adenosine for SVT and digoxin toxicity are classic Step 1 vignettes.",
+    angles:[
+      { title:"Adenosine for SVT diagnosis and treatment", tested_concept:"Adenosine → transient AV block → terminates AV nodal re-entrant tachycardia (AVNRT) or reveals underlying atrial flutter/fibrillation. Very short half-life (<10 sec). Adverse effects: flushing, chest tightness, transient dyspnea.", vignette_pattern:"Patient with narrow complex tachycardia at 180 bpm given adenosine → rhythm converts to sinus — what was the arrhythmia?", key_clues:"Terminates → AVNRT or AVRT. Unmasks flutter waves but doesn't terminate Afib/flutter.", trap:"Adenosine is DANGEROUS in WPW + Afib (blocks AV node → forces conduction through accessory pathway). Also avoid in asthma (can cause bronchospasm).", disciplines:"Pharmacology, Cardiology" },
+      { title:"Digoxin toxicity", tested_concept:"Narrow therapeutic index. Toxicity: nausea, vomiting, visual changes (yellow-green halos), arrhythmias (PAT with block is classic). Hypokalemia WORSENS toxicity (K⁺ competes with digoxin at Na⁺/K⁺-ATPase binding site). Treatment: digoxin-specific Fab antibody fragments.", vignette_pattern:"Elderly patient on digoxin presents with nausea, yellow vision, irregular pulse — diagnosis and treatment?", key_clues:"Yellow-green halos, PAT with block, hypokalemia precipitates toxicity, Fab fragments for treatment", trap:"Hypokalemia (e.g., from loop diuretics) greatly increases digoxin toxicity risk — a patient on both digoxin and furosemide is a classic setup.", disciplines:"Pharmacology, Cardiology" },
+    ]
+  },
+];
+
+const MINDMAP = [
+  { number:1, theme:"Class IA — Na⁺ Block + ↑ APD", objectives:["MOA, adverse effects, and toxicities of Class IA antiarrhythmics"], mechanism:"Intermediate Na⁺ channel kinetics + K⁺ channel block → ↓ conduction velocity + ↑ APD and ERP → prolongs QT interval", nodes:{ pathway:"Na⁺ block → ↓ Vmax → slow conduction; K⁺ block → ↑ APD → prolonged QT", disease:"Atrial and ventricular arrhythmias; AF conversion (quinidine); VT", pharmacology:"Procainamide (IV/oral), Disopyramide (negative inotrope — HF caution), Quinidine (historical)", clinical:"Procainamide: drug-induced lupus (anti-histone Ab). Disopyramide: anticholinergic effects. All: torsades de pointes (↑ QT)", labs:"Prolonged QT on ECG; ANA + anti-histone Ab (procainamide)", trap:"All Class IA drugs prolong QT → risk of torsades de pointes. Drug-induced lupus: anti-histone (+), anti-dsDNA (−)." }, links:["Class III (also ↑ QT → torsades)","Torsades de pointes cluster","WPW contraindication cluster"] },
+  { number:2, theme:"Class IB — Na⁺ Block + ↓ APD", objectives:["MOA, adverse effects, and toxicities of Class IB antiarrhythmics"], mechanism:"Fast Na⁺ channel kinetics, preferentially bind inactivated channels, shorten APD — most effective in ischemic/tachycardic tissue (use-dependence)", nodes:{ pathway:"Bind inactivated Na⁺ channels → suppress automaticity in depolarized tissue; ↓ APD in ventricles", disease:"Ventricular arrhythmias (VT, VF) especially post-MI; lidocaine = IV only for acute VT/VF", pharmacology:"Lidocaine (IV only — extensive first-pass), Mexiletine (oral lidocaine analog)", clinical:"CNS toxicity: dizziness, tremor, seizures, respiratory depression (dose-dependent). Minimal ECG changes.", labs:"Minimal QRS/QT changes — distinguishing feature from IA and IC", trap:"Lidocaine is INEFFECTIVE for atrial arrhythmias. Oral bioavailability is too low for systemic use." }, links:["Class IA (contrast — IB shortens vs IA prolongs APD)","Post-MI arrhythmia cluster"] },
+  { number:3, theme:"Class IC — Marked Na⁺ Block", objectives:["MOA, adverse effects, and toxicities of Class IC antiarrhythmics"], mechanism:"Slow Na⁺ channel kinetics — markedly slow conduction velocity, prolong PR and QRS, minimal effect on APD or QT", nodes:{ pathway:"Marked ↓ Vmax → ↑ PR interval + ↑ QRS duration; minimal effect on QT", disease:"Paroxysmal AF (pill-in-pocket strategy), SVT, no structural heart disease", pharmacology:"Flecainide, Propafenone (also has β-blocking properties)", clinical:"Proarrhythmic — CONTRAINDICATED post-MI and structural heart disease (CAST trial: ↑ mortality). Visual disturbances (flecainide).", labs:"Widened QRS on ECG; prolonged PR", trap:"IC drugs suppress PVCs but INCREASE sudden death post-MI (CAST trial). Never use with structural heart disease." }, links:["CAST trial","Class IA (compare ECG changes)","Post-MI contraindication cluster"] },
+  { number:4, theme:"Class III — K⁺ Channel Block", objectives:["MOA, adverse effects, and toxicities of Class III antiarrhythmics"], mechanism:"Block K⁺ channels → delay repolarization → ↑ APD and ERP → prolongs QT → risk of torsades de pointes", nodes:{ pathway:"K⁺ block → ↓ IKr → ↑ APD → prolonged QT → torsades de pointes risk", disease:"AF/AFL (ibutilide, dofetilide for cardioversion), VT/VF (amiodarone, sotalol), refractory arrhythmias", pharmacology:"Amiodarone (multi-class), Dronedarone (no iodine), Ibutilide (IV cardioversion), Dofetilide (renal dosing critical), Sotalol (also Class II)", clinical:"All prolong QT → torsades. Amiodarone: pulmonary, thyroid, hepatic, corneal, skin toxicity. Sotalol: β-blocker ADRs + QT prolongation.", labs:"Prolonged QT; amiodarone: ↑ TFTs, ↑ LFTs, CXR for pulmonary toxicity", trap:"Amiodarone paradoxically causes LESS torsades than other Class III drugs despite most QT prolongation." }, links:["Class IA (also ↑ QT)","Amiodarone toxicity cluster","Torsades de pointes"] },
+  { number:5, theme:"Class II, IV & Other Agents", objectives:["MOA, adverse effects of Class II, IV, adenosine, digoxin"], mechanism:"Class II (β-blockers): ↓ automaticity + ↓ AV conduction. Class IV (non-DHP CCBs): ↓ AV nodal conduction. Adenosine: K⁺ activation → transient AV block. Digoxin: Na⁺/K⁺-ATPase inhibition → ↑ vagal tone.", nodes:{ pathway:"β-block → ↓ cAMP → ↓ SA/AV automaticity. Ca²⁺ block → ↓ AV nodal conduction. Adenosine → K⁺ efflux → hyperpolarization.", disease:"Class II: SVT, rate control in AF, post-MI protection. Class IV: SVT, rate control in AF. Adenosine: acute SVT termination. Digoxin: rate control in AF + HF.", pharmacology:"Class II: esmolol (ultrashort IV), metoprolol, propranolol. Class IV: verapamil, diltiazem. Adenosine (t½ <10 sec). Digoxin (narrow TI).", clinical:"Adenosine: flushing, chest tightness, transient dyspnea. Digoxin toxicity: N/V, yellow halos, PAT with block. Class II+IV combo → heart block.", labs:"Digoxin level; K⁺ level (hypokalemia ↑ digoxin toxicity); ECG: dig effect (scooped ST)", trap:"Verapamil + β-blocker = dangerous AV block. WPW + Afib: AV nodal blockers (digoxin, verapamil, adenosine) are CONTRAINDICATED." }, links:["WPW contraindication (adenosine, digoxin, verapamil)","Digoxin toxicity cluster","Class II/IV dangerous combination"] },
+];
+
+const STUDYGUIDE = [
+  { objectives:["Vaughan-Williams classification basis and limitations; ion channel state-dependent binding"], mechanism:"4 classes based on primary electrophysiologic mechanism. Limitations: many drugs have multiple actions; classification doesn't predict clinical efficacy or safety; doesn't include adenosine or digoxin.", high_yield_facts:["Class I: Na⁺ channel block — IA (intermediate, ↑ QT), IB (fast, ↓ APD), IC (slow, ↑ QRS)","Class II: β-blockade → ↓ HR, ↓ AV conduction","Class III: K⁺ channel block → ↑ APD, ↑ QT → torsades risk","Class IV: Ca²⁺ channel block (non-DHP) → ↓ AV conduction","Use-dependence: IB drugs most effective at rapid rates (ischemia) — bind inactivated channels","Amiodarone has Class I+II+III+IV properties — doesn't fit one class"], vignette_clues:["Widened QRS → Class I drug effect (Na⁺ channel block)","Prolonged QT → Class IA or III (K⁺ channel block)","Drug effective in post-MI VT at rapid rates → Class IB (lidocaine)"], trap:"Vaughan-Williams classification is a FRAMEWORK, not a perfect guide. Sotalol is Class III but has significant Class II (β-blocker) activity. Amiodarone defies classification.", if_you_see:"ECG changes after antiarrhythmic → widened QRS = Na⁺ block; prolonged QT = K⁺ block", integration:["Phys: action potential phases","Pharm: ion channel pharmacology","Cardiology: ECG interpretation"] },
+  { objectives:["Mechanisms of arrhythmias linked to antiarrhythmic drug classes"], mechanism:"Arrhythmia mechanisms: (1) Enhanced automaticity → β-blockers, Ca²⁺ blockers reduce phase 4 depolarization. (2) Re-entry → Class I slow conduction or Class III prolong ERP. (3) Triggered activity (EADs/DADs) → Class IB, Mg²⁺, β-blockers.", high_yield_facts:["Re-entry: needs slow conduction + unidirectional block + excitable tissue","Class I terminates re-entry by converting unidirectional to bidirectional block","Class III terminates re-entry by prolonging ERP so tissue is refractory","EADs (early afterdepolarizations) → torsades de pointes → treat with Mg²⁺, ↑ HR (pacing or isoproterenol)","DADs (delayed afterdepolarizations) → digoxin toxicity, catecholaminergic VT → β-blockers","WPW re-entry: AVOID AV nodal blockers (adenosine, verapamil, digoxin) → use procainamide"], vignette_clues:["Irregular wide complex tachycardia + WPW → NEVER give AV nodal blockers","Torsades (twisting QRS around baseline) → give IV magnesium sulfate","Narrow complex tachycardia terminates with adenosine → AVNRT or AVRT"], trap:"WPW + Afib + AV nodal blocker = potentially fatal. All impulses forced through accessory pathway → ventricular fibrillation.", if_you_see:"Torsades de pointes → IV magnesium sulfate (first-line); also check/correct K⁺, Mg²⁺", integration:["Phys: re-entry circuit mechanics","Cardiology: WPW, SVT, torsades","Pharm: proarrhythmia risk"] },
+  { objectives:["Side effects, limitations and toxicities of Class I antiarrhythmics"], mechanism:"IA: Na⁺ block + K⁺ block → ↑ QT → torsades. IB: fast kinetics → use-dependent, CNS toxicity. IC: slow kinetics → proarrhythmic in structural heart disease.", high_yield_facts:["Procainamide: drug-induced lupus (anti-histone Ab, NOT anti-dsDNA)","Disopyramide: strong anticholinergic effects (urinary retention, dry mouth, constipation)","Lidocaine: CNS toxicity (tremor, seizures) — dose-dependent; IV only (high first-pass)","Mexiletine: oral IB agent — similar CNS ADRs to lidocaine","Flecainide/Propafenone: CONTRAINDICATED post-MI, structural heart disease (CAST trial)","Propafenone: also has β-blocking activity"], vignette_clues:["ANA+ + anti-histone Ab + patient on antiarrhythmic → drug-induced lupus (procainamide)","Post-MI patient given IC drug → ↑ mortality (CAST trial)","Seizures + tremor in patient given IV drug for VT → lidocaine toxicity"], trap:"Drug-induced lupus: anti-histone (+), anti-dsDNA (−), complement normal. Stops when drug stopped. Also caused by hydralazine, isoniazid, minocycline.", if_you_see:"ANA+ + anti-histone + antiarrhythmic → drug-induced lupus; stop the drug", integration:["Immunology: drug-induced lupus","CAST trial: IC drugs post-MI","CNS: lidocaine toxicity"] },
+  { objectives:["Amiodarone — multi-organ toxicity and drug interactions"], mechanism:"Amiodarone blocks Na⁺, K⁺, Ca²⁺ channels + α/β receptors. 37% iodine by weight → thyroid effects. Highly lipophilic → accumulates in tissues → long t½ (40–55 days) → prolonged toxicity.", high_yield_facts:["Pulmonary toxicity: interstitial pneumonitis/fibrosis — most serious, potentially fatal","Thyroid: hypothyroidism (iodine load) OR hyperthyroidism (iodine substrate + Jod-Basedow)","Hepatotoxicity: ↑ LFTs — monitor regularly","Corneal microdeposits: almost universal but usually asymptomatic/reversible","Blue-gray skin discoloration: sun-exposed areas, photosensitivity","CYP2C9 inhibitor → ↑ warfarin (↑ INR) — reduce warfarin dose","P-glycoprotein inhibitor → ↑ digoxin levels","Half-life 40–55 days → toxicity/interactions persist weeks-months after stopping"], vignette_clues:["Ground-glass opacities + dyspnea + amiodarone → pulmonary toxicity","Blue-gray discoloration of face/arms + antiarrhythmic → amiodarone","↑ INR on warfarin after new drug added → check for amiodarone (CYP2C9 inhibition)"], trap:"Amiodarone causes LESS torsades than expected despite marked QT prolongation. Thyroid toxicity goes BOTH ways — check TSH regularly.", if_you_see:"Amiodarone + warfarin → ↑ INR; amiodarone + digoxin → ↑ digoxin toxicity; amiodarone + dyspnea → CXR + PFTs", integration:["Pulmonology: drug-induced ILD","Endocrinology: thyroid","Pharm: CYP2C9, P-gp inhibition"] },
+  { objectives:["Adenosine and digoxin pharmacology; management of SVT and AF"], mechanism:"Adenosine: activates GIRK channels → hyperpolarizes AV node → transient AV block (t½ <10 sec). Digoxin: inhibits Na⁺/K⁺-ATPase → ↑ intracellular Na⁺ → ↑ Ca²⁺ via NCX → ↑ contractility + ↑ vagal tone → ↓ AV conduction.", high_yield_facts:["Adenosine: drug of choice for acute termination of AVNRT/AVRT (SVT)","Adenosine t½ <10 sec — adverse effects (flushing, dyspnea, chest tightness) are transient","Adenosine blocked by methylxanthines (theophylline, caffeine) — need higher dose","Adenosine potentiated by dipyridamole — need lower dose","Digoxin toxicity: N/V, xanthopsia (yellow-green halos), PAT with block, bidirectional VT","Hypokalemia + digoxin = dangerous (K⁺ competes at binding site)","Digoxin toxicity treatment: Fab antibody fragments (Digibind)"], vignette_clues:["Acute narrow complex tachycardia → adenosine first (diagnostic + therapeutic)","Yellow-green halos + N/V + irregular rhythm → digoxin toxicity → check K⁺, give Fab","Patient on digoxin + furosemide → watch for hypokalemia → ↑ digoxin toxicity"], trap:"Adenosine and digoxin are CONTRAINDICATED in WPW + Afib (↑ accessory pathway conduction). Digoxin toxicity worsened by hypokalemia, hypomagnesemia, hypercalcemia.", if_you_see:"SVT that terminates with adenosine → AVNRT (most common) or AVRT. SVT that doesn't terminate but reveals sawtooth waves → atrial flutter.", integration:["Cardiology: SVT algorithm","Pharm: Na⁺/K⁺-ATPase, GIRK channels","Electrolytes: K⁺/Mg²⁺ and arrhythmias"] },
+];
+
+const VIGNETTES = [
+  { number:1, cluster:"Amiodarone Toxicity", objectives_tested:["Identify most common side effects, limitations and toxicities of antiarrhythmic drugs"], vignette:"A 68-year-old man with a history of persistent atrial fibrillation has been taking amiodarone 200 mg daily for 4 years. He presents with a 3-month history of progressive exertional dyspnea, dry cough, and a 10-pound weight loss. Chest X-ray shows bilateral interstitial infiltrates. PFTs reveal a restrictive pattern with decreased DLCO. His INR has risen from 2.3 to 4.8 over the past 2 months despite no change in his warfarin dose.", question:"Which of the following best explains both the pulmonary findings and the change in his INR?", answer:"Amiodarone-induced pulmonary toxicity (interstitial pneumonitis) and inhibition of CYP2C9, which increases warfarin levels.", why_correct:"Amiodarone accumulates in lung tissue causing interstitial pneumonitis — the most serious adverse effect. It also inhibits CYP2C9, the primary enzyme metabolizing warfarin (S-warfarin), leading to increased warfarin levels and elevated INR.", key_clues:"Progressive dyspnea + bilateral infiltrates + DLCO reduction = pulmonary toxicity. Unexplained INR rise on stable warfarin dose = CYP2C9 inhibition. Long-term amiodarone use ties both together.", why_missed:"Students may attribute the pulmonary findings to heart failure without considering drug toxicity. The INR change is a separate clue pointing to the same drug.", trap:"Amiodarone's half-life is 40–55 days — pulmonary toxicity and drug interactions can persist for months AFTER the drug is stopped. Also monitor thyroid function (TSH) regularly." },
+  { number:2, cluster:"WPW + Afib — Drug Contraindication", objectives_tested:["Interpret how mechanisms of arrhythmias are linked to various classes of antiarrhythmic drugs","Discuss pharmacologic management of arrhythmias"], vignette:"A 28-year-old woman presents to the ED with palpitations and lightheadedness. ECG shows an irregular wide complex tachycardia with ventricular rates up to 220 bpm. A delta wave was noted on her previous ECG when she was in sinus rhythm. The ED resident prepares to give intravenous verapamil for rate control.", question:"Why is verapamil contraindicated in this patient, and what is the appropriate treatment?", answer:"Verapamil is contraindicated because it blocks the AV node, forcing all atrial impulses to conduct through the accessory pathway, potentially causing ventricular fibrillation. Appropriate treatment is IV procainamide or synchronized cardioversion.", why_correct:"In WPW with Afib, the AV node normally limits how many impulses reach the ventricles. Verapamil removes this protection, allowing rapid conduction via the accessory pathway → VF. Procainamide slows accessory pathway conduction.", key_clues:"History of delta wave on prior ECG = WPW. Irregular wide complex tachycardia = Afib conducting through accessory pathway. Young patient with very rapid rate = WPW top of differential.", why_missed:"Students may reflexively reach for verapamil or adenosine for any SVT/rapid rate. The wide complex + irregular + young patient + history of delta wave must trigger WPW protocol.", trap:"AV nodal blockers in WPW + Afib = potentially fatal. The whole class is contraindicated: verapamil, diltiazem, adenosine, digoxin, and β-blockers." },
+  { number:3, cluster:"Drug-Induced Lupus — Procainamide", objectives_tested:["Identify most common side effects, limitations and toxicities of antiarrhythmic drugs"], vignette:"A 55-year-old man with a history of ventricular tachycardia has been taking procainamide for 8 months. He now presents with bilateral joint pain, a facial rash, pleuritis, and fatigue. Laboratory tests show: ANA positive (1:640), anti-histone antibodies positive, anti-dsDNA antibodies negative, complement C3 and C4 normal.", question:"What is the diagnosis, what is the most important distinguishing laboratory finding from systemic lupus erythematosus, and what is the treatment?", answer:"Drug-induced lupus erythematosus (DILE) from procainamide. Key distinguishing feature: anti-histone antibodies positive, anti-dsDNA antibodies negative (opposite of SLE). Treatment: discontinue procainamide.", why_correct:"Procainamide is the most common cause of drug-induced lupus. DILE is characterized by anti-histone antibodies with negative anti-dsDNA. Complement levels are typically normal (unlike SLE). Symptoms resolve with drug discontinuation.", key_clues:"ANA+ + anti-histone(+) + anti-dsDNA(−) + normal complement + procainamide use = drug-induced lupus. This pattern is pathognomonic.", why_missed:"Students may diagnose SLE without checking anti-dsDNA. The anti-histone vs anti-dsDNA distinction is the key differentiator Step 1 tests repeatedly.", trap:"Other drugs causing DILE: hydralazine (most common overall), isoniazid, minocycline, methyldopa. All → anti-histone(+), anti-dsDNA(−)." },
+];
+
+const QUESTIONS = [
+  { number:1, cluster:"Class IC — CAST Trial", objectives_tested:["Identify side effects, limitations and toxicities of antiarrhythmic drugs"], stem:"A 58-year-old man with a history of myocardial infarction 3 months ago is found to have frequent asymptomatic premature ventricular contractions (PVCs) on a Holter monitor. His cardiologist considers starting flecainide to suppress the PVCs. Which of the following best describes the expected outcome based on available evidence?", choices:{ A:"Flecainide will suppress PVCs and reduce mortality", B:"Flecainide will suppress PVCs but increase mortality", C:"Flecainide will have no effect on PVCs", D:"Flecainide will increase PVCs and reduce mortality", E:"Flecainide is safe post-MI if the ejection fraction is preserved" }, correct:"B", tested_concept:"CAST trial — Class IC proarrhythmia post-MI", why_correct:"The CAST trial showed that flecainide and encainide suppressed PVCs post-MI but significantly increased mortality due to proarrhythmic effects (fatal ventricular arrhythmias). Class IC drugs are contraindicated post-MI and in structural heart disease.", why_wrong:{ A:"CAST trial proved the opposite — suppressing PVCs does not improve and actually worsens mortality", C:"IC drugs are highly effective at suppressing PVCs — that was not the problem", D:"IC drugs suppress PVCs; the issue is increased mortality, not increased PVCs", E:"IC drugs are contraindicated in ALL structural heart disease regardless of EF" }, trap:"The intuitive assumption that 'suppressing PVCs = better outcome' is wrong. CAST proved treating asymptomatic PVCs with IC drugs post-MI is harmful." },
+  { number:2, cluster:"Adenosine — Mechanism & Contraindications", objectives_tested:["Discuss pharmacologic management of arrhythmias; identify toxicities and limitations"], stem:"A 32-year-old woman presents to the ED with sudden-onset palpitations and a heart rate of 185 bpm. ECG shows a regular narrow complex tachycardia. She is hemodynamically stable. IV adenosine is administered and the tachycardia terminates. She reports taking theophylline for asthma. Which of the following best explains why a higher-than-usual dose of adenosine was required?", choices:{ A:"Theophylline activates adenosine receptors, requiring more adenosine to compete", B:"Theophylline inhibits adenosine receptors (A1), blocking adenosine's effect", C:"Theophylline accelerates adenosine metabolism by adenosine deaminase", D:"Theophylline increases AV nodal conduction, opposing adenosine", E:"Theophylline causes tachycardia that is adenosine-resistant" }, correct:"B", tested_concept:"Theophylline (methylxanthine) is an adenosine receptor antagonist", why_correct:"Theophylline and other methylxanthines (caffeine) are competitive antagonists at adenosine A1 receptors. Since adenosine works by activating A1 receptors on the AV node to cause hyperpolarization, theophylline blocks this effect and higher adenosine doses are needed.", why_wrong:{ A:"Theophylline blocks, not activates, adenosine receptors", C:"Theophylline does not accelerate adenosine metabolism", D:"The mechanism is receptor antagonism, not direct AV nodal effect", E:"SVT is not inherently adenosine-resistant; the drug interaction explains the dose requirement" }, trap:"Dipyridamole has the OPPOSITE effect — blocks adenosine breakdown → potentiates adenosine → use LOWER dose. Methylxanthines: block → need MORE. Dipyridamole: potentiate → need LESS." },
+  { number:3, cluster:"Digoxin Toxicity", objectives_tested:["Identify most common side effects, limitations and toxicities of antiarrhythmic drugs"], stem:"A 75-year-old woman with atrial fibrillation and heart failure is on digoxin 0.25 mg daily and furosemide 40 mg daily. She presents with nausea, vomiting, and reports seeing a yellow-green tinge around objects. ECG shows paroxysmal atrial tachycardia with 2:1 AV block. Serum potassium is 2.9 mEq/L. Which of the following best explains why her potassium level predisposes her to toxicity?", choices:{ A:"Hypokalemia increases renal excretion of digoxin", B:"Hypokalemia increases the number of Na⁺/K⁺-ATPase pumps", C:"Potassium competes with digoxin for binding to Na⁺/K⁺-ATPase; low K⁺ increases digoxin binding", D:"Hypokalemia causes compensatory aldosterone release that inactivates digoxin", E:"Low potassium directly activates the Na⁺/K⁺-ATPase pump" }, correct:"C", tested_concept:"Hypokalemia increases digoxin binding to Na⁺/K⁺-ATPase", why_correct:"Potassium and digoxin compete for the same binding site on the extracellular face of Na⁺/K⁺-ATPase. When serum K⁺ is low, there is less competition, so more digoxin binds and inhibits the pump — even at therapeutic drug levels.", why_wrong:{ A:"Hypokalemia does not increase renal digoxin excretion", B:"Hypokalemia does not upregulate Na⁺/K⁺-ATPase pumps", D:"Aldosterone does not inactivate digoxin", E:"Low K⁺ does not activate the pump — it allows more digoxin inhibition" }, trap:"Classic scenario: patient on BOTH digoxin AND a loop diuretic (furosemide). The diuretic causes hypokalemia, which dramatically increases digoxin toxicity even at a 'therapeutic' dose. Always monitor K⁺ in digoxin patients." },
+  { number:4, cluster:"Amiodarone Drug Interactions", objectives_tested:["Identify most common side effects, limitations and toxicities of antiarrhythmic drugs"], stem:"A 70-year-old man with heart failure and persistent atrial fibrillation is started on amiodarone for rhythm control. He is also on warfarin (INR stable at 2.5), digoxin 0.25 mg daily, and lisinopril. Two weeks later his INR is 4.9 and he reports palpitations. Which of the following changes to his regimen are most appropriate?", choices:{ A:"Increase warfarin dose; continue digoxin", B:"Discontinue warfarin; reduce digoxin dose", C:"Reduce warfarin dose; reduce digoxin dose", D:"Continue all medications; recheck INR in 4 weeks", E:"Reduce warfarin dose; increase digoxin dose" }, correct:"C", tested_concept:"Amiodarone inhibits CYP2C9 (↑ warfarin) and P-glycoprotein (↑ digoxin)", why_correct:"Amiodarone inhibits CYP2C9 → decreases warfarin metabolism → ↑ warfarin levels → ↑ INR. Amiodarone also inhibits P-glycoprotein → decreases digoxin elimination → ↑ digoxin levels → toxicity risk. Both doses must be reduced.", why_wrong:{ A:"Warfarin dose should be REDUCED, not increased; digoxin must also be reduced", B:"Warfarin should not be discontinued — anticoagulation is needed for Afib; reduce the dose instead", D:"These interactions require immediate dose adjustments, not watchful waiting", E:"Digoxin dose should be REDUCED, not increased" }, trap:"Amiodarone's interactions with warfarin and digoxin are immediate and predictable. Whenever amiodarone is started, warfarin dose should be empirically reduced by ~30–50% and digoxin level monitored." },
+  { number:5, cluster:"Torsades de Pointes", objectives_tested:["Interpret how mechanisms of arrhythmias are linked to antiarrhythmic drug classes; identify toxicities"], stem:"A 62-year-old woman is admitted for new-onset atrial fibrillation and started on IV ibutilide for chemical cardioversion. Twenty minutes later, she develops a polymorphic ventricular tachycardia with a characteristic twisting of the QRS complexes around the isoelectric baseline. Her QTc interval had been 480 ms prior to administration. Which of the following is the most appropriate immediate treatment?", choices:{ A:"Administer IV amiodarone", B:"Administer IV magnesium sulfate", C:"Administer IV lidocaine", D:"Administer IV procainamide", E:"Perform synchronized cardioversion" }, correct:"B", tested_concept:"Torsades de pointes treatment — IV magnesium sulfate", why_correct:"Torsades de pointes (TdP) is a form of polymorphic VT associated with a prolonged QT interval. It is triggered by early afterdepolarizations (EADs). IV magnesium sulfate is the first-line treatment — it suppresses EADs by blocking Ca²⁺ entry, even in patients with normal serum magnesium levels.", why_wrong:{ A:"Amiodarone prolongs QT and can worsen TdP — contraindicated in TdP", C:"Lidocaine (IB) shortens APD and can be tried but is not first-line — magnesium is preferred", D:"Procainamide (IA) prolongs QT further — will worsen TdP", E:"Synchronized cardioversion is used for hemodynamically unstable VT, not the first step in stable TdP" }, trap:"All drugs that prolong QT (Class IA, III, some antibiotics, antipsychotics) can cause TdP. The treatment (IV Mg²⁺) is the same regardless of the offending drug. Amiodarone is the one Class III drug that causes LESS TdP despite prolonging QT." },
+];
+
+const DIAGRAMS = [
+  { title:"Vaughan-Williams Classification Summary", type:"comparison", objectives:["Explain basis of Vaughan-Williams classification; identify drug subclasses"], content:`┌────────┬──────────────┬──────────────────────────────────────────┬──────────────────────────────┐\n│ Class  │ Mechanism    │ Drugs                                    │ ECG Effect                   │\n├────────┼──────────────┼──────────────────────────────────────────┼──────────────────────────────┤\n│ IA     │ Na⁺ block +  │ Procainamide, Disopyramide               │ ↑ QRS + ↑ QT                 │\n│        │ K⁺ block     │                                          │                              │\n├────────┼──────────────┼──────────────────────────────────────────┼──────────────────────────────┤\n│ IB     │ Na⁺ block    │ Lidocaine, Mexiletine                    │ Minimal changes              │\n│        │ (↓ APD)      │                                          │                              │\n├────────┼──────────────┼──────────────────────────────────────────┼──────────────────────────────┤\n│ IC     │ Na⁺ block    │ Flecainide, Propafenone                  │ ↑ QRS + ↑ PR (no QT change)  │\n│        │ (marked)     │                                          │                              │\n├────────┼──────────────┼──────────────────────────────────────────┼──────────────────────────────┤\n│ II     │ β-block      │ Esmolol, Metoprolol, Propranolol         │ ↑ PR, ↓ HR                   │\n├────────┼──────────────┼──────────────────────────────────────────┼──────────────────────────────┤\n│ III    │ K⁺ block     │ Amiodarone, Dronedarone, Ibutilide,      │ ↑ QT (torsades risk)         │\n│        │ (↑ APD)      │ Dofetilide, Sotalol                      │                              │\n├────────┼──────────────┼──────────────────────────────────────────┼──────────────────────────────┤\n│ IV     │ Ca²⁺ block   │ Verapamil, Diltiazem                    │ ↑ PR, ↓ HR                   │\n├────────┼──────────────┼──────────────────────────────────────────┼──────────────────────────────┤\n│ Other  │ Various      │ Digoxin, Adenosine, Atropine, Mg²⁺      │ Various                      │\n└────────┴──────────────┴──────────────────────────────────────────┴──────────────────────────────┘` },
+  { title:"Amiodarone Multi-Organ Toxicity", type:"pathway", objectives:["Identify most common side effects, limitations and toxicities of amiodarone"], content:`AMIODARONE TOXICITY — ORGAN BY ORGAN\n\n  Pulmonary (MOST SERIOUS)\n    → Interstitial pneumonitis / pulmonary fibrosis\n    → Symptoms: progressive dyspnea, dry cough\n    → Diagnosis: ground-glass opacities on CT, ↓ DLCO\n    → Monitor: annual CXR + PFTs\n\n  Thyroid (BOTH DIRECTIONS — contains 37% iodine)\n    → Hypothyroidism (iodine load suppresses thyroid — Wolff-Chaikoff)\n    → Hyperthyroidism (iodine substrate + direct thyroid toxicity)\n    → Monitor: TSH every 6 months\n\n  Hepatic\n    → ↑ LFTs (transaminases)\n    → Monitor: LFTs periodically\n\n  Corneal Microdeposits\n    → Almost universal; usually asymptomatic\n    → Visible on slit-lamp exam; reversible on stopping drug\n\n  Skin (sun-exposed areas)\n    → Blue-gray discoloration (pathognomonic)\n    → Photosensitivity — use sunscreen\n\n  Neurologic\n    → Peripheral neuropathy, tremor, ataxia\n\n  DRUG INTERACTIONS (critical):\n    → CYP2C9 inhibition → ↑ warfarin → ↑ INR (reduce warfarin ~30–50%)\n    → P-gp inhibition → ↑ digoxin levels (reduce digoxin dose)\n    → Half-life: 40–55 days → interactions/toxicity persist after stopping` },
+  { title:"WPW + Afib — Safe vs. Dangerous Drugs", type:"flowchart", objectives:["Interpret how mechanisms of arrhythmias are linked to antiarrhythmic drug classes"], content:`WPW + ATRIAL FIBRILLATION\n  ECG: Irregular WIDE complex tachycardia + very rapid rate (often >200 bpm)\n\nNORMAL SITUATION:\n  Afib impulses → AV node filters rate → ventricles protected\n                → accessory pathway also conducts (contributes to wide QRS)\n\nDANGEROUS — AV NODAL BLOCKERS:\n  Adenosine / Verapamil / Diltiazem / Digoxin / β-blockers\n       ↓\n  Block AV node → ALL impulses forced through accessory pathway\n       ↓\n  Accessory pathway has NO decremental conduction\n       ↓\n  Rapid 1:1 conduction → Ventricular rates 300+ bpm → VENTRICULAR FIBRILLATION\n\nCORRECT TREATMENT:\n  Hemodynamically UNSTABLE → Synchronized cardioversion (FIRST)\n  Hemodynamically STABLE   → IV Procainamide (slows accessory pathway)\n                           → IV Ibutilide (alternative)\n\nMEMORY: "If WPW + AFib → Don't block the node → you'll open the floodgates"` },
+  { title:"Arrhythmia Mechanism → Drug Target", type:"pathway", objectives:["Interpret how mechanisms of arrhythmias are linked to antiarrhythmic drug classes; discuss pharmacologic management"], content:`ARRHYTHMIA MECHANISM → DRUG CLASS → MECHANISM OF TERMINATION\n\n1. ENHANCED AUTOMATICITY (abnormal phase 4 depolarization)\n   → ↓ slope of phase 4 → Class II (β-block ↓ cAMP) or Class IV (Ca²⁺ block)\n   → Examples: sinus tachycardia, junctional tachycardia\n\n2. RE-ENTRY (most common mechanism)\n   Requires: slow conduction + unidirectional block + excitable tissue\n   → Class I (Na⁺ block): slow conduction further → convert to bidirectional block\n   → Class III (K⁺ block): ↑ ERP → tissue refractory when impulse returns\n   → Examples: AVNRT, AVRT, atrial flutter, VT post-MI\n\n3. TRIGGERED ACTIVITY\n   (a) EADs (Early Afterdepolarizations) — from ↑ QT\n       → Cause: Class IA/III drugs, hypokalemia, hypomagnesemia\n       → Arrhythmia: Torsades de pointes\n       → Treatment: IV Mg²⁺, ↑ HR (pacing/isoproterenol), correct electrolytes\n\n   (b) DADs (Delayed Afterdepolarizations) — from ↑ intracellular Ca²⁺\n       → Cause: Digoxin toxicity, catecholamine excess\n       → Treatment: β-blockers, Ca²⁺ channel blockers, digoxin Fab fragments` },
+];
+
+function AnglesTab() {
+  return ANGLES.map((c,i) => (
+    <Card key={i}>
+      <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap", marginBottom:6 }}>
+        <Pill text={`Cluster ${c.number}`} color="purple"/>
+        <span style={{ fontWeight:500, fontSize:15 }}>{c.theme}</span>
+      </div>
+      {c.objectives.map((o,j) => <p key={j} style={{ margin:"0 0 2px", fontSize:13, color:"var(--color-text-secondary)", paddingLeft:10, borderLeft:"2px solid #AFA9EC" }}>{o}</p>)}
+      <Lbl t="Core mechanism"/><p style={{ fontSize:13, margin:"0 0 4px" }}>{c.mechanism}</p>
+      <p style={{ fontSize:12, color:"var(--color-text-secondary)", fontStyle:"italic", margin:"0 0 10px" }}>{c.why_testable}</p>
+      {c.angles.map((a,j) => (
+        <Inset key={j}>
+          <p style={{ fontWeight:500, fontSize:14, margin:"0 0 6px" }}>Angle {j+1}: {a.title}</p>
+          {[["Tested concept",a.tested_concept],["Vignette pattern",a.vignette_pattern],["Key clues",a.key_clues],["Common trap",a.trap],["Disciplines",a.disciplines]].map(([l,v]) =>
+            v ? <div key={l}><Lbl t={l}/><p style={{ fontSize:13, margin:"0 0 4px" }}>{v}</p></div> : null
+          )}
+        </Inset>
+      ))}
+    </Card>
+  ));
+}
+
+function MindMapTab() {
+  return MINDMAP.map((c,i) => (
+    <Card key={i}>
+      <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap", marginBottom:6 }}>
+        <Pill text={`Cluster ${c.number}`} color="teal"/>
+        <span style={{ fontWeight:500, fontSize:15 }}>{c.theme}</span>
+      </div>
+      <p style={{ fontSize:13, color:"var(--color-text-secondary)", margin:"0 0 8px", paddingLeft:10, borderLeft:"2px solid #5DCAA5", fontStyle:"italic" }}>{c.mechanism}</p>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(140px,1fr))", gap:8, marginBottom:8 }}>
+        {Object.entries(c.nodes).filter(([,v])=>v).map(([k,v]) => (
+          <div key={k} style={{ background:"var(--color-background-secondary)", borderRadius:8, padding:"8px 10px" }}>
+            <Lbl t={k}/><p style={{ fontSize:12, margin:0 }}>{v}</p>
+          </div>
+        ))}
+      </div>
+      <Lbl t="Links to"/>{c.links.map((l,j) => <Pill key={j} text={l} color="teal"/>)}
+    </Card>
+  ));
+}
+
+function StudyGuideTab() {
+  return STUDYGUIDE.map((s,i) => (
+    <Card key={i}>
+      <Lbl t="Objectives covered"/>
+      {s.objectives.map((o,j) => <p key={j} style={{ fontSize:13, color:"var(--color-text-secondary)", margin:"0 0 2px", paddingLeft:10, borderLeft:"2px solid #7F77DD" }}>{o}</p>)}
+      <Lbl t="Core mechanism"/><p style={{ fontSize:14, fontWeight:500, margin:"0 0 8px" }}>{s.mechanism}</p>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+        <div><Lbl t="High-yield facts"/>{s.high_yield_facts.map((f,j) => <p key={j} style={{ fontSize:13, margin:"0 0 3px" }}>• {f}</p>)}</div>
+        <div><Lbl t="Vignette clues"/>{s.vignette_clues.map((f,j) => <p key={j} style={{ fontSize:13, margin:"0 0 3px" }}>• {f}</p>)}</div>
+      </div>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginTop:8 }}>
+        <div style={{ background:T.coral.bg, borderRadius:8, padding:"8px 10px" }}><Lbl t="Common trap"/><p style={{ fontSize:13, color:T.coral.txt, margin:0 }}>{s.trap}</p></div>
+        <div style={{ background:T.teal.bg, borderRadius:8, padding:"8px 10px" }}><Lbl t="If you see → think"/><p style={{ fontSize:13, color:T.teal.txt, margin:0 }}>{s.if_you_see}</p></div>
+      </div>
+      <Lbl t="Integration links"/>{s.integration.map((l,j) => <Pill key={j} text={l} color="blue"/>)}
+    </Card>
+  ));
+}
+
+function VignettesTab() {
+  const [open, setOpen] = useState({});
+  return VIGNETTES.map((v,i) => (
+    <Card key={i}>
+      <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:8 }}>
+        <Pill text={`Vignette ${v.number}`} color="blue"/><Pill text={v.cluster} color="purple"/>
+      </div>
+      <Inset><p style={{ fontSize:13, lineHeight:1.7, margin:"0 0 8px" }}>{v.vignette}</p><p style={{ fontSize:14, fontWeight:500, margin:0 }}>{v.question}</p></Inset>
+      <button onClick={()=>setOpen(o=>({...o,[i]:!o[i]}))} style={{ marginTop:10, fontSize:13, padding:"6px 14px", cursor:"pointer", borderRadius:6, background:"transparent", border:"0.5px solid var(--color-border-secondary)", color:"var(--color-text-primary)" }}>
+        {open[i]?"Hide answer ↑":"Show answer ↓"}
+      </button>
+      {open[i] && (
+        <div style={{ marginTop:8 }}>
+          <div style={{ background:T.green.bg, borderRadius:8, padding:"8px 12px", marginBottom:8 }}>
+            <Lbl t="Correct answer"/><p style={{ fontSize:13, fontWeight:500, color:T.green.txt, margin:0 }}>{v.answer}</p>
+          </div>
+          {[["Why correct",v.why_correct],["Key clues",v.key_clues],["Why a student might miss it",v.why_missed],["Exam writer trap",v.trap]].map(([l,val]) =>
+            val ? <div key={l}><Lbl t={l}/><p style={{ fontSize:13, margin:"0 0 6px" }}>{val}</p></div> : null
+          )}
+        </div>
+      )}
+    </Card>
+  ));
+}
+
+function QuestionsTab() {
+  const [sel, setSel] = useState({});
+  const [shown, setShown] = useState({});
+  return QUESTIONS.map((q,i) => (
+    <Card key={i}>
+      <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:6 }}>
+        <Pill text={`Q${q.number}`} color="amber"/><Pill text={q.cluster} color="amber"/>
+      </div>
+      <p style={{ fontSize:14, lineHeight:1.7, margin:"10px 0" }}>{q.stem}</p>
+      {Object.entries(q.choices).map(([letter,txt]) => {
+        const picked=sel[i]===letter, revealed=shown[i], isCorrect=letter===q.correct;
+        let bg="var(--color-background-secondary)", border="0.5px solid var(--color-border-tertiary)";
+        if(!revealed&&picked){bg=T.blue.bg;border=`0.5px solid ${T.blue.bdr}`;}
+        if(revealed&&isCorrect){bg=T.green.bg;border=`0.5px solid ${T.green.bdr}`;}
+        if(revealed&&picked&&!isCorrect){bg=T.red.bg;border=`0.5px solid ${T.red.bdr}`;}
+        return <div key={letter} onClick={()=>!revealed&&setSel(s=>({...s,[i]:letter}))} style={{ background:bg, border, borderRadius:8, padding:"8px 12px", marginBottom:4, cursor:revealed?"default":"pointer", display:"flex", gap:10 }}>
+          <span style={{ fontWeight:500, fontSize:13, minWidth:16 }}>{letter}.</span>
+          <span style={{ fontSize:13 }}>{txt}</span>
+        </div>;
+      })}
+      <button disabled={!sel[i]||shown[i]} onClick={()=>setShown(s=>({...s,[i]:true}))} style={{ marginTop:6, padding:"6px 14px", borderRadius:6, fontSize:13, cursor:sel[i]&&!shown[i]?"pointer":"default", background:sel[i]&&!shown[i]?T.blue.bg:"var(--color-background-secondary)", color:sel[i]&&!shown[i]?T.blue.txt:"var(--color-text-tertiary)", border:`0.5px solid ${sel[i]&&!shown[i]?T.blue.bdr:"var(--color-border-tertiary)"}` }}>
+        Submit answer
+      </button>
+      {shown[i] && (
+        <div style={{ marginTop:8 }}>
+          <div style={{ background:T.green.bg, borderRadius:8, padding:"8px 12px", marginBottom:6 }}>
+            <Lbl t="Correct answer"/>
+            <p style={{ fontSize:13, fontWeight:500, color:T.green.txt, margin:"0 0 2px" }}>{q.correct} — {q.tested_concept}</p>
+            <p style={{ fontSize:13, color:T.green.txt, margin:0 }}>{q.why_correct}</p>
+          </div>
+          {Object.entries(q.why_wrong).map(([l,e]) => <p key={l} style={{ fontSize:12, color:"var(--color-text-secondary)", margin:"0 0 2px" }}><strong>{l}:</strong> {e}</p>)}
+          <div style={{ background:T.coral.bg, borderRadius:8, padding:"8px 12px", marginTop:6 }}>
+            <Lbl t="Main trap"/><p style={{ fontSize:13, color:T.coral.txt, margin:0 }}>{q.trap}</p>
+          </div>
+        </div>
+      )}
+    </Card>
+  ));
+}
+
+function DiagramsTab() {
+  return DIAGRAMS.map((d,i) => (
+    <Card key={i}>
+      <div style={{ display:"flex", gap:6, flexWrap:"wrap", alignItems:"center", marginBottom:6 }}>
+        <Pill text={d.type} color="pink"/><span style={{ fontWeight:500, fontSize:15 }}>{d.title}</span>
+      </div>
+      {d.objectives.map((o,j) => <p key={j} style={{ fontSize:12, color:"var(--color-text-secondary)", margin:"0 0 2px", paddingLeft:8, borderLeft:"2px solid #ED93B1" }}>{o}</p>)}
+      <pre style={{ background:"var(--color-background-secondary)", borderRadius:8, padding:"12px", marginTop:8, fontSize:12, color:"var(--color-text-primary)", whiteSpace:"pre-wrap", fontFamily:"monospace", lineHeight:1.7, overflowX:"auto" }}>{d.content}</pre>
+    </Card>
+  ));
+}
+
+const STUDY_RENDERERS = { angles:AnglesTab, mindmap:MindMapTab, studyguide:StudyGuideTab, vignettes:VignettesTab, questions:QuestionsTab, diagrams:DiagramsTab };
+
+function App() {
+  const [activeTab, setActiveTab] = useState("angles");
+  const Comp = STUDY_RENDERERS[activeTab];
+  return (
+    <div style={{ padding:"0.5rem 0.75rem", maxWidth:860, margin:"0 auto" }}>
+      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:10 }}>
+        <div>
+          <p style={{ fontSize:15, fontWeight:500, margin:0 }}>⚡ Antiarrhythmic Drugs I &amp; II</p>
+          <p style={{ fontSize:11, color:"var(--color-text-secondary)", margin:0 }}>Georgetown SOM · Cardio Exam 2</p>
+        </div>
+      </div>
+      <div style={{ display:"flex", gap:4, overflowX:"auto", paddingBottom:6, marginBottom:12 }}>
+        {STUDY_TABS.map(t => {
+          const active=activeTab===t.id;
+          return <button key={t.id} onClick={()=>setActiveTab(t.id)} style={{ flexShrink:0, padding:"5px 12px", borderRadius:8, border:active?`1px solid ${T.purple.bdr}`:"0.5px solid var(--color-border-tertiary)", background:active?T.purple.bg:"transparent", color:active?T.purple.txt:"var(--color-text-secondary)", fontSize:12, fontWeight:active?500:400, cursor:"pointer", display:"flex", alignItems:"center", gap:5 }}>
+            <span style={{ fontSize:13 }}>{t.icon}</span>{t.label}
+          </button>;
+        })}
+      </div>
+      <Comp/>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
