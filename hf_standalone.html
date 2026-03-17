@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Treatment of Heart Failure — Georgetown SOM</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #f9fafb; color: #111; min-height: 100vh; }
+  :root {
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f3f4f6;
+    --color-text-primary: #111827;
+    --color-text-secondary: #6b7280;
+    --color-text-tertiary: #9ca3af;
+    --color-border-tertiary: #e5e7eb;
+    --color-border-secondary: #d1d5db;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+const T = {
+  purple: { bg: "#EEEDFE", txt: "#3C3489", bdr: "#534AB7" },
+  teal:   { bg: "#E1F5EE", txt: "#085041", bdr: "#0F6E56" },
+  coral:  { bg: "#FAECE7", txt: "#712B13", bdr: "#993C1D" },
+  blue:   { bg: "#E6F1FB", txt: "#0C447C", bdr: "#185FA5" },
+  amber:  { bg: "#FAEEDA", txt: "#633806", bdr: "#854F0B" },
+  green:  { bg: "#EAF3DE", txt: "#27500A", bdr: "#3B6D11" },
+  red:    { bg: "#FCEBEB", txt: "#791F1F", bdr: "#A32D2D" },
+  pink:   { bg: "#FBEAF0", txt: "#72243E", bdr: "#993556" },
+};
+
+const Pill = ({ text, color = "purple" }) => {
+  const c = T[color];
+  return <span style={{ background:c.bg, color:c.txt, border:`0.5px solid ${c.bdr}`, borderRadius:20, padding:"2px 10px", fontSize:12, fontWeight:500, display:"inline-block", marginRight:4, marginBottom:2 }}>{text}</span>;
+};
+const Lbl = ({ t }) => <p style={{ fontSize:11, fontWeight:500, color:"var(--color-text-tertiary)", textTransform:"uppercase", letterSpacing:"0.06em", margin:"8px 0 2px" }}>{t}</p>;
+const Card = ({ children, style }) => <div style={{ background:"var(--color-background-primary)", border:"0.5px solid var(--color-border-tertiary)", borderRadius:12, padding:"1rem 1.25rem", marginBottom:10, ...style }}>{children}</div>;
+const Inset = ({ children, color }) => {
+  const c = color ? T[color] : null;
+  return <div style={{ background: c ? c.bg : "var(--color-background-secondary)", borderRadius:8, padding:"10px 12px", marginTop:6 }}>{children}</div>;
+};
+
+const STUDY_TABS = [
+  { id:"angles",     label:"Testing Angles", icon:"🎯" },
+  { id:"mindmap",    label:"Mind Map",        icon:"🗺️" },
+  { id:"studyguide", label:"Study Guide",     icon:"📖" },
+  { id:"vignettes",  label:"Vignettes",       icon:"🏥" },
+  { id:"questions",  label:"Practice Qs",     icon:"❓" },
+  { id:"diagrams",   label:"Diagrams",        icon:"📊" },
+];
+
+const ANGLES = [
+  {
+    number:1, theme:"HF Pathophysiology, Frank-Starling & Cardiac Remodeling",
+    objectives:["LO1: Pathophysiology of HF and Frank-Starling principle as compensatory mechanism","LO2: Cardiac remodeling and the importance of counteracting it with drugs"],
+    mechanism:"Failing heart → ↓ CO → compensatory neurohormonal activation (SNS, RAAS, ADH) → short-term benefit but long-term cardiac remodeling (hypertrophy, fibrosis, apoptosis) → worsens HF. Frank-Starling: ↑ preload → ↑ SV up to a point, then plateau/decline.",
+    why_testable:"Step 1 tests the pathophysiologic basis for why each drug class is used — understanding remodeling explains why ACEi/ARBs/β-blockers improve survival",
+    angles:[
+      { title:"Frank-Starling and compensatory mechanisms", tested_concept:"↓ CO → baroreceptor activation → ↑ SNS (↑ HR, ↑ contractility, vasoconstriction) + ↑ RAAS (↑ angiotensin II → ↑ aldosterone → Na/water retention) → ↑ preload/afterload → short-term maintains BP but long-term → remodeling", vignette_pattern:"Patient with new HF — why does the heart initially compensate but then fail further?", key_clues:"Compensatory SNS/RAAS activation is beneficial acutely but causes remodeling chronically", trap:"Thinking compensation is purely beneficial — it is the chronic neurohormonal activation that drives remodeling and worsens prognosis", disciplines:"Physiology, Pathophysiology" },
+      { title:"Cardiac remodeling and drug targets", tested_concept:"Remodeling = ventricular hypertrophy + fibrosis + chamber dilation + cardiomyocyte apoptosis, driven by Ang II, aldosterone, and catecholamines. ACEi/ARBs, MRAs, β-blockers, and ARNIs all counteract remodeling → improve survival", vignette_pattern:"Patient with HFrEF on multiple drugs — which drugs slow disease progression vs. just relieve symptoms?", key_clues:"Survival benefit drugs: ACEi/ARB, β-blockers (carvedilol, metoprolol succinate, bisoprolol), MRAs, ARNI, SGLT-2i. Symptom relief only: diuretics, digoxin", trap:"Confusing symptom-relieving drugs (diuretics) with disease-modifying drugs (ACEi, β-blockers) — diuretics improve symptoms but do NOT reduce mortality in HFrEF", disciplines:"Pharmacology, Pathophysiology" },
+    ]
+  },
+  {
+    number:2, theme:"RAAS Blockade: ACEi, ARBs, ARNI, MRA",
+    objectives:["LO3: MOA of ACE inhibitors and ARBs in HF","LO4: MOA and role of ARNI in HF","LO5: Role of aldosterone in HF; rationale for aldosterone receptor antagonists"],
+    mechanism:"ACEi block conversion of Ang I → Ang II → ↓ vasoconstriction + ↓ aldosterone + ↓ remodeling + ↑ bradykinin. ARBs block AT1 receptor (same downstream effect, no bradykinin). ARNI (sacubitril/valsartan) = ARB + neprilysin inhibitor → ↑ natriuretic peptides → vasodilation + natriuresis. MRAs (spironolactone, eplerenone) block aldosterone receptor → ↓ Na retention + ↓ fibrosis.",
+    why_testable:"RAAS blockade is the cornerstone of HFrEF therapy; adverse effects and the ARNI contraindication with ACEi are classic Step 1 questions",
+    angles:[
+      { title:"ACEi vs. ARB: when to use each", tested_concept:"ACEi: first-line RAAS blockade in HFrEF; ↑ bradykinin → cough (10–15%) and angioedema (rare but serious). ARBs: use when ACEi not tolerated (cough/angioedema). Do NOT combine ACEi + ARB in HF (↑ hyperkalemia/AKI).", vignette_pattern:"HFrEF patient on lisinopril develops dry cough — what do you switch to?", key_clues:"Dry cough on ACEi → switch to ARB (losartan). Both cause hyperkalemia and are contraindicated in bilateral renal artery stenosis and pregnancy.", trap:"Combining ACEi + ARB — dual RAAS blockade increases adverse effects without additional mortality benefit; do NOT combine", disciplines:"Pharmacology, Cardiology" },
+      { title:"ARNI: sacubitril/valsartan — special rules", tested_concept:"Sacubitril (neprilysin inhibitor) + valsartan (ARB). Neprilysin degrades natriuretic peptides → blocking it → ↑ BNP/ANP → vasodilation, natriuresis, ↓ remodeling. MUST NOT give within 36 hours of ACEi (risk of angioedema from dual bradykinin elevation).", vignette_pattern:"HFrEF patient on lisinopril being switched to sacubitril/valsartan — what is the washout period?", key_clues:"36-hour washout period between ACEi and ARNI. ARNI is preferred over ACEi/ARB alone in HFrEF if tolerated.", trap:"Giving ARNI immediately after stopping ACEi — the 36-hour washout is mandatory to avoid life-threatening angioedema", disciplines:"Pharmacology, Cardiology" },
+      { title:"Aldosterone antagonists (MRAs): spironolactone vs. eplerenone", tested_concept:"Spironolactone: non-selective MRA → blocks aldosterone AND androgen/progesterone receptors → gynecomastia, impotence, menstrual irregularities. Eplerenone: selective MRA → fewer sex hormone side effects. Both: ↑ K⁺ (hyperkalemia), contraindicated if K⁺ >5.0 or GFR <30.", vignette_pattern:"Male HFrEF patient on spironolactone develops tender breast tissue — what do you switch to?", key_clues:"Gynecomastia on spironolactone → switch to eplerenone (selective MRA). Both cause hyperkalemia.", trap:"Forgetting to monitor K⁺ with MRAs — especially dangerous when combined with ACEi/ARB (triple RAAS blockade → severe hyperkalemia)", disciplines:"Pharmacology, Endocrinology" },
+    ]
+  },
+  {
+    number:3, theme:"β-Blockers, SGLT-2i, Ivabradine, Digoxin",
+    objectives:["LO6: Role of β-blockers in HF","LO9: Role of SGLT-2 inhibitors in HF","LO10: Mechanism of digoxin in HF","LO11: Role of ivabradine in HF"],
+    mechanism:"β-blockers counteract chronic SNS activation → ↓ remodeling → ↑ EF over time (paradox: negative inotropes that improve cardiac function long-term). SGLT-2i (empagliflozin, dapagliflozin): osmotic diuresis + favorable hemodynamics → ↓ HF hospitalizations. Digoxin: inhibits Na/K-ATPase → ↑ intracellular Ca²⁺ → ↑ contractility + ↓ AV conduction. Ivabradine: blocks If (funny current) in SA node → ↓ HR without affecting contractility.",
+    why_testable:"β-blocker paradox in HF, SGLT-2i as a new HF drug class, digoxin toxicity, and ivabradine's unique MOA are all high-yield Step 1 topics",
+    angles:[
+      { title:"β-blockers in HF — the paradox", tested_concept:"β-blockers are negative inotropes but IMPROVE survival in HFrEF long-term by counteracting chronic SNS-mediated remodeling. Only 3 proven for HF: carvedilol (α+β), metoprolol succinate (β₁), bisoprolol (β₁). Start low, go slow — do NOT use in ACUTE decompensated HF.", vignette_pattern:"Patient with newly diagnosed HFrEF — which β-blocker and when to start?", key_clues:"Carvedilol, metoprolol succinate, bisoprolol only. Must be euvolemic before starting. Never start during acute decompensation.", trap:"Starting a β-blocker during acute decompensated HF — this can acutely worsen hemodynamics and precipitate cardiogenic shock", disciplines:"Pharmacology, Cardiology" },
+      { title:"Digoxin toxicity", tested_concept:"Digoxin: narrow therapeutic window (0.5–0.9 ng/mL for HF). Toxicity enhanced by hypokalemia (K⁺ competes with digoxin at Na/K-ATPase), hypomagnesemia, hypercalcemia, renal failure. Toxicity: GI (nausea, vomiting), CNS (yellow-green visual halos, confusion), cardiac (bradycardia, AV block, any arrhythmia).", vignette_pattern:"Elderly patient on digoxin + furosemide develops nausea, bradycardia, yellow halos — why?", key_clues:"Furosemide → hypokalemia → ↑ digoxin toxicity. Yellow-green halos = classic visual disturbance. Narrow therapeutic index.", trap:"Forgetting that hypokalemia from loop diuretics dramatically increases digoxin toxicity — always monitor K⁺ in patients on both drugs", disciplines:"Pharmacology, Cardiology" },
+      { title:"Ivabradine and SGLT-2 inhibitors in HF", tested_concept:"Ivabradine: blocks funny current (If) in SA node → ↓ HR only (no effect on contractility, BP, or AV conduction). Use: HFrEF + HR ≥70 bpm in sinus rhythm despite max β-blocker. SGLT-2i (empagliflozin, dapagliflozin): ↓ HF hospitalizations and mortality in HFrEF AND HFpEF — now indicated for both.", vignette_pattern:"HFrEF patient on max-dose carvedilol, HR still 82 bpm — what to add?", key_clues:"Ivabradine only in sinus rhythm, HR ≥70 on max β-blocker. SGLT-2i work in HFrEF and HFpEF (unique among HF drugs).", trap:"Using ivabradine in atrial fibrillation — it only blocks the SA node If current; has no effect on ventricular rate in Afib", disciplines:"Pharmacology, Cardiology, Endocrinology" },
+    ]
+  },
+  {
+    number:4, theme:"Vasodilators, Hydralazine/Isosorbide, Diuretics & ADHF",
+    objectives:["LO7: Mechanism and rationale for vasodilators in HF; preload/afterload effects","LO8: Rationale for hydralazine/isosorbide dinitrate combination","LO12: Systolic vs. diastolic HF management","LO13: Management of acute decompensated HF","LO14: Role of diuretics in ADHF with focus on loop diuretics"],
+    mechanism:"Vasodilators ↓ preload (nitrates → venodilation) and/or ↓ afterload (hydralazine → arteriolar dilation) → ↓ cardiac work → ↑ CO. Loop diuretics (furosemide, torsemide) → ↓ volume overload in ADHF. HFpEF has preserved EF — treat congestion/comorbidities; no proven mortality-reducing agents except SGLT-2i.",
+    why_testable:"Hydralazine/isosorbide is the go-to HF regimen in ACEi/ARB-intolerant patients; loop diuretic MOA and electrolyte side effects are heavily tested",
+    angles:[
+      { title:"Hydralazine/isosorbide dinitrate combination", tested_concept:"Hydralazine (arterial vasodilator → ↓ afterload) + isosorbide dinitrate (venodilator → ↓ preload) = complementary combination. Use in HFrEF: (1) as alternative when ACEi/ARB/ARNI not tolerated, (2) specifically indicated as addition to standard therapy in self-identified Black patients (A-HeFT trial).", vignette_pattern:"Black patient with HFrEF on ACEi + β-blocker + MRA — what to add for additional mortality benefit?", key_clues:"Hydralazine/isosorbide dinitrate has specific mortality benefit in Black patients (A-HeFT trial). Also use when ACEi/ARB contraindicated.", trap:"Using this combination as first-line instead of ACEi/ARB — it is a substitute or addition, not the primary RAAS blocker", disciplines:"Pharmacology, Cardiology" },
+      { title:"Loop diuretics in ADHF; HFpEF management", tested_concept:"Loop diuretics (furosemide, torsemide): block Na-K-2Cl cotransporter in thick ascending limb → ↓ Na/water reabsorption → diuresis → ↓ preload → ↓ congestion. Adverse effects: hypokalemia, hyponatremia, hypomagnesemia, ototoxicity (high dose IV), metabolic alkalosis. HFpEF: treat congestion (diuretics), control HTN, rate control for Afib; SGLT-2i have mortality benefit.", vignette_pattern:"Patient with ADHF and pulmonary edema — immediate management?", key_clues:"IV furosemide → rapid diuresis in ADHF. Monitor K⁺ (hypokalemia → digoxin toxicity if on digoxin). Torsemide has better oral bioavailability than furosemide.", trap:"Adding a β-blocker or increasing ACEi dose during acute decompensation — stabilize first with diuretics/vasodilators, then optimize chronic HF therapy after euvolemia", disciplines:"Pharmacology, Cardiology, Nephrology" },
+    ]
+  },
+];
+
+const MINDMAP = [
+  { number:1, theme:"ACEi / ARBs", objectives:["LO3"], mechanism:"Block RAAS → ↓ Ang II → ↓ vasoconstriction + ↓ aldosterone + ↓ remodeling. ACEi also ↑ bradykinin.", nodes:{ pathway:"Ang I → (ACE blocked) → no Ang II → ↓ AT1R activation → ↓ vasoconstriction, ↓ aldosterone, ↓ SNS", disease:"HFrEF (first-line), post-MI, diabetic nephropathy, HTN", pharmacology:"ACEi: enalapril, lisinopril, captopril. ARBs: losartan. ARBs lack bradykinin effect.", clinical:"ACEi: dry cough (bradykinin), angioedema (rare, serious), hyperkalemia, AKI, hypotension. ARBs: same except no cough.", labs:"Monitor K⁺, creatinine, BP. Cr rise <30% acceptable after starting ACEi.", trap:"Do NOT combine ACEi + ARB. Contraindicated: bilateral RAS, pregnancy (Category D), K⁺ >5.5." }, links:["ARNI (replace ACEi if possible)","MRAs (add-on, watch K⁺)","Hydralazine/ISDN (substitute if ACEi/ARB CI)"] },
+  { number:2, theme:"ARNI: Sacubitril/Valsartan", objectives:["LO4"], mechanism:"Sacubitril inhibits neprilysin → ↑ BNP/ANP → ↑ vasodilation + natriuresis + ↓ remodeling. Valsartan blocks AT1R.", nodes:{ pathway:"↓ Neprilysin → ↑ ANP/BNP → ↑ cGMP → vasodilation + natriuresis + ↓ fibrosis", disease:"HFrEF — preferred over ACEi/ARB if tolerated", pharmacology:"Sacubitril/valsartan (Entresto). 36-hr washout from ACEi required before starting.", clinical:"Hypotension (most common), hyperkalemia, angioedema risk (↑ with ACEi overlap)", labs:"Monitor K⁺, creatinine, BP. Use NT-proBNP (NOT BNP) to monitor HF while on ARNI.", trap:"Never give with ACEi (angioedema). Use NT-proBNP (not BNP) to monitor HF severity while on ARNI." }, links:["ACEi (36-hr washout required)","MRAs (safe to combine)"] },
+  { number:3, theme:"MRAs: Spironolactone & Eplerenone", objectives:["LO5"], mechanism:"Block mineralocorticoid (aldosterone) receptor → ↓ Na/water retention + ↓ K⁺ excretion + ↓ cardiac fibrosis", nodes:{ pathway:"Aldosterone → MR activation → ↑ Na channels + K⁺ secretion + fibrosis → MRA blocks this", disease:"HFrEF (add-on to ACEi/ARB + β-blocker), post-MI HF, resistant HTN", pharmacology:"Spironolactone: non-selective (blocks androgens/progesterone). Eplerenone: selective MRA.", clinical:"Hyperkalemia (BOTH — serious), gynecomastia/impotence (spironolactone only), menstrual irregularities", labs:"Monitor K⁺ closely — especially with ACEi/ARB. Avoid if K⁺ >5.0 or GFR <30.", trap:"Gynecomastia on spironolactone → switch to eplerenone. Triple RAAS blockade (ACEi+ARB+MRA) → severe hyperkalemia." }, links:["ACEi/ARBs (hyperkalemia risk — monitor K⁺)","Loop diuretics (K⁺ balance)"] },
+  { number:4, theme:"β-Blockers in HF", objectives:["LO6"], mechanism:"Block chronic SNS activation → ↓ HR, ↓ remodeling → ↑ EF over months. Paradox: negative inotropes that improve function long-term.", nodes:{ pathway:"β₁ blockade → ↓ HR + ↓ contractility acutely → ↓ catecholamine toxicity → ↓ remodeling → ↑ EF chronically", disease:"HFrEF only (not HFpEF for mortality benefit). Must be euvolemic before starting.", pharmacology:"Only 3 approved: carvedilol (α₁+β₁+β₂), metoprolol succinate (β₁), bisoprolol (β₁). Start low, titrate slowly.", clinical:"Fatigue, bradycardia, hypotension (especially carvedilol — α blockade), bronchospasm (avoid non-selective in asthma)", labs:"Monitor HR, BP, symptoms of fluid overload during titration.", trap:"Never start β-blocker in ACUTE decompensated HF. Only 3 specific β-blockers proven to reduce mortality in HFrEF." }, links:["Ivabradine (add if HR ≥70 on max β-blocker)","Diuretics (stabilize before starting β-blocker)"] },
+  { number:5, theme:"Digoxin", objectives:["LO10"], mechanism:"Inhibits Na/K-ATPase → ↑ intracellular Na⁺ → ↑ Ca²⁺ via NCX → ↑ contractility. Also vagomimetic → ↓ HR/AV conduction.", nodes:{ pathway:"Na/K-ATPase inhibition → ↑ Na⁺ → reverse NCX → ↑ intracellular Ca²⁺ → ↑ inotropy + vagomimetic (↓ HR)", disease:"HFrEF (symptom relief, no mortality benefit) + Afib rate control", pharmacology:"Narrow therapeutic index: 0.5–0.9 ng/mL for HF. Renally cleared — adjust in CKD.", clinical:"Toxicity: GI (N/V/anorexia), CNS (yellow-green halos, confusion), cardiac (any arrhythmia, AV block)", labs:"Digoxin level, K⁺ (hypokalemia ↑ toxicity), Mg²⁺, Ca²⁺, renal function.", trap:"Hypokalemia (loop diuretics) dramatically ↑ digoxin toxicity. Does NOT improve survival in HFrEF." }, links:["Loop diuretics (monitor K⁺ → digoxin toxicity)","β-Blockers (both ↓ HR — additive bradycardia risk)"] },
+  { number:6, theme:"SGLT-2 Inhibitors & Ivabradine", objectives:["LO9","LO11"], mechanism:"SGLT-2i: block renal glucose/Na co-transporter → osmotic diuresis + ↓ preload/afterload + anti-remodeling effects. Ivabradine: blocks If funny current in SA node → ↓ HR only.", nodes:{ pathway:"SGLT-2i: ↓ Na/glucose reabsorption → osmotic diuresis → ↓ preload → ↓ HF symptoms. Ivabradine: SA node If block → ↓ HR without affecting contractility or BP.", disease:"SGLT-2i: HFrEF AND HFpEF (both). Ivabradine: HFrEF + HR ≥70 + sinus rhythm on max β-blocker.", pharmacology:"SGLT-2i: empagliflozin, dapagliflozin. Ivabradine: oral, twice daily.", clinical:"SGLT-2i: genital mycotic infections, DKA (rare), euglycemic DKA. Ivabradine: bradycardia, luminous phenomena.", labs:"SGLT-2i: monitor renal function, glucose. Ivabradine: HR monitoring.", trap:"Ivabradine has NO effect in Afib (only blocks SA node). SGLT-2i work in both HFrEF and HFpEF — unique among HF drugs." }, links:["β-Blockers (ivabradine add-on)","Diuretics (SGLT-2i have diuretic-like effect)"] },
+  { number:7, theme:"Vasodilators & Diuretics", objectives:["LO7","LO8","LO13","LO14"], mechanism:"Hydralazine (↓ afterload) + ISDN (↓ preload) = complementary vasodilation. Loop diuretics: block NKCC2 → massive natriuresis/diuresis.", nodes:{ pathway:"Hydralazine → ↓ SVR (arteriolar). ISDN → ↑ cGMP → venodilation → ↓ preload. Loop diuretics: NKCC2 block → ↓ Na/K/Cl reabsorption → high-volume diuresis.", disease:"Hydralazine/ISDN: HFrEF when ACEi/ARB/ARNI not tolerated; Black patients (A-HeFT). Loop diuretics: ADHF.", pharmacology:"Furosemide (IV for ADHF, oral maintenance). Torsemide (better oral bioavailability).", clinical:"Hydralazine: reflex tachycardia, lupus-like syndrome (high dose). Loop: hypokalemia, hypomagnesemia, ototoxicity, metabolic alkalosis.", labs:"Monitor K⁺, Mg²⁺, Na⁺, creatinine. BMP in ADHF.", trap:"Loop diuretics → hypokalemia → ↑ digoxin toxicity. Diuretics relieve symptoms but do NOT reduce mortality in HFrEF." }, links:["Digoxin (K⁺ monitoring essential)","ACEi/ARB (replace hydralazine/ISDN when possible)"] },
+];
+
+const STUDYGUIDE = [
+  { objectives:["LO3, LO4, LO5 — RAAS blockade: ACEi, ARBs, ARNI, MRAs"], mechanism:"ACEi/ARBs block RAAS → ↓ Ang II effects → ↓ vasoconstriction + ↓ aldosterone + ↓ remodeling. ARNI adds neprilysin inhibition → ↑ natriuretic peptides. MRAs block aldosterone receptor → ↓ Na retention + ↓ fibrosis.", high_yield_facts:["ACEi: dry cough (bradykinin) → switch to ARB. Angioedema = rare but life-threatening (switch to ARB, NOT ARNI)","ACEi + ARB: do NOT combine — no added benefit, ↑ hyperkalemia/AKI","ARNI (sacubitril/valsartan): preferred over ACEi alone in HFrEF if tolerated; 36-hr washout from ACEi","Spironolactone → gynecomastia/impotence (non-selective) → switch to eplerenone","MRAs: monitor K⁺ — avoid if K⁺ >5.0 or GFR <30","All RAAS blockers: contraindicated in pregnancy, bilateral RAS, severe hyperkalemia"], vignette_clues:["Dry cough on lisinopril → switch to losartan (ARB)","Male with gynecomastia on spironolactone → switch to eplerenone","ARNI started <36 hrs after ACEi → angioedema risk","Use NT-proBNP (NOT BNP) to monitor HF severity while on ARNI"], trap:"Never give ARNI within 36 hours of ACEi — risk of life-threatening angioedema from dual bradykinin accumulation.", if_you_see:"HFrEF + tolerates ACEi → upgrade to ARNI (sacubitril/valsartan) for additional mortality benefit", integration:["Pharm: RAAS cascade","Cardiology: HFrEF drug hierarchy","Renal: ACEi/ARB in proteinuria/DM"] },
+  { objectives:["LO6 — β-blockers in HF"], mechanism:"Block chronic catecholamine excess → ↓ remodeling → ↑ EF over months. Paradox: drugs that acutely ↓ contractility but improve long-term cardiac function.", high_yield_facts:["Only 3 β-blockers proven for HFrEF: carvedilol, metoprolol succinate, bisoprolol","Carvedilol: α₁ + β₁ + β₂ blockade → most vasodilation","NEVER start β-blocker during acute decompensated HF","Start low, titrate slowly — takes weeks-months for EF improvement","Do NOT abruptly stop — rebound ↑ HR and worsening HF","Do NOT use in bradycardia, severe bronchospasm, or cardiogenic shock"], vignette_clues:["HFrEF patient started on carvedilol — weeks later EF improves = expected (reverse remodeling)","Patient with ADHF and pulmonary edema — do NOT add/start β-blocker now","New diagnosis HFrEF, euvolemic → start β-blocker + ACEi/ARB"], trap:"Starting a β-blocker in acute decompensated HF can precipitate cardiogenic shock. Only start when patient is euvolemic and hemodynamically stable.", if_you_see:"HFrEF + euvolemic → start carvedilol, metoprolol succinate, or bisoprolol", integration:["Pharm: autonomic pharmacology","Physiology: cardiac remodeling reversal","Cardiology: HFrEF drug hierarchy"] },
+  { objectives:["LO9, LO10, LO11 — SGLT-2i, digoxin, ivabradine"], mechanism:"SGLT-2i: osmotic diuresis + hemodynamic + anti-inflammatory/anti-fibrotic effects → ↓ HF events in HFrEF AND HFpEF. Digoxin: Na/K-ATPase inhibition → ↑ Ca²⁺ → ↑ inotropy + ↓ HR. Ivabradine: SA node If current block → pure HR reduction.", high_yield_facts:["SGLT-2i (empagliflozin, dapagliflozin): only class with mortality benefit in BOTH HFrEF and HFpEF","Digoxin: does NOT reduce mortality in HFrEF; reduces symptoms and hospitalizations","Digoxin toxicity: hypokalemia (loop diuretics), renal failure, elderly → yellow-green halos, N/V, AV block","Therapeutic level for HF: 0.5–0.9 ng/mL (NOT the old 1.0–2.0 level)","Ivabradine: only in sinus rhythm, HR ≥70 bpm, on max β-blocker dose","Ivabradine has NO effect in atrial fibrillation"], vignette_clues:["Elderly on digoxin + furosemide + new AV block + yellow halos = digoxin toxicity from hypokalemia","HR 80 on max carvedilol → add ivabradine","HFpEF patient — which drug has proven mortality benefit? → SGLT-2 inhibitor"], trap:"Digoxin toxicity is dramatically worsened by hypokalemia from loop diuretics — always monitor K⁺. Ivabradine is useless in Afib.", if_you_see:"Digoxin + loop diuretic + symptoms of toxicity → check K⁺ first", integration:["Pharm: Na/K-ATPase, If current","Cardiology: HFpEF management","Endocrinology: SGLT-2 mechanism in kidney"] },
+  { objectives:["LO7, LO8, LO12, LO13, LO14 — Vasodilators, HFpEF, ADHF, diuretics"], mechanism:"Vasodilators ↓ preload (nitrates) and/or ↓ afterload (hydralazine) → ↓ cardiac work. Loop diuretics rapidly ↓ volume in ADHF. HFpEF: stiff ventricle with normal EF — treat congestion and comorbidities.", high_yield_facts:["Hydralazine/ISDN: indicated in (1) ACEi/ARB/ARNI intolerant HFrEF patients and (2) Black patients (A-HeFT trial)","Hydralazine high dose → lupus-like syndrome (drug-induced lupus)","Loop diuretics: furosemide (IV in ADHF), torsemide (better oral bioavailability) — block NKCC2","Loop diuretics: hypokalemia, hypomagnesemia, ototoxicity (IV high dose), metabolic alkalosis, hyperuricemia","HFpEF: no proven mortality drugs except SGLT-2i; treat HTN, Afib rate control, diuretics for congestion","ADHF management: IV diuretics + vasodilators (if hypertensive) + treat precipitant","Metolazone: add to loop diuretic for diuretic resistance in severe HF"], vignette_clues:["ADHF + pulmonary edema → IV furosemide NOW","HFrEF + ACE intolerant + Black patient → hydralazine/ISDN","Low K⁺ on furosemide + digoxin on board → ↑ digoxin toxicity risk"], trap:"Diuretics improve symptoms but do NOT improve survival in HFrEF. Never start β-blocker during acute decompensated HF.", if_you_see:"Acute pulmonary edema → IV loop diuretic immediately; ADHF + HTN → IV nitrates + diuretics", integration:["Pharm: NKCC2, cGMP pathways","Cardiology: HFpEF vs HFrEF","Nephrology: diuretic resistance, electrolyte management"] },
+];
+
+const VIGNETTES = [
+  { number:1, cluster:"Digoxin Toxicity", objectives_tested:["LO10: MOA of digoxin; LO14: Loop diuretics and electrolyte effects"], vignette:"A 74-year-old woman with HFrEF and atrial fibrillation is on digoxin 0.25 mg/day, furosemide 40 mg/day, and lisinopril. She presents with 3 days of nausea, loss of appetite, and seeing yellow-green halos around lights. Her heart rate is 44 bpm. Labs: K⁺ 2.8 mEq/L (normal 3.5–5.0), digoxin level 2.4 ng/mL, creatinine 1.0 mg/dL.", question:"Which of the following best explains why this patient is experiencing digoxin toxicity despite a 'normal' digoxin dose?", answer:"Furosemide-induced hypokalemia reduces competition at Na/K-ATPase, increasing digoxin binding and effect, precipitating toxicity at a dose that would otherwise be therapeutic.", why_correct:"K⁺ and digoxin compete for the same binding site on Na/K-ATPase. When K⁺ is low (hypokalemia from furosemide), digoxin has less competition → increased Na/K-ATPase inhibition → toxicity even at 'normal' levels.", key_clues:"Furosemide → hypokalemia (K⁺ 2.8) → ↑ digoxin effect → toxicity. Classic triad: yellow-green visual halos + bradycardia + GI symptoms = digoxin toxicity.", why_missed:"Students may focus on the digoxin level and miss the underlying mechanism (hypokalemia from furosemide). The level is elevated because of reduced competition at the receptor.", trap:"The digoxin level of 2.4 confirms toxicity, but the MECHANISM asked is the pharmacodynamic interaction with hypokalemia — not simply 'too high a dose.'" },
+  { number:2, cluster:"ARNI Washout Requirement", objectives_tested:["LO4: MOA and role of ARNI; LO3: ACEi mechanism"], vignette:"A 58-year-old man with HFrEF (EF 30%) has been well-controlled on lisinopril 10 mg/day, carvedilol, and spironolactone for 2 years. His cardiologist decides to upgrade his therapy to sacubitril/valsartan. Lisinopril is stopped on Monday morning, and sacubitril/valsartan is started Monday evening (approximately 12 hours later). The following day, he develops severe facial and tongue swelling requiring emergent intubation.", question:"Which of the following best explains the mechanism of the life-threatening adverse event in this patient?", answer:"Insufficient washout between ACEi and ARNI led to accumulation of bradykinin: ACEi blocks bradykinin degradation, and sacubitril (neprilysin inhibitor) also prevents bradykinin breakdown, resulting in severe angioedema.", why_correct:"ACE normally degrades bradykinin. ACEi → ↑ bradykinin. Neprilysin (blocked by sacubitril) also degrades bradykinin. Combining both → massive bradykinin accumulation → severe angioedema. A 36-hour washout period is required.", key_clues:"<36-hr washout between ACEi and ARNI + facial/tongue swelling = angioedema from dual bradykinin accumulation. Life-threatening.", why_missed:"Students may know ARNI is contraindicated with ACEi but not know the specific mechanism (dual bradykinin accumulation) or the exact washout period (36 hours).", trap:"The 36-hour rule is absolute. Even if the patient is stable and the clinical benefit is clear, starting ARNI too early after ACEi can be fatal." },
+  { number:3, cluster:"HFpEF Management", objectives_tested:["LO12: Difference between systolic and diastolic HF management"], vignette:"A 70-year-old woman with hypertension, obesity, and type 2 diabetes presents with progressive dyspnea on exertion and lower extremity edema. Echocardiogram shows EF of 62%, with evidence of diastolic dysfunction and elevated filling pressures. She is not currently on any cardiac medications.", question:"Which of the following medications has demonstrated a reduction in HF hospitalizations and mortality in patients with this type of heart failure?", answer:"SGLT-2 inhibitor (empagliflozin or dapagliflozin) — the only drug class with proven mortality benefit in HFpEF.", why_correct:"HFpEF (preserved EF ≥50%) has very limited pharmacological options for improving mortality. SGLT-2 inhibitors are the only class proven to reduce HF hospitalizations and cardiovascular death in HFpEF patients (EMPEROR-Preserved trial).", key_clues:"EF ≥50% + diastolic dysfunction + symptoms = HFpEF. SGLT-2i are the only proven mortality-reducing drugs in HFpEF.", why_missed:"Students may choose ACEi/ARB, β-blocker, or MRA — all of which have evidence only in HFrEF, not HFpEF.", trap:"All the proven HFrEF drugs (ACEi, ARBs, β-blockers, MRAs) do NOT have mortality benefit in HFpEF — except SGLT-2 inhibitors." },
+];
+
+const QUESTIONS = [
+  { number:1, cluster:"β-Blocker Paradox in HF", objectives_tested:["LO6: Role of β-blockers in HF treatment"], stem:"A 55-year-old man with newly diagnosed HFrEF (EF 25%) is started on carvedilol in addition to lisinopril and furosemide. His physician explains that despite being a negative inotrope, carvedilol will improve his cardiac function over time. Which of the following best explains this paradox?", choices:{ A:"Carvedilol acutely increases contractility by blocking α₁ receptors in the heart", B:"Chronic β-blockade counteracts catecholamine-mediated cardiac remodeling, leading to gradual improvement in EF", C:"Carvedilol stimulates β₂ receptors in the heart, improving diastolic relaxation", D:"β-blockade increases preload by causing sodium retention", E:"Carvedilol inhibits aldosterone release, reducing volume overload" }, correct:"B", tested_concept:"β-blocker paradox: negative inotropes that improve EF by reversing remodeling", why_correct:"In HFrEF, chronic sympathetic activation is harmful — it drives cardiac remodeling (hypertrophy, fibrosis, apoptosis). By blocking this chronic catecholamine excess, β-blockers allow reverse remodeling over weeks to months, resulting in improved EF despite being negative inotropes acutely.", why_wrong:{ A:"α₁ blockade causes vasodilation (↓ afterload), not ↑ contractility", C:"Carvedilol blocks β₂ receptors; it doesn't stimulate them", D:"β-blockade does not increase Na retention; that's the RAAS role", E:"Aldosterone inhibition is the role of MRAs, not β-blockers" }, trap:"Students who know β-blockers reduce contractility may think they are harmful in HF — the key is the long-term reversal of neurohormonal remodeling, not the acute hemodynamic effect." },
+  { number:2, cluster:"RAAS Drug Interactions", objectives_tested:["LO3, LO5 — ACEi/ARBs and MRAs; hyperkalemia risk"], stem:"A 62-year-old woman with HFrEF is on lisinopril 10 mg/day, carvedilol, and spironolactone 25 mg/day. Her K⁺ is 4.9 mEq/L. Her physician considers adding losartan for additional RAAS blockade. Which of the following is the most important reason to avoid this addition?", choices:{ A:"Losartan and lisinopril have opposing mechanisms and will cancel out each other's effects", B:"The combination of ACEi, ARB, and MRA substantially increases the risk of life-threatening hyperkalemia and AKI", C:"Losartan is contraindicated in patients already receiving a β-blocker", D:"Adding an ARB will worsen cardiac remodeling by blocking AT2 receptors", E:"Losartan requires dose adjustment when used with spironolactone due to CYP3A4 interactions" }, correct:"B", tested_concept:"Triple RAAS blockade (ACEi + ARB + MRA) → severe hyperkalemia and AKI", why_correct:"Triple RAAS blockade (ACEi + ARB + MRA) dramatically increases the risk of hyperkalemia and AKI without providing additional mortality benefit. This combination is explicitly contraindicated. The patient's K⁺ is already borderline at 4.9 mEq/L.", why_wrong:{ A:"They have complementary, not opposing mechanisms — but this isn't the reason to avoid the combination", C:"No interaction between ARBs and β-blockers", D:"AT2 receptor stimulation is generally cardioprotective; ARBs block AT1 (not AT2)", E:"No clinically significant CYP interaction between losartan and spironolactone" }, trap:"Students may think that adding more RAAS blockade = more benefit. The evidence shows ACEi + ARB combination provides no additional mortality benefit and significantly increases harm." },
+  { number:3, cluster:"Spironolactone vs. Eplerenone", objectives_tested:["LO5: Role of aldosterone in HF; MRA adverse effects"], stem:"A 48-year-old man with HFrEF is started on spironolactone 25 mg/day in addition to his ACEi and β-blocker. Three months later, he complains of bilateral breast tenderness and sexual dysfunction. Which of the following changes would best address these side effects while maintaining therapeutic benefit?", choices:{ A:"Reduce spironolactone dose to 12.5 mg/day", B:"Add testosterone supplementation to counteract the hormonal effects", C:"Switch to eplerenone, a selective mineralocorticoid receptor antagonist", D:"Switch to furosemide to provide equivalent diuretic benefit", E:"Add an ACEi dose increase to compensate for reduced MRA effect" }, correct:"C", tested_concept:"Spironolactone (non-selective MRA) → sex hormone side effects; eplerenone (selective) avoids these", why_correct:"Spironolactone is non-selective — it blocks mineralocorticoid, androgen, and progesterone receptors. Anti-androgenic effects → gynecomastia, impotence. Eplerenone is a selective MRA with no sex hormone receptor activity.", why_wrong:{ A:"Reducing the dose may partially reduce side effects but at the cost of therapeutic efficacy", B:"Testosterone supplementation is not an appropriate management strategy", D:"Furosemide does not block aldosterone's fibrotic/remodeling effects on the heart", E:"Increasing ACEi dose does not substitute for aldosterone blockade" }, trap:"Students may choose dose reduction — but the correct answer is switching to eplerenone, which provides equivalent HF benefit without the sex hormone side effects." },
+  { number:4, cluster:"Acute Decompensated HF", objectives_tested:["LO13: Management of ADHF; LO14: Role of diuretics"], stem:"A 67-year-old man with known HFrEF presents to the ER with sudden worsening dyspnea, orthopnea, bilateral crackles to the lung apices, and O₂ saturation of 86% on room air. He has 4+ pitting edema to his thighs. BP 155/95 mmHg, HR 102 bpm, RR 28/min. His home medications include carvedilol, lisinopril, and spironolactone. Which of the following is the most appropriate immediate pharmacological intervention?", choices:{ A:"Increase carvedilol dose to control heart rate", B:"Add sacubitril/valsartan to improve cardiac remodeling", C:"IV furosemide to rapidly reduce volume overload and improve pulmonary congestion", D:"Start dobutamine to improve cardiac output", E:"Add digoxin to increase contractility" }, correct:"C", tested_concept:"ADHF management: IV loop diuretic is immediate first-line for volume overload/pulmonary edema", why_correct:"This patient has acute decompensated HF with pulmonary edema, systemic volume overload, and hypertension. IV furosemide provides rapid diuresis, reduces preload, and relieves pulmonary congestion.", why_wrong:{ A:"Increasing carvedilol during acute decompensation can worsen hemodynamics — never up-titrate β-blocker in ADHF", B:"ARNI is a long-term disease-modifying therapy, not for acute stabilization", D:"Dobutamine is used in cardiogenic shock with low CO, not in this patient who has preserved BP", E:"Digoxin is not appropriate for acute management and has no role in acute pulmonary edema" }, trap:"Never increase or start β-blocker in ADHF. The reflex to use dobutamine is wrong here — the patient's BP is 155/95, not in shock. IV diuretic is the answer." },
+  { number:5, cluster:"Ivabradine Indication", objectives_tested:["LO11: Role of ivabradine in HF"], stem:"A 60-year-old man with HFrEF (EF 28%) is on maximally tolerated doses of metoprolol succinate, lisinopril, spironolactone, and furosemide. His resting heart rate remains 78 bpm and he remains in normal sinus rhythm. Which of the following is the most appropriate addition to further reduce his heart rate and improve outcomes?", choices:{ A:"Add carvedilol as an additional β-blocker for further rate control", B:"Add verapamil to slow AV conduction and reduce heart rate", C:"Add ivabradine to reduce heart rate by blocking the funny current", D:"Add digoxin to slow AV conduction via vagomimetic effect", E:"Add amiodarone to reduce resting heart rate" }, correct:"C", tested_concept:"Ivabradine: HR reduction via SA node If blockade in HFrEF patients in sinus rhythm on max β-blocker", why_correct:"Ivabradine selectively blocks the funny current (If) in the SA node, reducing heart rate without affecting contractility, blood pressure, or AV conduction. It is indicated when HR ≥70 bpm in sinus rhythm despite maximum tolerated β-blocker therapy.", why_wrong:{ A:"You cannot add two β-blockers — the patient is already on maximum metoprolol succinate", B:"Verapamil (non-DHP CCB) is contraindicated in HFrEF — negative inotropic effects worsen systolic function", D:"Digoxin reduces HR via vagomimetic effect but does not reduce mortality", E:"Amiodarone is an antiarrhythmic, not a standard rate-reduction therapy for HF" }, trap:"Verapamil and diltiazem are CONTRAINDICATED in HFrEF — non-DHP CCBs worsen systolic function. Only ivabradine is appropriate for additional HR reduction in this scenario." },
+];
+
+const DIAGRAMS = [
+  { title:"HFrEF Drug Hierarchy: Survival Benefit vs. Symptom Relief", type:"pathway", objectives:["LO2, LO6, LO3, LO4, LO5, LO9 — Disease-modifying vs. symptom-relieving drugs"], content:`MORTALITY-REDUCING DRUGS (disease-modifying) ✓\n  ┌─────────────────────────────────────────────────────────────────┐\n  │ 1. ACEi (enalapril, lisinopril, captopril)                      │\n  │    OR ARB (losartan) if ACEi not tolerated                      │\n  │    OR ARNI (sacubitril/valsartan) → preferred over ACEi/ARB     │\n  │ 2. β-Blocker: carvedilol, metoprolol succinate, bisoprolol ONLY │\n  │ 3. MRA: spironolactone or eplerenone                            │\n  │ 4. SGLT-2i: empagliflozin or dapagliflozin                      │\n  │    (also benefit in HFpEF — unique!)                            │\n  └─────────────────────────────────────────────────────────────────┘\n\nSYMPTOM RELIEF ONLY (no mortality benefit in HFrEF)\n  ┌─────────────────────────────────────────────────────────────────┐\n  │ Loop diuretics (furosemide, torsemide) → ↓ congestion          │\n  │ Digoxin → ↓ hospitalizations, ↑ symptoms (NOT survival)        │\n  │ Thiazides (HCTZ, metolazone) → add-on diuresis                 │\n  └─────────────────────────────────────────────────────────────────┘\n\nADD-ON / SPECIAL INDICATIONS\n  Ivabradine → HR ≥70 in sinus rhythm on max β-blocker\n  Hydralazine/ISDN → ACEi/ARB/ARNI intolerant OR Black patients\n  Vericiquat → sGC stimulator; recent hospitalization, residual symptoms` },
+  { title:"HFrEF vs. HFpEF: Key Differences in Management", type:"comparison", objectives:["LO12 — Systolic vs. diastolic HF management"], content:`                    HFrEF (EF <40%)              HFpEF (EF ≥50%)\n─────────────────────────────────────────────────────────────────────\nPathophysiology     Systolic dysfunction          Diastolic dysfunction\n                    ↓ contractility               ↓ relaxation, ↑ stiffness\nEF                  <40% (reduced)                ≥50% (preserved)\nClassic patient     Dilated, thin-walled ventricle Hypertrophied, thick-walled\nCommon causes       MI, dilated CMP, LBBB         HTN, obesity, DM, aging\n\nDRUGS WITH MORTALITY BENEFIT:\nACEi/ARB/ARNI       ✓ YES (cornerstone)           ✗ NO proven benefit\nβ-blockers          ✓ YES (3 specific drugs)       ✗ NO proven benefit\nMRAs                ✓ YES                          ✗ NO proven benefit\nSGLT-2 inhibitors   ✓ YES                          ✓ YES (unique!)\nDigoxin             Symptoms only (no mortality)   Not recommended\n\nHFpEF treatment: (1) Diuretics for congestion\n                 (2) Treat underlying causes: HTN, Afib rate control, DM\n                 (3) SGLT-2i for mortality benefit\n                 (4) MRAs may reduce hospitalizations (less clear)` },
+  { title:"RAAS Cascade and Drug Targets", type:"flowchart", objectives:["LO3, LO4, LO5 — ACEi, ARBs, ARNI, MRA mechanisms"], content:`Liver → Angiotensinogen\n         ↓ Renin (from kidney)\n        Angiotensin I\n         ↓ ACE (in lung) ← BLOCKED by ACEi (enalapril, lisinopril, captopril)\n        Angiotensin II\n         ↓ AT1 receptor ← BLOCKED by ARBs (losartan) and ARNI (valsartan)\n         ├→ Vasoconstriction (↑ SVR → ↑ afterload)\n         ├→ Aldosterone release → Na/water retention → ↑ preload\n         │     ↓ Aldosterone receptor ← BLOCKED by MRAs (spironolactone, eplerenone)\n         └→ Cardiac/vascular fibrosis and remodeling\n\nNATRIURETIC PEPTIDES (counterbalance):\n  ANP/BNP → ↑ cGMP → vasodilation + natriuresis + ↓ remodeling\n    ↓ Neprilysin (degrades ANP/BNP) ← BLOCKED by sacubitril (ARNI component)\n  → ARNI = sacubitril + valsartan = ↑ NP effects + ↓ Ang II effects\n\nACEi ALSO: ↑ bradykinin (ACE normally degrades it)\n  → vasodilation (therapeutic) + cough/angioedema (adverse)\n  → NEVER combine ARNI + ACEi (dual bradykinin ↑ → angioedema)` },
+  { title:"Digoxin Toxicity: Mechanism and Risk Factors", type:"flowchart", objectives:["LO10 — Digoxin MOA; LO14 — Loop diuretics and electrolyte effects"], content:`DIGOXIN MECHANISM:\n  Digoxin → Inhibits Na/K-ATPase\n    → ↑ intracellular Na⁺\n    → Reverse NCX (Na out, Ca in)\n    → ↑ intracellular Ca²⁺\n    → ↑ Inotropy + Vagomimetic (↓ HR, ↓ AV conduction)\n\nTOXICITY RISK FACTORS:\n  Hypokalemia (K⁺ competes at Na/K-ATPase)     ← FUROSEMIDE\n  Hypomagnesemia                                ← FUROSEMIDE\n  Hypercalcemia\n  Renal failure (↓ digoxin clearance)\n  Elderly (↓ renal function, ↓ Vd)\n  High digoxin level (>0.9 ng/mL for HF)\n\nTOXICITY SIGNS (classic triad):\n  GI:     Nausea, vomiting, anorexia\n  CNS:    Yellow-green visual halos, confusion, fatigue\n  Cardiac: Bradycardia, AV block, ANY arrhythmia\n\nMANAGEMENT:\n  Stop digoxin → correct hypokalemia → Digibind (anti-digoxin Fab) for severe toxicity\n  KEY: NEVER cardiovert VF from digoxin toxicity with electricity (→ asystole)` },
+];
+
+function AnglesTab() {
+  return ANGLES.map((c,i) => (
+    <Card key={i}>
+      <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap", marginBottom:6 }}>
+        <Pill text={`Cluster ${c.number}`} color="purple"/>
+        <span style={{ fontWeight:500, fontSize:15 }}>{c.theme}</span>
+      </div>
+      {c.objectives.map((o,j) => <p key={j} style={{ margin:"0 0 2px", fontSize:13, color:"var(--color-text-secondary)", paddingLeft:10, borderLeft:"2px solid #AFA9EC" }}>{o}</p>)}
+      <Lbl t="Core mechanism"/><p style={{ fontSize:13, margin:"0 0 4px" }}>{c.mechanism}</p>
+      <p style={{ fontSize:12, color:"var(--color-text-secondary)", fontStyle:"italic", margin:"0 0 10px" }}>{c.why_testable}</p>
+      {c.angles.map((a,j) => (
+        <Inset key={j}>
+          <p style={{ fontWeight:500, fontSize:14, margin:"0 0 6px" }}>Angle {j+1}: {a.title}</p>
+          {[["Tested concept",a.tested_concept],["Vignette pattern",a.vignette_pattern],["Key clues",a.key_clues],["Common trap",a.trap],["Disciplines",a.disciplines]].map(([l,v]) =>
+            v ? <div key={l}><Lbl t={l}/><p style={{ fontSize:13, margin:"0 0 4px" }}>{v}</p></div> : null
+          )}
+        </Inset>
+      ))}
+    </Card>
+  ));
+}
+
+function MindMapTab() {
+  return MINDMAP.map((c,i) => (
+    <Card key={i}>
+      <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap", marginBottom:6 }}>
+        <Pill text={`Cluster ${c.number}`} color="teal"/>
+        <span style={{ fontWeight:500, fontSize:15 }}>{c.theme}</span>
+      </div>
+      <p style={{ fontSize:13, color:"var(--color-text-secondary)", margin:"0 0 8px", paddingLeft:10, borderLeft:"2px solid #5DCAA5", fontStyle:"italic" }}>{c.mechanism}</p>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(140px,1fr))", gap:8, marginBottom:8 }}>
+        {Object.entries(c.nodes).filter(([,v])=>v).map(([k,v]) => (
+          <div key={k} style={{ background:"var(--color-background-secondary)", borderRadius:8, padding:"8px 10px" }}>
+            <Lbl t={k}/><p style={{ fontSize:12, margin:0 }}>{v}</p>
+          </div>
+        ))}
+      </div>
+      <Lbl t="Links to"/>{c.links.map((l,j) => <Pill key={j} text={l} color="teal"/>)}
+    </Card>
+  ));
+}
+
+function StudyGuideTab() {
+  return STUDYGUIDE.map((s,i) => (
+    <Card key={i}>
+      <Lbl t="Objectives covered"/>
+      {s.objectives.map((o,j) => <p key={j} style={{ fontSize:13, color:"var(--color-text-secondary)", margin:"0 0 2px", paddingLeft:10, borderLeft:"2px solid #7F77DD" }}>{o}</p>)}
+      <Lbl t="Core mechanism"/><p style={{ fontSize:14, fontWeight:500, margin:"0 0 8px" }}>{s.mechanism}</p>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+        <div><Lbl t="High-yield facts"/>{s.high_yield_facts.map((f,j) => <p key={j} style={{ fontSize:13, margin:"0 0 3px" }}>• {f}</p>)}</div>
+        <div><Lbl t="Vignette clues"/>{s.vignette_clues.map((f,j) => <p key={j} style={{ fontSize:13, margin:"0 0 3px" }}>• {f}</p>)}</div>
+      </div>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginTop:8 }}>
+        <div style={{ background:T.coral.bg, borderRadius:8, padding:"8px 10px" }}><Lbl t="Common trap"/><p style={{ fontSize:13, color:T.coral.txt, margin:0 }}>{s.trap}</p></div>
+        <div style={{ background:T.teal.bg, borderRadius:8, padding:"8px 10px" }}><Lbl t="If you see → think"/><p style={{ fontSize:13, color:T.teal.txt, margin:0 }}>{s.if_you_see}</p></div>
+      </div>
+      <Lbl t="Integration links"/>{s.integration.map((l,j) => <Pill key={j} text={l} color="blue"/>)}
+    </Card>
+  ));
+}
+
+function VignettesTab() {
+  const [open, setOpen] = useState({});
+  return VIGNETTES.map((v,i) => (
+    <Card key={i}>
+      <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:8 }}>
+        <Pill text={`Vignette ${v.number}`} color="blue"/><Pill text={v.cluster} color="purple"/>
+      </div>
+      <Inset><p style={{ fontSize:13, lineHeight:1.7, margin:"0 0 8px" }}>{v.vignette}</p><p style={{ fontSize:14, fontWeight:500, margin:0 }}>{v.question}</p></Inset>
+      <button onClick={()=>setOpen(o=>({...o,[i]:!o[i]}))} style={{ marginTop:10, fontSize:13, padding:"6px 14px", cursor:"pointer", borderRadius:6, background:"transparent", border:"0.5px solid var(--color-border-secondary)", color:"var(--color-text-primary)" }}>
+        {open[i]?"Hide answer ↑":"Show answer ↓"}
+      </button>
+      {open[i] && (
+        <div style={{ marginTop:8 }}>
+          <div style={{ background:T.green.bg, borderRadius:8, padding:"8px 12px", marginBottom:8 }}>
+            <Lbl t="Correct answer"/><p style={{ fontSize:13, fontWeight:500, color:T.green.txt, margin:0 }}>{v.answer}</p>
+          </div>
+          {[["Why correct",v.why_correct],["Key clues",v.key_clues],["Why a student might miss it",v.why_missed],["Exam writer trap",v.trap]].map(([l,val]) =>
+            val ? <div key={l}><Lbl t={l}/><p style={{ fontSize:13, margin:"0 0 6px" }}>{val}</p></div> : null
+          )}
+        </div>
+      )}
+    </Card>
+  ));
+}
+
+function QuestionsTab() {
+  const [sel, setSel] = useState({});
+  const [shown, setShown] = useState({});
+  return QUESTIONS.map((q,i) => (
+    <Card key={i}>
+      <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:6 }}>
+        <Pill text={`Q${q.number}`} color="amber"/><Pill text={q.cluster} color="amber"/>
+      </div>
+      <p style={{ fontSize:14, lineHeight:1.7, margin:"10px 0" }}>{q.stem}</p>
+      {Object.entries(q.choices).map(([letter,txt]) => {
+        const picked=sel[i]===letter, revealed=shown[i], isCorrect=letter===q.correct;
+        let bg="var(--color-background-secondary)", border="0.5px solid var(--color-border-tertiary)";
+        if(!revealed&&picked){bg=T.blue.bg;border=`0.5px solid ${T.blue.bdr}`;}
+        if(revealed&&isCorrect){bg=T.green.bg;border=`0.5px solid ${T.green.bdr}`;}
+        if(revealed&&picked&&!isCorrect){bg=T.red.bg;border=`0.5px solid ${T.red.bdr}`;}
+        return <div key={letter} onClick={()=>!revealed&&setSel(s=>({...s,[i]:letter}))} style={{ background:bg, border, borderRadius:8, padding:"8px 12px", marginBottom:4, cursor:revealed?"default":"pointer", display:"flex", gap:10 }}>
+          <span style={{ fontWeight:500, fontSize:13, minWidth:16 }}>{letter}.</span>
+          <span style={{ fontSize:13 }}>{txt}</span>
+        </div>;
+      })}
+      <button disabled={!sel[i]||shown[i]} onClick={()=>setShown(s=>({...s,[i]:true}))} style={{ marginTop:6, padding:"6px 14px", borderRadius:6, fontSize:13, cursor:sel[i]&&!shown[i]?"pointer":"default", background:sel[i]&&!shown[i]?T.blue.bg:"var(--color-background-secondary)", color:sel[i]&&!shown[i]?T.blue.txt:"var(--color-text-tertiary)", border:`0.5px solid ${sel[i]&&!shown[i]?T.blue.bdr:"var(--color-border-tertiary)"}` }}>
+        Submit answer
+      </button>
+      {shown[i] && (
+        <div style={{ marginTop:8 }}>
+          <div style={{ background:T.green.bg, borderRadius:8, padding:"8px 12px", marginBottom:6 }}>
+            <Lbl t="Correct answer"/>
+            <p style={{ fontSize:13, fontWeight:500, color:T.green.txt, margin:"0 0 2px" }}>{q.correct} — {q.tested_concept}</p>
+            <p style={{ fontSize:13, color:T.green.txt, margin:0 }}>{q.why_correct}</p>
+          </div>
+          {Object.entries(q.why_wrong).map(([l,e]) => <p key={l} style={{ fontSize:12, color:"var(--color-text-secondary)", margin:"0 0 2px" }}><strong>{l}:</strong> {e}</p>)}
+          <div style={{ background:T.coral.bg, borderRadius:8, padding:"8px 12px", marginTop:6 }}>
+            <Lbl t="Main trap"/><p style={{ fontSize:13, color:T.coral.txt, margin:0 }}>{q.trap}</p>
+          </div>
+        </div>
+      )}
+    </Card>
+  ));
+}
+
+function DiagramsTab() {
+  return DIAGRAMS.map((d,i) => (
+    <Card key={i}>
+      <div style={{ display:"flex", gap:6, flexWrap:"wrap", alignItems:"center", marginBottom:6 }}>
+        <Pill text={d.type} color="pink"/><span style={{ fontWeight:500, fontSize:15 }}>{d.title}</span>
+      </div>
+      {d.objectives.map((o,j) => <p key={j} style={{ fontSize:12, color:"var(--color-text-secondary)", margin:"0 0 2px", paddingLeft:8, borderLeft:"2px solid #ED93B1" }}>{o}</p>)}
+      <pre style={{ background:"var(--color-background-secondary)", borderRadius:8, padding:"12px", marginTop:8, fontSize:12, color:"var(--color-text-primary)", whiteSpace:"pre-wrap", fontFamily:"monospace", lineHeight:1.7, overflowX:"auto" }}>{d.content}</pre>
+    </Card>
+  ));
+}
+
+const STUDY_RENDERERS = { angles:AnglesTab, mindmap:MindMapTab, studyguide:StudyGuideTab, vignettes:VignettesTab, questions:QuestionsTab, diagrams:DiagramsTab };
+
+function App() {
+  const [activeTab, setActiveTab] = useState("angles");
+  const Comp = STUDY_RENDERERS[activeTab];
+  return (
+    <div style={{ padding:"0.5rem 0.75rem", maxWidth:860, margin:"0 auto" }}>
+      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:10 }}>
+        <div>
+          <p style={{ fontSize:15, fontWeight:500, margin:0 }}>❤️ Treatment of Heart Failure I &amp; II</p>
+          <p style={{ fontSize:11, color:"var(--color-text-secondary)", margin:0 }}>Georgetown SOM · Cardio Exam 2</p>
+        </div>
+      </div>
+      <div style={{ display:"flex", gap:4, overflowX:"auto", paddingBottom:6, marginBottom:12 }}>
+        {STUDY_TABS.map(t => {
+          const active=activeTab===t.id;
+          return <button key={t.id} onClick={()=>setActiveTab(t.id)} style={{ flexShrink:0, padding:"5px 12px", borderRadius:8, border:active?`1px solid ${T.purple.bdr}`:"0.5px solid var(--color-border-tertiary)", background:active?T.purple.bg:"transparent", color:active?T.purple.txt:"var(--color-text-secondary)", fontSize:12, fontWeight:active?500:400, cursor:"pointer", display:"flex", alignItems:"center", gap:5 }}>
+            <span style={{ fontSize:13 }}>{t.icon}</span>{t.label}
+          </button>;
+        })}
+      </div>
+      <Comp/>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
