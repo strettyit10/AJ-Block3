@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<!-- saved from url=(0073)file:///Users/ashleyjohnston/Downloads/cardio_exam2_study_platform_2.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cardio Exam 2 — Pharm Study Platform</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f8f6; color: #1a1a1a; padding: 1.5rem; max-width: 860px; margin: 0 auto; }
+.app { padding: 1rem 0; }
+.header { margin-bottom: 1.5rem; }
+.header h1 { font-size: 22px; font-weight: 500; }
+.header p { font-size: 14px; color: #666; margin-top: 4px; }
+.stats-row { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 1.5rem; }
+.stat { background: #f0efea; border-radius: 8px; padding: 12px 14px; }
+.stat-label { font-size: 12px; color: #666; margin-bottom: 4px; }
+.stat-val { font-size: 22px; font-weight: 500; }
+.modes { display: flex; gap: 8px; margin-bottom: 1.5rem; }
+.mode-btn { flex: 1; padding: 8px 12px; border-radius: 8px; border: 0.5px solid #ccc; background: #fff; cursor: pointer; font-size: 13px; font-weight: 500; color: #666; transition: all 0.15s; }
+.mode-btn.active { background: #0F6E56; border-color: #0F6E56; color: #E1F5EE; }
+.mode-btn:hover:not(.active) { background: #f0efea; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem; }
+.pill { font-size: 12px; padding: 4px 12px; border-radius: 999px; border: 0.5px solid #ccc; background: #fff; cursor: pointer; color: #666; transition: all 0.15s; }
+.pill.active { background: #185FA5; border-color: #185FA5; color: #E6F1FB; }
+.pill:hover:not(.active) { background: #f0efea; }
+.search-row { display: flex; gap: 8px; margin-bottom: 1rem; }
+.search-row input { flex: 1; padding: 8px 12px; border-radius: 8px; border: 0.5px solid #ccc; background: #fff; font-size: 14px; color: #1a1a1a; outline: none; }
+.search-row input:focus { border-color: #185FA5; }
+.nav-row { display: flex; gap: 10px; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.nav-btn { padding: 8px 16px; border-radius: 8px; border: 0.5px solid #ccc; background: #fff; cursor: pointer; font-size: 13px; color: #1a1a1a; }
+.nav-btn:hover { background: #f0efea; }
+.nav-btn:disabled { opacity: 0.4; cursor: default; }
+.progress-bar { flex: 1; height: 6px; background: #f0efea; border-radius: 999px; overflow: hidden; min-width: 80px; }
+.progress-fill { height: 100%; background: #185FA5; border-radius: 999px; transition: width 0.3s; }
+.card { background: #fff; border: 0.5px solid #ddd; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+.q-meta { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+.q-num { font-size: 12px; color: #999; }
+.q-cat { font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 500; }
+.cat-lipid { background: #EEEDFE; color: #3C3489; }
+.cat-anticoag { background: #FAECE7; color: #712B13; }
+.cat-angina { background: #E1F5EE; color: #085041; }
+.cat-htn { background: #E6F1FB; color: #0C447C; }
+.cat-hf { background: #FAEEDA; color: #633806; }
+.cat-antiarr { background: #FBEAF0; color: #72243E; }
+.cat-path { background: #EAF3DE; color: #27500A; }
+.cat-misc { background: #F1EFE8; color: #444441; }
+.q-text { font-size: 15px; line-height: 1.6; color: #1a1a1a; margin-bottom: 14px; }
+.options { display: flex; flex-direction: column; gap: 8px; }
+.opt { padding: 10px 14px; border-radius: 8px; border: 0.5px solid #ddd; background: #f8f8f6; cursor: pointer; font-size: 14px; color: #1a1a1a; transition: all 0.15s; text-align: left; display: flex; gap: 10px; align-items: flex-start; }
+.opt:hover:not(.disabled) { border-color: #aaa; background: #fff; }
+.opt.correct { background: #EAF3DE; border-color: #639922; color: #173404; }
+.opt.wrong { background: #FCEBEB; border-color: #E24B4A; color: #501313; }
+.opt.disabled { cursor: default; }
+.opt-letter { font-weight: 500; min-width: 16px; }
+.reveal-btn { margin-top: 14px; padding: 8px 16px; border-radius: 8px; border: 0.5px solid #ccc; background: #fff; cursor: pointer; font-size: 13px; color: #666; }
+.reveal-btn:hover { background: #f0efea; }
+.explanation { margin-top: 12px; padding: 10px 14px; background: #f0efea; border-radius: 8px; border-left: 2px solid #378ADD; font-size: 13px; color: #444; line-height: 1.6; }
+.badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; margin-left: 6px; }
+.badge-correct { background: #EAF3DE; color: #27500A; }
+.badge-wrong { background: #FCEBEB; color: #791F1F; }
+.flash-front { font-size: 16px; font-weight: 500; color: #1a1a1a; line-height: 1.6; margin-bottom: 1rem; }
+.flash-back { margin-top: 12px; padding: 12px; background: #f0efea; border-radius: 8px; font-size: 14px; color: #1a1a1a; line-height: 1.6; }
+.flip-btn { padding: 8px 20px; border-radius: 8px; border: 0.5px solid #185FA5; background: #fff; cursor: pointer; font-size: 13px; color: #185FA5; margin-top: 12px; }
+.flip-btn:hover { background: #E6F1FB; }
+.self-btns { display: flex; gap: 8px; margin-top: 12px; }
+.self-btn { flex: 1; padding: 8px; border-radius: 8px; border: 0.5px solid #ccc; cursor: pointer; font-size: 13px; }
+.self-btn.know { background: #EAF3DE; border-color: #639922; color: #173404; }
+.self-btn.unsure { background: #FAEEDA; border-color: #BA7517; color: #412402; }
+.self-btn.dontknow { background: #FCEBEB; border-color: #E24B4A; color: #501313; }
+.drug-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.drug-card { background: #fff; border: 0.5px solid #ddd; border-radius: 8px; padding: 12px 14px; cursor: pointer; transition: border-color 0.15s; }
+.drug-card:hover { border-color: #888; }
+.drug-name { font-size: 14px; font-weight: 500; color: #1a1a1a; margin-bottom: 4px; }
+.drug-class { font-size: 12px; color: #666; margin-bottom: 6px; }
+.drug-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.drug-tag { font-size: 11px; padding: 2px 6px; border-radius: 999px; background: #f0efea; color: #666; }
+.drug-detail { margin-top: 1rem; }
+.back-btn { padding: 6px 14px; border-radius: 8px; border: 0.5px solid #ccc; background: #fff; cursor: pointer; font-size: 13px; color: #666; margin-bottom: 1rem; }
+.back-btn:hover { background: #f0efea; }
+.detail-section { margin-bottom: 14px; }
+.detail-label { font-size: 12px; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+.detail-val { font-size: 14px; color: #1a1a1a; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+<div class="header">
+  <h1>Cardio Exam 2 — Pharm Study Platform</h1>
+  <p id="subtitle">170 practice questions · 8 drug categories</p>
+</div>
+<div class="stats-row">
+  <div class="stat"><div class="stat-label">Total questions</div><div class="stat-val" id="stat-total">170</div></div>
+  <div class="stat"><div class="stat-label">Answered</div><div class="stat-val" id="stat-answered">0</div></div>
+  <div class="stat"><div class="stat-label">Correct</div><div class="stat-val" id="stat-correct" style="color:#3B6D11">0</div></div>
+  <div class="stat"><div class="stat-label">Score</div><div class="stat-val" id="stat-score">—</div></div>
+</div>
+<div class="modes">
+  <button class="mode-btn active" onclick="setMode(&#39;quiz&#39;)" id="btn-quiz">Quiz mode</button>
+  <button class="mode-btn" onclick="setMode(&#39;flash&#39;)" id="btn-flash">Flashcards</button>
+  <button class="mode-btn" onclick="setMode(&#39;drugs&#39;)" id="btn-drugs">Drug reference</button>
+</div>
+<div id="quiz-panel">
+  <div class="filters">
+    <span class="pill active" onclick="setCat(&#39;all&#39;,this)">All categories</span>
+    <span class="pill" onclick="setCat(&#39;lipid&#39;,this)">Lipid-lowering</span>
+    <span class="pill" onclick="setCat(&#39;anticoag&#39;,this)">Anticoagulation</span>
+    <span class="pill" onclick="setCat(&#39;angina&#39;,this)">Angina</span>
+    <span class="pill" onclick="setCat(&#39;htn&#39;,this)">Hypertension</span>
+    <span class="pill" onclick="setCat(&#39;hf&#39;,this)">Heart failure</span>
+    <span class="pill" onclick="setCat(&#39;antiarr&#39;,this)">Antiarrhythmics</span>
+    <span class="pill" onclick="setCat(&#39;path&#39;,this)">Pathology/clinical</span>
+  </div>
+  <div class="search-row">
+    <input type="text" id="search" placeholder="Search questions or drugs..." oninput="filterSearch()">
+    <button class="nav-btn" onclick="shuffleQ()">Shuffle</button>
+    <button class="nav-btn" onclick="resetProgress()">Reset</button>
+  </div>
+  <div class="nav-row">
+    <button class="nav-btn" id="prev-btn" onclick="goQ(-1)" disabled="">← Prev</button>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width: 0.588235%;"></div></div>
+    <span style="font-size:13px;color:#666" id="q-counter">1 / 170</span>
+    <button class="nav-btn" id="next-btn" onclick="goQ(1)">Next →</button>
+  </div>
+  <div id="q-container">
+    <div class="card">
+      <div class="q-meta">
+        <span class="q-num">Q1</span>
+        <span class="q-cat cat-lipid">Lipid-lowering</span>
+        
+        
+      </div>
+      <div class="q-text">Which drug increases triglyceride levels and should NOT be used in patients with high baseline triglycerides?</div>
+      <div class="options"><button class="opt" onclick="selectOpt(1,0)"><span class="opt-letter">A.</span> Atorvastatin</button><button class="opt" onclick="selectOpt(1,1)"><span class="opt-letter">B.</span> Colesevelam</button><button class="opt" onclick="selectOpt(1,2)"><span class="opt-letter">C.</span> Gemfibrozil</button><button class="opt" onclick="selectOpt(1,3)"><span class="opt-letter">D.</span> Pravastatin</button></div>
+      <button class="reveal-btn" onclick="revealExp(1)">Show explanation</button>
+    </div></div>
+</div>
+<div id="flash-panel" style="display:none">
+  <div class="nav-row">
+    <button class="nav-btn" id="fp-prev" onclick="goFlash(-1)" disabled="">← Prev</button>
+    <div class="progress-bar"><div class="progress-fill" id="fp-prog" style="width:0%"></div></div>
+    <span style="font-size:13px;color:#666" id="fp-counter">1 / 170</span>
+    <button class="nav-btn" id="fp-next" onclick="goFlash(1)">Next →</button>
+  </div>
+  <div id="flash-container"></div>
+</div>
+<div id="drugs-panel" style="display:none">
+  <div id="drug-list-view">
+    <p style="font-size:13px;color:#666;margin-bottom:12px;">Click any drug to see mechanism, indications, side effects and key exam pearls.</p>
+    <div class="drug-grid" id="drug-grid"></div>
+  </div>
+  <div id="drug-detail-view" style="display:none" class="drug-detail"></div>
+</div>
+</div>
+<script>
+const ALL_QUESTIONS = [
+  {id:1,cat:'lipid',q:'Which drug increases triglyceride levels and should NOT be used in patients with high baseline triglycerides?',opts:['Atorvastatin','Colesevelam','Gemfibrozil','Pravastatin'],ans:1,exp:'Colesevelam (bile acid sequestrant) raises TG levels. Fibrates (gemfibrozil) actually LOWER TGs. Statins have minimal TG effect.'},
+  {id:2,cat:'lipid',q:'Which drug has been shown to prevent heart attacks and stroke in high-risk patients WITHOUT hypercholesterolemia?',opts:['Colesevelam','Fenofibrate','Omega-3 fatty acids','Rosuvastatin'],ans:3,exp:'Rosuvastatin (JUPITER trial) reduced CV events in patients with normal LDL but elevated CRP. This is primary prevention beyond lipid-lowering.'},
+  {id:3,cat:'lipid',q:'Which drug shows synergistic LDL-lowering when combined with an HMG-CoA reductase inhibitor?',opts:['Ezetimibe','Gemfibrozil','Omega-3 fatty acids','Pravastatin'],ans:0,exp:'Ezetimibe blocks intestinal cholesterol absorption (NPC1L1). Combining it with a statin addresses both synthesis (liver) and absorption (gut), giving synergistic LDL reduction.'},
+  {id:4,cat:'lipid',q:'Which drug acts primarily by blocking de novo cholesterol synthesis?',opts:['Atorvastatin','Colesevelam','Evolocumab','Fenofibrate','Omega-3 fatty acids'],ans:0,exp:'Statins (atorvastatin) inhibit HMG-CoA reductase, the rate-limiting enzyme in cholesterol synthesis in the liver.'},
+  {id:5,cat:'lipid',q:'Which drug can decrease warfarin bioavailability?',opts:['Colesevelam','Evolocumab','Fenofibrate','Rosuvastatin'],ans:0,exp:'Bile acid sequestrants like colesevelam bind drugs in the gut, reducing absorption of warfarin and many other drugs. Take other meds 1 hour before or 4-6 hours after.'},
+  {id:6,cat:'lipid',q:'Per ACC/AHA lipid guidelines, which patients should receive a statin? (select all that apply)',opts:['LDL >190','HDL <30','Patients with diabetes','ASCVD risk >7.5%','Family history of MI in men <55, women <65','Patient who had MI 2 months ago'],ans:[0,2,3,5],exp:'The 4 statin benefit groups: (1) clinical ASCVD, (2) LDL ≥190, (3) diabetes age 40-75, (4) primary prevention with 10-yr ASCVD ≥7.5%. HDL and family history alone are not indications.'},
+  {id:7,cat:'lipid',q:'Lab testing before statin initiation should include:',opts:['C-reactive protein','CPK levels','ALT level','Urine dipstick for protein','Genetic testing for CYP3A4'],ans:2,exp:'ALT (liver function) should be checked before starting statins. CPK is only checked if symptoms of myopathy develop, not routinely at baseline.'},
+  {id:8,cat:'lipid',q:'Which HMG-CoA reductase inhibitor has plasma levels increased by CYP3A4 inhibitors?',opts:['Pravastatin','Ezetimibe','Atorvastatin','Colesevelam','Alirocumab'],ans:2,exp:'Atorvastatin is metabolized by CYP3A4. CYP3A4 inhibitors (azole antifungals, macrolides, diltiazem) increase its levels → risk of myopathy. Pravastatin avoids CYP3A4.'},
+  {id:9,cat:'lipid',q:'Which drug acts on the intestinal brush border to decrease absorption of dietary cholesterol?',opts:['Colesevelam','Gemfibrozil','Atorvastatin','Ezetimibe','Pravastatin'],ans:3,exp:'Ezetimibe inhibits NPC1L1, a cholesterol transporter on intestinal brush border cells. It reduces dietary and biliary cholesterol absorption.'},
+  {id:10,cat:'lipid',q:'A patient has LDL 230. Started on a drug, returns in 1 month. LDL now 189 but has bilateral calf cramping. Most likely culprit?',opts:['Ezetimibe','Rosuvastatin','Hydrochlorothiazide','Niacin','Gemfibrozil'],ans:1,exp:'Statin-induced myopathy (myalgia/myositis) is the classic side effect. CK should be checked. This is dose-dependent and more common with high-intensity statins.'},
+  {id:11,cat:'lipid',q:'Which lipid-lowering medication is preferred in a patient taking verapamil for sinus tachycardia?',opts:['Simvastatin','Atorvastatin','Pravastatin','Lovastatin','Niacin'],ans:2,exp:'Pravastatin is NOT metabolized by CYP3A4, so it avoids the drug interaction with verapamil (a CYP3A4 inhibitor). Simvastatin, lovastatin, and atorvastatin are CYP3A4 substrates.'},
+  {id:12,cat:'lipid',q:'You see 5 patients. Which should be started on a statin per ACC/AHA guidelines?',opts:['35yo man ASCVD risk 9%','42yo woman prediabetes A1c 6.1, ASCVD 5%','47yo man family hx MI, ASCVD 3%','70yo man no hx ASCVD 7%','80yo woman recent stroke ASCVD 5%'],ans:4,exp:'The 80yo with recent stroke has established ASCVD (clinical ASCVD group) — statins are indicated regardless of ASCVD risk score. A 35yo with 9% risk does not meet thresholds. Prediabetes alone (not diabetes) and family history alone are not indications.'},
+  {id:13,cat:'anticoag',q:'What is the mechanism of action of clopidogrel?',opts:['Activates Protein C','Inactivates factor Xa','Irreversibly binds to ADP receptors','Reversibly binds to GP IIb/IIIa receptors'],ans:2,exp:'Clopidogrel is a P2Y12 ADP receptor antagonist. It irreversibly inhibits platelet aggregation for the platelet\'s life (~7-10 days).'},
+  {id:14,cat:'anticoag',q:'Which agent can be reversed immediately by fresh frozen plasma?',opts:['Alteplase (tPA)','Aspirin','Clopidogrel','Warfarin'],ans:3,exp:'Warfarin inhibits vitamin K-dependent factors (II, VII, IX, X). FFP contains all clotting factors and provides immediate reversal. Vitamin K works but takes hours.'},
+  {id:15,cat:'anticoag',q:'Which agent will most rapidly break down formed clot?',opts:['Alteplase (tPA)','Bivalirudin','Clopidogrel','Enoxaparin','Heparin'],ans:0,exp:'Fibrinolytics (tPA, alteplase) convert plasminogen to plasmin, which directly cleaves fibrin in formed clots. Anticoagulants prevent new clots but don\'t dissolve existing ones.'},
+  {id:16,cat:'anticoag',q:'Which statement about unfractionated heparin is TRUE?',opts:['Binds to antithrombin III','Directly inhibits thrombin','Does not require lab monitoring','Not affected by Platelet Factor 4'],ans:0,exp:'UFH binds antithrombin III, greatly accelerating its inhibition of thrombin and Xa. It requires aPTT monitoring and IS affected by platelet factor 4 (heparin-induced thrombocytopenia).'},
+  {id:17,cat:'anticoag',q:'Patient presenting with acute MI — which medication should be administered FIRST?',opts:['Direct thrombin inhibitor','Aspirin','Low molecular weight heparin','Warfarin'],ans:1,exp:'Aspirin (COX-1 inhibitor) should be given immediately to prevent further thromboxane-mediated platelet aggregation. It\'s the first-line antiplatelet in ACS.'},
+  {id:18,cat:'anticoag',q:'Which agent inhibits Protein C and Protein S, potentially causing unwanted clotting (early)?',opts:['Apixaban','Bivalirudin','Clopidogrel','Low molecular weight heparin','Warfarin'],ans:4,exp:'Warfarin inhibits ALL vitamin K-dependent factors including anticoagulant proteins C and S. Since protein C has a shorter half-life, early warfarin use causes a transient hypercoagulable state (warfarin skin necrosis).'},
+  {id:19,cat:'anticoag',q:'Why does aspirin\'s antiplatelet effect last 7-10 days?',opts:['Binds irreversibly to platelet membrane receptor','Not inactivated at target','Platelets are irreversibly inhibited in TXA2 production','Platelets can no longer respond to cyclic AMP'],ans:2,exp:'Aspirin irreversibly acetylates COX-1 in platelets. Since platelets have no nucleus, they cannot synthesize new COX-1. The effect lasts the platelet lifetime (~7-10 days).'},
+  {id:20,cat:'anticoag',q:'Which drug blocks ADP-mediated platelet aggregation?',opts:['Alteplase','Argatroban','Aspirin','Clopidogrel','Warfarin'],ans:3,exp:'Clopidogrel is the classic ADP (P2Y12) receptor blocker. Aspirin blocks TXA2. Argatroban is a direct thrombin inhibitor. tPA is fibrinolytic.'},
+  {id:21,cat:'anticoag',q:'Which drug inhibits platelet aggregation by preventing thromboxane production?',opts:['Apixaban','Aspirin','Clopidogrel','Enoxaparin','Warfarin'],ans:1,exp:'Aspirin irreversibly inhibits COX-1 → blocks TXA2 synthesis → reduces platelet aggregation and vasoconstriction.'},
+  {id:22,cat:'anticoag',q:'Mechanism of fibrinolytics:',opts:['Block ADP binding to platelets','Cleave fibrinogen to fibrin','Convert plasminogen to plasmin','Prevent fibrinogen binding to platelets'],ans:2,exp:'Fibrinolytics (tPA, streptokinase, urokinase) activate plasminogen → plasmin, which degrades fibrin clots.'},
+  {id:23,cat:'anticoag',q:'Patient with HIT needs anticoagulation for pulmonary embolus. Best agent?',opts:['Alteplase','Argatroban','Enoxaparin','LMWH','Warfarin'],ans:1,exp:'In HIT, all heparin products (UFH, LMWH) are contraindicated. Argatroban is a direct thrombin inhibitor not derived from heparin. Bivalirudin is another option.'},
+  {id:24,cat:'anticoag',q:'Rural hospital, no cath lab, STEMI patient 4 hours after symptoms. Cannot transport within 90 min. Best intervention?',opts:['Alteplase (tPA)','Apixaban','Bivalirudin','Enoxaparin','Warfarin'],ans:0,exp:'When PCI is not available within 120 min of first medical contact, fibrinolytic therapy (tPA) is indicated for STEMI to restore coronary perfusion.'},
+  {id:25,cat:'anticoag',q:'Agent whose platelet effect persists 7-10 days:',opts:['Argatroban','Aspirin','Dabigatran','Heparin','Warfarin'],ans:1,exp:'Aspirin irreversibly acetylates platelet COX-1. Since platelets cannot regenerate the enzyme, inhibition lasts the platelet\'s lifetime.'},
+  {id:26,cat:'anticoag',q:'Patient on UFH develops HIT requiring argatroban. Which is TRUE?',opts:['Can continue heparin with argatroban','Unpredictable hypersensitivity reaction','Not life-threatening','Drug interaction with antiplatelet','Dose-dependent effect'],ans:1,exp:'HIT is an immune-mediated (IgG antibody against heparin-PF4 complex) reaction — unpredictable, not dose-dependent. It IS life-threatening (paradoxical thrombosis). Heparin must be stopped.'},
+  {id:27,cat:'anticoag',q:'Patient on UFH for 10 days. Platelets: Day 1 = 175k, Day 10 = 50k. Best substitute anticoagulant?',opts:['Argatroban','Warfarin','tPA','Clopidogrel'],ans:0,exp:'Platelet drop >50% after 5-10 days of heparin = HIT Type II. Stop heparin, start a direct thrombin inhibitor (argatroban or bivalirudin). Don\'t start warfarin alone (hypercoagulable).'},
+  {id:28,cat:'anticoag',q:'Which is TRUE about novel oral anticoagulants (DOACs)?',opts:['More specific — target Factor Xa or Factor IIa','Higher bleeding risk than warfarin','Require frequent blood monitoring','Can be used for all same indications as warfarin including mechanical valves'],ans:0,exp:'DOACs (apixaban, rivaroxaban = Xa inhibitors; dabigatran = IIa inhibitor) are more targeted than warfarin. They do NOT require routine monitoring and are NOT approved for mechanical heart valves.'},
+  {id:29,cat:'anticoag',q:'Which patient should receive a drug that cleaves plasminogen to plasmin?',opts:['Newly diagnosed AF with stroke risk','Ischemic stroke within past 2 hours, no contraindications','Both patients','Neither patient','Only if INR elevated'],ans:1,exp:'tPA is indicated for acute ischemic stroke within 3-4.5 hours of onset (no contraindications). It is NOT used for AF stroke prevention — that uses anticoagulants.'},
+  {id:30,cat:'anticoag',q:'Why are fibrinolytics NOT routinely used for stroke prevention in atrial fibrillation?',opts:['Do not affect clot formation','Increase clot risk','Dissolve existing clots rather than prevent new ones','Only work in venous circulation','Require INR monitoring'],ans:2,exp:'Fibrinolytics are thrombolytic — they dissolve formed clots. Prevention requires anticoagulants (warfarin, DOACs) that prevent thrombus formation.'},
+  {id:31,cat:'anticoag',q:'Which therapy is most appropriate for preventing thromboembolism in newly diagnosed atrial fibrillation?',opts:['Alteplase (tPA)','Warfarin or a DOAC','Heparin bolus only','Aspirin alone','No therapy'],ans:1,exp:'Long-term anticoagulation with warfarin or a DOAC (apixaban, rivaroxaban, dabigatran) is standard for AF stroke prevention (based on CHA2DS2-VASc score).'},
+  {id:32,cat:'anticoag',q:'Patient with paroxysmal AF, hypertension, and prior stroke — which drug immediately reduces morbidity and mortality?',opts:['Adenosine','Apixaban','Clopidogrel','Flecainide','None of the above'],ans:1,exp:'Apixaban (DOAC) for stroke prevention in AF with prior stroke (high CHA2DS2-VASc) is evidence-based and immediately reduces embolic stroke risk.'},
+  {id:33,cat:'anticoag',q:'Patient with inferior STEMI receives nitroglycerin and becomes acutely hypotensive. What is the next best step?',opts:['Give more nitroglycerin','Administer IV fluids','Start beta-blocker','Give diuretic','Give ACE inhibitor'],ans:1,exp:'Inferior MI often involves the RV. RV infarction requires preload — giving IV fluids is critical. Nitroglycerin reduces preload (venodilation) and is contraindicated with RV involvement.'},
+  {id:34,cat:'anticoag',q:'Patient on warfarin for DVT. After starting antibiotic, INR increases to 5. Clotting risk?',opts:['Increased clotting risk','Decreased clotting risk','No change','Only arterial clotting','Only venous clotting'],ans:1,exp:'INR 5 = supratherapeutic anticoagulation = DECREASED clotting risk but INCREASED bleeding risk. The antibiotic likely killed gut flora that produce vitamin K.'},
+  {id:35,cat:'anticoag',q:'Patient on warfarin for AF has INR of 1.4. Interpretation?',opts:['Over-anticoagulated, high bleeding risk','Under-anticoagulated, increased thrombosis risk','Within therapeutic range','Stop warfarin immediately','No action needed'],ans:1,exp:'INR 1.4 is below therapeutic range (2-3) for AF. Patient is under-anticoagulated and at increased risk of embolic stroke.'},
+  {id:36,cat:'angina',q:'Propranolol will prevent which side effect of sublingual nitroglycerin?',opts:['Dizziness','Edema','Reflex tachycardia','Throbbing headache'],ans:2,exp:'Nitroglycerin → vasodilation → reflex sympathetic activation → tachycardia. Beta-blockers blunt this reflex. They do not prevent headache (from meningeal vasodilation) or dizziness (from hypotension).'},
+  {id:37,cat:'angina',q:'Which statement about antianginal drugs is FALSE?',opts:['Propranolol + amlodipine rational for stable angina','Beta-blockers effective for variant angina','High-dose nitrates can cause orthostatic hypotension','Nitrates reduce venous return to decrease O2 demand'],ans:1,exp:'Beta-blockers can WORSEN variant (vasospastic) angina by allowing unopposed alpha-mediated coronary vasoconstriction. CCBs are the treatment of choice for variant angina.'},
+  {id:38,cat:'angina',q:'Which statement about antianginal drugs is FALSE?',opts:['CCBs relax arterial smooth muscle, little venous effect','CCBs reduce mortality post-MI','Nitroglycerin redistributes flow to subendocardium','Beta-blockers increase LVEDV which increases wall tension'],ans:1,exp:'CCBs have NOT been shown to reduce mortality post-MI. In fact, short-acting nifedipine can be harmful. Beta-blockers and ACE inhibitors ARE mortality-reducing post-MI.'},
+  {id:39,cat:'angina',q:'Molecular receptor for nitric oxide:',opts:['Aldehyde dehydrogenase','Bradykinin','Calmodulin','Guanylyl cyclase','Phospholipase C'],ans:3,exp:'NO activates guanylyl cyclase → increases cGMP → protein kinase G activation → smooth muscle relaxation (vasodilation).'},
+  {id:40,cat:'angina',q:'Which statement accurately reflects nitrate pharmacology?',opts:['Nitrates reduce mortality post-MI','Main effect is reduction in preload','Main effect is relaxation of small coronary arterioles','Main effect is increasing diastolic time'],ans:1,exp:'Nitrates primarily dilate veins → reduce venous return (preload) → reduce wall tension → reduce O2 demand. At higher doses, they also dilate arteries.'},
+  {id:41,cat:'angina',q:'The redistribution of coronary blood to the endocardium by nitroglycerin is due to:',opts:['Decrease in LVEDP improving pressure gradient epicardium-to-endocardium','Decrease in LV systolic pressure','Increase in diastolic phase duration','Relaxation of coronary arterioles'],ans:0,exp:'Nitroglycerin → venodilation → decreased LVEDP → less subendocardial compression → improved subendocardial perfusion.'},
+  {id:42,cat:'angina',q:'72yo man on propranolol for stable angina has increasing chest pain. Switch to diltiazem if variant angina suspected. Why would diltiazem help?',opts:['Dilates coronary blood vessels in spasm','Increases collateral blood flow','Decreases heart rate','Redistributes blood to endocardium'],ans:0,exp:'Variant (Prinzmetal\'s) angina is caused by coronary artery vasospasm. CCBs like diltiazem and amlodipine directly dilate coronary arteries, relieving spasm. Beta-blockers cannot.'},
+  {id:43,cat:'angina',q:'Which statement about nitroglycerin is FALSE?',opts:['Nitrates + sildenafil is contraindicated','Nitroglycerin decreases mortality post-MI','Converted to NO via aldehyde dehydrogenase','Nitric oxide activates guanylate cyclase'],ans:1,exp:'Nitrates do NOT reduce mortality post-MI. Contrast with beta-blockers and ACE inhibitors which DO reduce mortality post-MI.'},
+  {id:44,cat:'angina',q:'Nitroglycerin redistributes blood to ischemic subendocardium by:',opts:['Increasing collateral blood flow','Increasing time heart spends in diastole','Reducing subendocardial compression by lowering ventricular diastolic pressure','Relieving spasm of epicardial coronary artery'],ans:2,exp:'Lower LVEDP = less mechanical compression of subendocardial vessels = better perfusion gradient from epicardium to endocardium.'},
+  {id:45,cat:'angina',q:'Which statement about calcium channel blockers is FALSE?',opts:['Primary benefit in stable angina is increased O2 supply','Verapamil/diltiazem relatively contraindicated with beta-blockers','Non-DHP CCBs further reduce O2 demand via HR/contractility effects','All three reduce afterload'],ans:0,exp:'In stable angina, CCBs primarily reduce O2 DEMAND (afterload reduction). In variant angina, they increase O2 supply via coronary vasodilation.'},
+  {id:46,cat:'angina',q:'Best drug for a patient with both angina AND atrial fibrillation:',opts:['Amlodipine','Diltiazem','Isosorbide mononitrate','Ranolazine'],ans:1,exp:'Diltiazem (non-DHP CCB) addresses both: anti-anginal (reduces O2 demand, treats coronary spasm) AND rate-controlling for AF (AV node slowing). Amlodipine doesn\'t slow AV node.'},
+  {id:47,cat:'angina',q:'Why is transdermal nitroglycerin applied daily and removed at night?',opts:['Avoid accumulation of nitric oxide','Avoid dizziness/fainting','Avoid drug tolerance','Avoid nighttime headaches','Avoid reflex tachycardia'],ans:2,exp:'Continuous nitrate exposure causes tolerance via depletion of sulfhydryl groups needed for NO generation. A nitrate-free interval (8-12 hours, usually overnight) prevents tolerance.'},
+  {id:48,cat:'angina',q:'Most appropriate therapy for 65yo woman with variant angina AND Stage 1 hypertension:',opts:['Ranolazine','Isosorbide mononitrate','Metoprolol','Amlodipine','Nitroprusside'],ans:3,exp:'Amlodipine: (1) treats variant angina by relieving coronary vasospasm, (2) treats hypertension by reducing afterload. Metoprolol is contraindicated in variant angina.'},
+  {id:49,cat:'angina',q:'Patient with bronchospasm history, stress test confirms stable angina. Best long-term management:',opts:['Nitroprusside','Sildenafil','Metolazone','Amlodipine','Propranolol'],ans:3,exp:'Propranolol is contraindicated in bronchospasm (blocks β2 receptors → bronchoconstriction). Amlodipine (CCB) is effective for stable angina and safe in asthma/COPD.'},
+  {id:50,cat:'angina',q:'64yo with angina, HR 110 bpm, on nitrate patch plus sublingual NTG. What would most improve O2 demand/supply balance?',opts:['Isosorbide mononitrate','Nifedipine','Sildenafil','Metoprolol','Ranolazine'],ans:3,exp:'HR 110 = high O2 demand. Beta-blocker (metoprolol) will reduce HR, decrease O2 demand, and increase diastolic filling time (more coronary perfusion).'},
+  {id:51,cat:'angina',q:'Patient with previous silent MI and microvascular angina. Best medication:',opts:['Diltiazem','Isosorbide mononitrate','Metoprolol','Ranolazine','Verapamil'],ans:3,exp:'Ranolazine inhibits late sodium channels in ischemic myocardium, reducing calcium overload and oxygen demand. Particularly effective for microvascular/refractory angina.'},
+  {id:52,cat:'angina',q:'Which drug significantly lowers resting HR without significant CNS effects in 61yo with HTN, HR 105, stable angina?',opts:['Metoprolol','Atenolol','Ranolazine','Isosorbide mononitrate','Nitroglycerin patch'],ans:1,exp:'Atenolol is selective β1 blocker that does NOT cross the blood-brain barrier well → less CNS side effects (insomnia, depression, nightmares) compared to lipophilic metoprolol/propranolol.'},
+  {id:53,cat:'htn',q:'57yo on lisinopril, K+ 4.9. Physician adds second drug. Which is LEAST likely to cause hyperkalemia?',opts:['Amlodipine','Losartan','Metoprolol','Spironolactone','Triamterene'],ans:0,exp:'Amlodipine (CCB) has no effect on potassium. Losartan (ARB), spironolactone (aldosterone antagonist), and triamterene (K-sparing diuretic) all raise K+.'},
+  {id:54,cat:'htn',q:'ACE inhibitor + which drug combination is LEAST likely to cause hyperkalemia?',opts:['Metoprolol','Spironolactone','Triamterene','Amlodipine'],ans:3,exp:'Amlodipine does not affect K+ homeostasis. Spironolactone and triamterene both potassium-sparing — combining with ACE inhibitor is risky.'},
+  {id:55,cat:'htn',q:'Which treatment is NOT appropriately matched with its hypertensive emergency?',opts:['Labetalol – hypertensive emergency in pregnancy','Metoprolol – acute aortic dissection','Metoprolol – pheochromocytoma hypertensive crisis','Nitroglycerin – ACS/cardiac ischemia'],ans:2,exp:'Metoprolol alone in pheochromocytoma causes DANGEROUS hypertension — blocking β2 allows unopposed α1 vasoconstriction. Alpha-blockers (phentolamine) must be given FIRST.'},
+  {id:56,cat:'htn',q:'59yo starts chlorthalidone for HTN. Which lab finding is LEAST likely?',opts:['Decreased serum cholesterol','Decreased serum potassium','Increased blood pH','Increased plasma glucose','Increased serum uric acid'],ans:0,exp:'Thiazide diuretics can INCREASE cholesterol (adverse metabolic effect), not decrease it. They cause hypokalemia, metabolic alkalosis, hyperglycemia, and hyperuricemia.'},
+  {id:57,cat:'htn',q:'72yo woman with isolated systolic hypertension. Which effect most directly targets the underlying mechanism?',opts:['Decreases cardiac output','Dilates arterioles','Dilates veins','Increases compliance of large arteries','Reduces renal sodium reabsorption'],ans:3,exp:'Isolated systolic HTN = stiff, non-compliant aorta in elderly. The goal is to INCREASE arterial compliance/elasticity.'},
+  {id:58,cat:'htn',q:'Treatment with which drug results in GREATEST degree of AT2 receptor stimulation?',opts:['Amlodipine','Lisinopril','Losartan','Metoprolol','Spironolactone'],ans:2,exp:'ARBs (losartan) block AT1 receptors — all angiotensin II (which is elevated due to feedback) is shunted to AT2 receptors. ACE inhibitors reduce angiotensin II production, so less is available for either receptor.'},
+  {id:59,cat:'htn',q:'Drug effects: TPR decreased, HR decreased, plasma renin decreased, plasma NE increased. Which drug?',opts:['Amlodipine','Captopril','Carvedilol','Metoprolol','Prazosin'],ans:2,exp:'Carvedilol (non-selective β + α1 blocker): reduces TPR (α1 block), reduces HR and renin (β block). The increased NE is a compensatory response to α1 blockade.'},
+  {id:60,cat:'htn',q:'52yo diabetic with microalbuminuria and BP 148/88. Primary mechanism by which preferred drug class protects kidneys?',opts:['Decreased intraglomerular pressure by reducing efferent arteriole resistance','Decreased intraglomerular pressure by increasing afferent arteriole resistance','Decreased insulin resistance in renal tubule','Increased insulin release from beta cells'],ans:0,exp:'ACE inhibitors/ARBs dilate the efferent arteriole → decreased glomerular hydrostatic pressure → decreased hyperfiltration → nephroprotection in diabetes.'},
+  {id:61,cat:'htn',q:'60yo woman with osteoarthritis on high-dose NSAID, BP 146/95. Which drug most effectively lowers BP despite NSAID use?',opts:['Amlodipine','Hydrochlorothiazide','Lisinopril','Losartan','Metoprolol'],ans:0,exp:'NSAIDs reduce prostaglandin synthesis → increase sodium retention → blunt the effect of diuretics, ACE inhibitors, and ARBs. CCBs (amlodipine) work independently of this pathway.'},
+  {id:62,cat:'htn',q:'Which antihypertensive drug exhibits delayed peak effect relative to peak plasma concentration?',opts:['Atenolol','Enalapril','Labetalol','Losartan','Prazosin'],ans:1,exp:'Enalapril is a prodrug — it must be converted to enalaprilat (the active form) in the liver. This conversion causes a delay between peak plasma enalapril and peak blood pressure effect.'},
+  {id:63,cat:'htn',q:'78yo starts new antihypertensive. Calls a few days later with dizziness on standing. Most likely drug?',opts:['Amlodipine','Captopril','Labetalol','Metoprolol','Verapamil'],ans:2,exp:'Labetalol (α1 + β blocker) causes significant orthostatic hypotension because α1 blockade prevents the normal standing reflex (arteriolar constriction). Especially problematic in elderly.'},
+  {id:64,cat:'htn',q:'Increases urinary excretion of Ca++ and Mg++:',opts:['Acetazolamide','Eplerenone','Furosemide','Hydrochlorothiazide','Triamterene'],ans:2,exp:'Loop diuretics (furosemide) block Na/K/2Cl cotransporter in thick ascending loop, disrupting the calcium-reabsorbing gradient → hypercalciuria and hypomagnesemia. Thiazides SAVE calcium.'},
+  {id:65,cat:'htn',q:'Blocks sodium channels on luminal side of principal cell in collecting tubule:',opts:['Acetazolamide','Eplerenone','Furosemide','Hydrochlorothiazide','Triamterene'],ans:4,exp:'Triamterene (and amiloride) directly block ENaC (epithelial sodium channels) on the luminal side of collecting duct principal cells → K+ sparing.'},
+  {id:66,cat:'htn',q:'Decreases number of Na+/K+ pumps on basolateral side of principal cell in collecting tubule:',opts:['Acetazolamide','Eplerenone','Furosemide','Hydrochlorothiazide','Triamterene'],ans:1,exp:'Eplerenone/spironolactone block aldosterone receptors → aldosterone normally upregulates Na/K ATPase expression on basolateral membrane → K+ sparing.'},
+  {id:67,cat:'htn',q:'Used to alkalinize the urine:',opts:['Acetazolamide','Eplerenone','Furosemide','Hydrochlorothiazide','Triamterene'],ans:0,exp:'Acetazolamide (carbonic anhydrase inhibitor) blocks HCO3- reabsorption → bicarbonaturia → alkaline urine. Used for altitude sickness, glaucoma, alkalinizing urine in cystinuria.'},
+  {id:68,cat:'htn',q:'Peripheral edema NOT from generalized fluid retention, but from increased lower extremity hydrostatic pressure:',opts:['Minoxidil','Methyldopa','Amlodipine','Phenoxybenzamine'],ans:2,exp:'Amlodipine (DHP CCB) causes peripheral edema via precapillary arteriolar dilation (increases hydrostatic pressure) with reflex postcapillary venous constriction — NOT systemic fluid retention.'},
+  {id:69,cat:'htn',q:'Irreversible, non-competitive antagonist of alpha-1 AND alpha-2 adrenergic receptors:',opts:['Amlodipine','Methyldopa','Minoxidil','Phenoxybenzamine'],ans:3,exp:'Phenoxybenzamine irreversibly alkylates alpha receptors (both α1 and α2). Used in pheochromocytoma pre-op management.'},
+  {id:70,cat:'htn',q:'Can be used in hypertension during pregnancy with established safety record:',opts:['Amlodipine','Methyldopa','Minoxidil','Phenoxybenzamine'],ans:1,exp:'Methyldopa (centrally acting α2 agonist) is the classic safe antihypertensive in pregnancy. Also labetalol and nifedipine. ACE inhibitors and ARBs are contraindicated in pregnancy.'},
+  {id:71,cat:'htn',q:'K+ATP channel opener:',opts:['Amlodipine','Methyldopa','Minoxidil','Phenoxybenzamine'],ans:2,exp:'Minoxidil opens ATP-sensitive potassium channels → K+ efflux → hyperpolarization → closure of voltage-gated Ca2+ channels → vasodilation.'},
+  {id:72,cat:'htn',q:'Can cause metabolic acidosis:',opts:['Aldosterone','Triamterene','Chlorthalidone','Furosemide'],ans:1,exp:'Triamterene blocks ENaC → reduced Na+ reabsorption → reduced H+ secretion → metabolic acidosis.'},
+  {id:73,cat:'htn',q:'Reduces excretion of calcium and used to prevent kidney stones:',opts:['Aldosterone','Triamterene','Chlorthalidone','Furosemide'],ans:2,exp:'Thiazide diuretics (chlorthalidone, HCTZ) increase distal tubule calcium reabsorption → hypocalciuria → useful for calcium kidney stone prevention and osteoporosis.'},
+  {id:74,cat:'htn',q:'Likely to cause hyperkalemia when combined with losartan:',opts:['Aldosterone','Triamterene','Chlorthalidone','Furosemide'],ans:1,exp:'Both triamterene (K-sparing diuretic) and losartan (ARB, reduces aldosterone) raise K+. Combining them dramatically increases hyperkalemia risk.'},
+  {id:75,cat:'htn',q:'Profile: TPR decreased, HR unchanged, Na+ decreased, K+ increased, angiotensin II increased. Which drug?',opts:['Captopril','Losartan','Minoxidil','Prazosin','Spironolactone'],ans:1,exp:'Losartan (ARB): blocks AT1 → no TPR effect from Ang II, reduces aldosterone → K+ rises, Na+ falls; angiotensin II levels RISE (loss of negative feedback) but can\'t act on AT1. HR unchanged.'},
+  {id:76,cat:'htn',q:'Nitroprusside mechanism:',opts:['Activates adenylate cyclase','Activates phospholipase C','Opens K+ATP channels','Releases NO from endothelial cells','Stimulates guanylate cyclase'],ans:4,exp:'Nitroprusside spontaneously releases NO → directly stimulates guanylate cyclase → cGMP → vasodilation (both arteries and veins).'},
+  {id:77,cat:'htn',q:'Minoxidil mechanism:',opts:['Activates adenylate cyclase','Activates phospholipase C','Opens K+ATP channels','Releases NO from endothelial cells','Stimulates guanylate cyclase'],ans:2,exp:'Minoxidil opens ATP-sensitive K+ channels → hyperpolarization → Ca2+ channel closure → arteriolar vasodilation.'},
+  {id:78,cat:'htn',q:'Prostacyclin (PGI2) mechanism:',opts:['Activates adenylate cyclase receptor','Activates phospholipase C receptor','Opens K+ATP channels','Releases NO from endothelial cells','Stimulates guanylate cyclase'],ans:0,exp:'PGI2 binds Gs-coupled receptor → adenylate cyclase activation → cAMP → PKA activation → vasodilation and inhibition of platelet aggregation.'},
+  {id:79,cat:'htn',q:'Angiotensin II mechanism:',opts:['Activates adenylate cyclase receptor','Activates phospholipase C receptor','Opens K+ATP channels','Releases NO from endothelial cells','Stimulates guanylate cyclase'],ans:1,exp:'Ang II binds AT1 receptor (Gq-coupled) → phospholipase C → IP3 + DAG → intracellular Ca2+ release → vasoconstriction, aldosterone release.'},
+  {id:80,cat:'htn',q:'Drug GU1234 increases spontaneous postganglionic sympathetic nerve activity — also occurs with which drug?',opts:['Captopril','Clonidine','Phentolamine (non-specific alpha blocker)','Trimethaphan (ganglionic blocker)'],ans:2,exp:'Phentolamine blocks α2 receptors (presynaptic) → removes negative feedback on NE release → increased postganglionic sympathetic activity.'},
+  {id:81,cat:'htn',q:'Drug profile: increased plasma renin, increased angiotensin I, increased AT2 stimulation, decreased aldosterone. Which mechanism?',opts:['ACE inhibitor','Angiotensin (AT1) receptor blocker','Non-DHP calcium channel blocker','Non-selective beta blocker','Thiazide diuretic'],ans:1,exp:'ARBs: block AT1 → removes feedback → renin/Ang I/Ang II all increase, but Ang II is shunted to AT2. Aldosterone decreases (no AT1 stimulation of adrenal).'},
+  {id:82,cat:'htn',q:'72yo man with enlarged prostate AND hypertension BP 141/86. Most appropriate single therapy?',opts:['Doxazosin alone','Doxazosin plus metoprolol','Doxazosin plus tamsulosin','HCTZ plus tamsulosin','Metoprolol plus tamsulosin'],ans:0,exp:'Doxazosin (α1 blocker) addresses BOTH hypertension AND BPH (relaxes prostate smooth muscle). No need to add tamsulosin (also α1, redundant and risky for hypotension).'},
+  {id:83,cat:'htn',q:'68yo woman, Stage 2 HTN, no comorbidities. Most appropriate 2-drug combination?',opts:['Chlorthalidone and eplerenone','Lisinopril and amlodipine','Lisinopril and losartan','Metoprolol and losartan','Metoprolol and verapamil'],ans:1,exp:'ACE inhibitor + CCB or thiazide is first-line combination for stage 2 HTN. Lisinopril + amlodipine is a classic combination (ACCOMPLISH trial). Avoid ACE + ARB or metoprolol + verapamil (AV block risk).'},
+  {id:84,cat:'htn',q:'62yo woman post-MI (EF 45%), T2DM with proteinuria, BP 152/97 on clonidine. Best drug combination after tapering clonidine?',opts:['Chlorthalidone, metoprolol, amlodipine','Lisinopril and chlorthalidone','Lisinopril, metoprolol, chlorthalidone','Losartan, chlorthalidone, amlodipine','Losartan, verapamil, metoprolol'],ans:2,exp:'Post-MI + DM with proteinuria: ACE inhibitor (lisinopril) for nephroprotection + beta-blocker (metoprolol) post-MI mortality benefit + thiazide for BP. No verapamil + beta-blocker (AV block).'},
+  {id:85,cat:'htn',q:'Which antihypertensive drug combination is LEAST appropriate for 60yo woman with prior MI, T2DM, BP 184/96, HR 64?',opts:['Lisinopril, chlorthalidone, atenolol','Lisinopril, HCTZ, metoprolol','Losartan, metoprolol, amlodipine','Losartan, metoprolol, verapamil','Losartan, chlorthalidone, metoprolol'],ans:3,exp:'Verapamil + metoprolol (beta-blocker) = dangerous combination → additive AV node depression → high-degree heart block, bradycardia. Classic contraindicated combination.'},
+  {id:86,cat:'htn',q:'71yo woman stopped previous antihypertensive due to cough. BP 158-162/76-79. No comorbidities. Most appropriate combination?',opts:['Amlodipine and chlorthalidone','Amlodipine and metoprolol','Chlorthalidone and triamterene','Chlorthalidone and lisinopril','Losartan and spironolactone'],ans:0,exp:'Dry cough = ACE inhibitor side effect (bradykinin). Switch to CCB + thiazide (no RAA system drugs). Amlodipine + chlorthalidone is appropriate first-line combination without RAA involvement.'},
+  {id:87,cat:'htn',q:'60yo man with HTN and borderline HF on chlorthalidone starts a 2nd drug. Develops worsening HF, insomnia, vivid dreams, depression. Second drug is most likely:',opts:['Atenolol','Lisinopril','Metoprolol','Sacubitril/valsartan','Spironolactone'],ans:2,exp:'Metoprolol is lipophilic → crosses blood-brain barrier → CNS side effects (insomnia, vivid dreams, depression). Can also precipitate HF. Atenolol is less lipophilic and less likely to cause CNS effects.'},
+  {id:88,cat:'htn',q:'52yo man with resistant HTN (on lisinopril, HCTZ, amlodipine), BP 138/86, K+ 3.2 (low). Add eplerenone → BP normalized. Most likely cause of HTN?',opts:['Asymptomatic heart failure','High Na diet','Hyperaldosteronism','Pheochromocytoma','Use of pseudoephedrine'],ans:2,exp:'Resistant HTN + hypokalemia + dramatic response to aldosterone antagonist = primary hyperaldosteronism (Conn\'s syndrome). Excess aldosterone causes Na+ retention, K+ wasting, and hypertension.'},
+  {id:89,cat:'htn',q:'Chlorthalidone therapy — expected plasma changes:',opts:['↓Na, ↓K, ↑Ca, ↑renin','↓Na, ↓K, ↓Ca, ↓renin','↑Na, ↑K, ↑Ca, ↓renin','↓Na, ↑K, ↑Ca, ↑renin','↑Na, ↓K, ↓Ca, ↑renin'],ans:0,exp:'Thiazides: decrease Na (excretion) and K (wasting) → alkalosis. INCREASE Ca (reabsorption in distal tubule). Volume depletion activates renin-angiotensin system → ↑renin.'},
+  {id:90,cat:'htn',q:'74yo woman on 3 antihypertensives develops leg/foot swelling, shoes tighter. BP 126/75, labs normal. Which medication is the likely cause?',opts:['Amlodipine','Doxazosin','Hydralazine','Losartan','Minoxidil'],ans:0,exp:'Amlodipine (and all DHP CCBs) cause peripheral edema via arteriolar dilation → increased capillary hydrostatic pressure → dependent edema. NOT fluid retention — diuretics minimally effective.'},
+  {id:91,cat:'htn',q:'Hypertension + moderate persistent asthma — safest antihypertensive?',opts:['Propranolol','Atenolol','Losartan','Nadolol','Timolol'],ans:2,exp:'Beta-blockers (even selective β1) can worsen asthma. Losartan (ARB) is the safest option — no bronchoconstrictive effect.'},
+  {id:92,cat:'hf',q:'Patients with HFrEF exhibit compensatory increases in HR and plasma renin. Which drug counteracts BOTH?',opts:['Empagliflozin','Furosemide','Isosorbide dinitrate/hydralazine','Lisinopril','Metoprolol'],ans:4,exp:'Beta-blockers reduce HR (direct β1 blockade) and reduce renin release (β1 receptors in juxtaglomerular cells control renin). ACE inhibitors reduce renin effects but don\'t reduce heart rate.'},
+  {id:93,cat:'hf',q:'75yo woman with HFrEF treated with drug reducing mortality. Changes: decreased TPR, decreased plasma renin, increased K+. Which drug?',opts:['Carvedilol','Furosemide','Lisinopril','Losartan','Metoprolol'],ans:0,exp:'Carvedilol (α1 + β blocker): reduces TPR (α1), reduces renin (β1), reduces aldosterone → K+ rises. It reduces mortality in HFrEF.'},
+  {id:94,cat:'hf',q:'68yo with HFrEF (EF 35%) on ACE inhibitor + beta-blocker, adds eplerenone. Mechanism of eplerenone?',opts:['Antagonism of aldosterone at mineralocorticoid receptor','Antagonism of angiotensin II at AT1 receptor','Blockade of epithelial Na+ channels','Blockade of Na+/K+/2Cl- symporter','Inhibition of SGLT2'],ans:0,exp:'Eplerenone and spironolactone competitively antagonize aldosterone at mineralocorticoid receptors. This reduces cardiac remodeling, fibrosis, and fluid retention.'},
+  {id:95,cat:'hf',q:'79yo woman with HFrEF treated with digoxin. Which hemodynamic changes? (CO, SV, HR, PVR)',opts:['CO↑, SV↑, HR↓, PVR↑','CO↑, SV↑, HR↓, PVR↓','CO↑, SV↓, HR↑, PVR↓','CO unchanged, SV↑, HR↓, PVR↑','CO↓, SV↓, HR↑, PVR↓'],ans:0,exp:'Digoxin: positive inotrope (↑SV, ↑CO), slows AV node/vagal tone (↓HR). Increased CO → reflex vasoconstriction (↑PVR). Unlike ACE inhibitors, digoxin does NOT reduce PVR.'},
+  {id:96,cat:'hf',q:'80yo man with CHF, EF <30%. Physician adds medication NOT shown to prolong life but will reduce symptoms. Which drug?',opts:['Metoprolol','Digoxin','Empagliflozin','Eplerenone','Sacubitril/valsartan'],ans:1,exp:'Digoxin improves symptoms (positive inotropy, rate control) but does NOT reduce mortality in HF. Contrast with metoprolol, ACE inhibitors, ARBs, spironolactone, sacubitril/valsartan which all reduce mortality.'},
+  {id:97,cat:'hf',q:'84yo on carvedilol and valsartan, adds eplerenone. Mechanism responsible for beneficial HF effects of eplerenone?',opts:['Decrease in baroreceptor sensitivity','Inhibition of aldosterone at MR in collecting tubule','Inhibition of aldosterone at MR in the heart','Inhibition of aldosterone release from adrenal cortex','Reduction in Na+ channel expression in collecting tubule'],ans:2,exp:'The cardiac benefit of spironolactone/eplerenone in HF is primarily from blocking aldosterone\'s effects on the MYOCARDIUM (fibrosis, remodeling, apoptosis) — NOT just diuresis.'},
+  {id:98,cat:'hf',q:'Spironolactone benefits in systolic HF — most likely mechanism?',opts:['Inhibition of aldosterone at MR in collecting tubule','Inhibition of aldosterone at MR in the HEART','Inhibition of aldosterone release from adrenal cortex','Decrease in baroreceptor sensitivity','Reduction in Na+ channel expression'],ans:1,exp:'Same as eplerenone — the anti-remodeling cardiac benefit is from blocking aldosterone receptors in the myocardium, preventing fibrosis and structural deterioration.'},
+  {id:99,cat:'hf',q:'79yo woman with HF prescribed furosemide. Expected plasma electrolyte profile after 1 month?',opts:['Ca↓ Mg↑ Na↓ Cl↓ pH↑','Ca↓ Mg↓ Na↓ Cl↓ pH↑','Ca↓ Mg↓ Na↓ Cl↓ pH↓','Ca↑ Mg↑ Na↓ Cl↓ pH↑'],ans:1,exp:'Furosemide (loop diuretic): washes out Na, K, Cl, Ca, Mg → hyponatremia, hypokalemia, hypomagnesemia, hypocalcemia. Loss of Cl and H secretion → metabolic alkalosis (pH↑). BOTH Ca and Mg go DOWN (unlike thiazides which SAVE Ca).'},
+  {id:100,cat:'hf',q:'ACC/AHA Stage B HF (structural disease, no symptoms). Recommended drug combination?',opts:['ACE inhibitor + furosemide','ACE inhibitor + spironolactone','ACE inhibitor + carvedilol','Carvedilol + spironolactone','Carvedilol + furosemide'],ans:2,exp:'Stage B HF: ACE inhibitor + beta-blocker (carvedilol/metoprolol) to prevent progression to symptomatic HF. Diuretics and spironolactone are added for symptomatic (Stage C) disease.'},
+  {id:101,cat:'hf',q:'65yo man with chronic HF on carvedilol, losartan, spironolactone at max doses. HR 55, BP 130/90. Next optimization step?',opts:['Monitor, follow up 3 months','Get echocardiogram','Stop losartan, start Entresto (sacubitril/valsartan)','Add ivabradine','Add lasix'],ans:2,exp:'Current guidelines recommend replacing ARB with sacubitril/valsartan (ARNI) in HFrEF patients already on ACE/ARB + beta-blocker for additional mortality benefit. HR 55 is too low for ivabradine (needs HR >70).'},
+  {id:102,cat:'hf',q:'Patient on furosemide, lisinopril, carvedilol for systolic HF. Additional rational therapy could include all EXCEPT:',opts:['Digoxin','Spironolactone','Eplerenone','Losartan'],ans:3,exp:'Adding losartan (ARB) to lisinopril (ACE inhibitor) = dual RAAS blockade → increased risk of hyperkalemia and renal failure with NO additional mortality benefit. Not recommended.'},
+  {id:103,cat:'hf',q:'Which drug has NOT been shown to reduce morbidity AND mortality in systolic HF?',opts:['Lisinopril','Losartan','Digoxin','Carvedilol'],ans:2,exp:'Digoxin improves symptoms and reduces hospitalizations but does NOT reduce mortality. The DIG trial showed no mortality benefit. All others reduce mortality.'},
+  {id:104,cat:'antiarr',q:'Drug X increases pacing threshold AND energy required to defibrillate. Drug X is most likely:',opts:['Dofetilide','Esmolol','Flecainide','Sotalol','Verapamil'],ans:2,exp:'Class IC drugs (flecainide, propafenone) increase pacing threshold and defibrillation threshold — potentially dangerous in patients with pacemakers/ICDs.'},
+  {id:105,cat:'antiarr',q:'68yo woman had MI one week ago. Most appropriate prophylactic antiarrhythmic?',opts:['Digoxin','Dofetilide','Metoprolol','Procainamide','Verapamil'],ans:2,exp:'Post-MI, beta-blockers (metoprolol) are the ONLY antiarrhythmics proven to reduce sudden cardiac death. Class I and III drugs can be proarrhythmic in ischemic hearts (CAST trial).'},
+  {id:106,cat:'antiarr',q:'42yo woman with unrecognized slow AV nodal conduction. Given new medication → develops complete heart block. Most likely drug?',opts:['Atropine','Esmolol','Ibutilide','Lidocaine','Minoxidil'],ans:1,exp:'Esmolol (IV beta-blocker) slows AV conduction. In a patient with pre-existing slow AV conduction, this can precipitate complete heart block. IV esmolol has very short half-life (~9 min).'},
+  {id:107,cat:'antiarr',q:'Drug X blocks If and IKr. ECG effects?',opts:['Decrease sinus rate and increase QT interval','Decrease sinus rate and prolong QRS duration','Increase P-R interval','Increase sinus rate and increase QT interval'],ans:0,exp:'If (funny current) drives pacemaker depolarization → blocking it slows sinus rate. IKr (rapid K+ channel) → blocking it prolongs repolarization → longer QT.'},
+  {id:108,cat:'antiarr',q:'Which drug most likely slows conduction in the ACCESSORY PATHWAY of Wolff-Parkinson-White syndrome?',opts:['Amiodarone','Diltiazem','Propranolol','Verapamil'],ans:0,exp:'Amiodarone has Class I, II, III, and IV effects. It slows conduction in both the AV node AND accessory pathways. AVOID diltiazem, verapamil, and digoxin in WPW — they can accelerate conduction through the accessory pathway.'},
+  {id:109,cat:'antiarr',q:'Which drug mechanism is most likely to result in torsade de pointes?',opts:['Augmentation of If','Blockade of ICa++','Blockade of IKr','Blockade of Na+/K+ ATPase'],ans:2,exp:'IKr blockade (Class III: dofetilide, ibutilide, sotalol; also quinidine, certain antihistamines) prolongs QT interval → early afterdepolarizations (EADs) → torsade de pointes.'},
+  {id:110,cat:'antiarr',q:'Flecainide can accelerate ventricular rate when given for atrial flutter. What action is responsible?',opts:['Decreases automaticity of atrial latent pacemaker cells','Decreases refractoriness of atrial cells','Increases QRS duration from Purkinje fibers','Slows conduction in re-entry circuit in atrium','Speeds conduction through AV node'],ans:3,exp:'Flecainide slows atrial flutter conduction in the re-entry circuit → converts 300 bpm flutter to 200 bpm → the AV node can now conduct more impulses → paradoxical ventricular acceleration. Always give AV node blocker first.'},
+  {id:111,cat:'antiarr',q:'Which drug is LEAST likely to produce heart block if given in excessive doses?',opts:['Digoxin','Dofetilide','Propranolol','Verapamil'],ans:1,exp:'Dofetilide (Class III, pure IKr blocker) prolongs QT but does NOT slow AV conduction → least risk of heart block. Compare to verapamil, propranolol, digoxin which all slow AV node.'},
+  {id:112,cat:'antiarr',q:'Which arrhythmia is NOT caused by re-entry?',opts:['Atrial fibrillation','Atrial flutter','AVNRT','AVRT','Torsade de pointes'],ans:4,exp:'Torsade de pointes is caused by TRIGGERED ACTIVITY (early afterdepolarizations), NOT re-entry. All the SVTs (AF, flutter, AVNRT, AVRT) are re-entrant mechanisms.'},
+  {id:113,cat:'antiarr',q:'Which is NOT associated with early afterdepolarizations (EADs)?',opts:['Digoxin overdose','Hypokalemia','Hypomagnesemia','Ibutilide therapy','Long QT syndrome'],ans:0,exp:'Digoxin overdose causes DELAYED afterdepolarizations (DADs) via Ca2+ overload — different mechanism. EADs are caused by IKr blockade → long QT → triggered activity.'},
+  {id:114,cat:'antiarr',q:'Which is NOT a side effect of amiodarone?',opts:['Hyperthyroidism','Hypothyroidism','Long QT','Lupus erythematosus','Pulmonary fibrosis'],ans:3,exp:'Lupus erythematosus is a side effect of PROCAINAMIDE (not amiodarone). Amiodarone side effects: thyroid (hypo AND hyper), pulmonary fibrosis, corneal microdeposits, hepatotoxicity, photosensitivity, peripheral neuropathy.'},
+  {id:115,cat:'antiarr',q:'Can cause acceleration of ventricular rate in atrial flutter but does NOT cause EADs:',opts:['Adenosine','Amiodarone','Flecainide','Ibutilide','Procainamide'],ans:2,exp:'Flecainide slows atrial flutter circuit → paradoxical ventricular acceleration (no AV node block). It does NOT prolong QT significantly → no EADs/torsade. Ibutilide DOES cause EADs.'},
+  {id:116,cat:'antiarr',q:'Indicated for oral therapy in recurrent ventricular tachycardia or fibrillation resistant to other drugs:',opts:['Adenosine','Amiodarone','Flecainide','Ibutilide','Procainamide'],ans:1,exp:'Amiodarone is the most effective antiarrhythmic for ventricular arrhythmias resistant to other drugs. Despite its toxicity profile, it is used when other drugs fail.'},
+  {id:117,cat:'antiarr',q:'Administered as rapid IV bolus for acute termination of re-entrant SVT:',opts:['Adenosine','Amiodarone','Flecainide','Ibutilide','Procainamide'],ans:0,exp:'Adenosine (IV bolus, very short half-life ~10 sec) temporarily blocks AV node → terminates re-entrant SVTs (AVNRT, AVRT). Also useful diagnostically to reveal flutter waves.'},
+  {id:118,cat:'antiarr',q:'Which is INCORRECT about calcium channel blocking drugs?',opts:['Nifedipine is effective in atrial fibrillation','Verapamil should not be combined with beta-blocker for stable angina','All CCBs effective for variant angina','Diltiazem and verapamil have similar cardiovascular effects'],ans:0,exp:'Nifedipine (DHP CCB) does NOT slow AV node conduction → NOT effective for rate control in AF. Only non-DHPs (diltiazem, verapamil) slow the AV node.'},
+  {id:119,cat:'antiarr',q:'Which drug is most likely to slow the ventricular rate in patients with AF AND has antimalarial properties?',opts:['Digoxin','Propranolol','Flecainide','Verapamil','Quinidine'],ans:4,exp:'Quinidine is a Class IA antiarrhythmic derived from quinine (antimalarial). It slows AV conduction (vagolytic effect helps rate control) and has antimalarial properties.'},
+  {id:120,cat:'antiarr',q:'59yo woman presents to ED with torsade de pointes. Which IV drug reverses this?',opts:['Amiodarone','Atropine','Digoxin','Procainamide','Magnesium solution'],ans:4,exp:'IV magnesium is first-line for torsade de pointes regardless of the magnesium level. It stabilizes the membrane and suppresses EADs.'},
+  {id:121,cat:'antiarr',q:'Patient with AF (history of hyperthyroidism workup). Best drug to treat AF?',opts:['Verapamil','Propranolol','Digitalis','Bretylium','Tocainide'],ans:1,exp:'Propranolol (beta-blocker) is preferred when AF is caused by hyperthyroidism — it both controls the arrhythmia AND reduces sympathomimetic effects of thyroid hormone.'},
+  {id:122,cat:'antiarr',q:'67yo with AF and T2DM, on apixaban and metformin. DC cardioversion performed. Best drug to MAINTAIN sinus rhythm?',opts:['Adenosine','Amiodarone','Diltiazem','Esmolol','Lidocaine'],ans:1,exp:'Amiodarone is the most effective drug for maintaining sinus rhythm in AF (rhythm control). Adenosine/lidocaine are for acute arrhythmia termination. Diltiazem/esmolol are for rate control, not rhythm control.'},
+  {id:123,cat:'antiarr',q:'24yo healthy grad student, chest fluttering, HR 190. Coughing terminates the episode. Most likely underlying rhythm?',opts:['AV nodal reentrant tachycardia (AVNRT)','AV reentrant tachycardia (AVRT)','Atrial fibrillation','Atrial flutter','Ventricular tachycardia'],ans:0,exp:'AVNRT: young patient, paroxysmal SVT, narrow QRS, P waves buried in QRS (inverted after QRS). Terminated by Valsalva/vagal maneuvers (coughing). Classic presentation.'},
+  {id:124,cat:'antiarr',q:'50yo man with HF + COPD on carvedilol, lisinopril, spironolactone. ECG: narrow QRS tachycardia, inverted P waves at end of QRS. PSVT/AVNRT. Best acute conversion?',opts:['Adenosine','Amiodarone','Esmolol','Lidocaine','Procainamide'],ans:0,exp:'Adenosine is first-line for AVNRT. Although the patient has COPD, adenosine is very short-acting (seconds). Esmolol would be dangerous in COPD (beta-blocker bronchospasm).'},
+  {id:125,cat:'antiarr',q:'Patient with long cardiovascular history develops worsening ventricular arrhythmias. Which drug is MOST likely the cause?',opts:['Quinidine','Propranolol','Dobutamine','Methyldopa'],ans:0,exp:'Quinidine causes proarrhythmia via QT prolongation → torsade de pointes. "Quinidine syncope" is a classic phenomenon. CAST trial showed Class I antiarrhythmics increase mortality post-MI.'},
+  {id:126,cat:'antiarr',q:'Life-threatening ventricular tachycardia post-MI. Best immediate IV drug?',opts:['Dobutamine','Digitalis','Quinidine','Lidocaine','Atropine'],ans:3,exp:'Lidocaine IV is first-line for acute ventricular tachycardia, especially post-MI (ischemic tissue is partially depolarized → lidocaine selectively suppresses ischemic cells without affecting normal myocardium).'},
+  {id:127,cat:'antiarr',q:'To stop ventricular tachycardia, which would you give IV?',opts:['Digoxin','Diltiazem','Ibutilide','Lidocaine','Propranolol'],ans:3,exp:'Lidocaine IV is the classic acute treatment for hemodynamically stable VT. Ibutilide is for AF/flutter conversion. Diltiazem/propranolol can worsen VT by slowing conduction.'},
+  {id:128,cat:'antiarr',q:'57yo with atrial flutter treated with quinidine (partially effective). Which drug might be used as ADJUNCT to quinidine?',opts:['Digitalis','Lidocaine','Procainamide','Nifedipine','Propranolol'],ans:0,exp:'Digoxin can be used with quinidine for atrial flutter — digoxin slows AV conduction (rate control) while quinidine attempts rhythm conversion. Note: quinidine paradoxically increases digoxin levels.'},
+  {id:129,cat:'antiarr',q:'What medication would be best for treating PSVT in a 58yo woman with family history of hypothyroidism?',opts:['Amiodarone','Ibutilide','Lidocaine','Nifedipine','Verapamil'],ans:4,exp:'Verapamil (non-DHP CCB) is appropriate for PSVT. Amiodarone is CONTRAINDICATED with thyroid disease history (contains iodine, causes thyroid dysfunction).'},
+  {id:130,cat:'path',q:'72yo man, 1 day post onset of chest pain. Troponin 12.2 ng/mL. ST elevations V2-V5. Histologic findings at this time?',opts:['Normal myocardium','Wavy fibers','Coagulation necrosis and neutrophilic infiltrate','Lipofuscin-laden macrophages','Fibroblast infiltration and collagen deposition'],ans:2,exp:'Timeline: 0-4hr: wavy fibers → 4-24hr: coagulation necrosis begins → 24-72hr: neutrophilic infiltrate (PEAK at 48-72hr) → 3-7 days: macrophages → 1-2 wks: granulation tissue → 2+ wks: collagen/scar. 1 day = coagulation necrosis + neutrophils.'},
+  {id:131,cat:'path',q:'46yo man autopsy: thickened mitral valve leaflets, commissural fusion, shortened tendinous cords, slight LA dilation. Most likely etiology?',opts:['Prior untreated group A streptococcal infection','Congenital bicuspid valve and calcific stenosis','Myxomatous degeneration','Left atrial myxoma','Mutations in beta-myosin heavy chain gene'],ans:0,exp:'Rheumatic heart disease: Group A strep pharyngitis → molecular mimicry → immune damage to heart valves. Classically mitral stenosis. Commissural fusion + thickened leaflets + chordal involvement = rheumatic changes.'},
+  {id:132,cat:'path',q:'Which prevention category is correctly matched?',opts:['Beta-blocker use after MI in 47yo diabetic - primary','Statin use in healthy 60yo with CV risk 12% - primary','Aortic aneurysm screening in 70yo ex-smoker - tertiary','Exercise counseling for 56yo - secondary'],ans:1,exp:'Statin in healthy patient with elevated ASCVD risk = PRIMARY prevention (preventing first event). Post-MI beta-blocker = SECONDARY (preventing recurrence). AAA screening = SECONDARY (detecting disease). Tertiary = managing existing disease.'},
+  {id:133,cat:'path',q:'25yo woman, 3 days of increasing dyspnea, took sulfonamide 2 weeks ago. Biopsy shows interstitial eosinophilic infiltrate. Most likely etiology?',opts:['Viral infection','Ischemia','Drug','Heavy metal','Enzyme deficiency'],ans:2,exp:'Eosinophilic myocarditis after drug exposure (sulfonamide) = drug hypersensitivity myocarditis. Eosinophils are the key clue.'},
+  {id:134,cat:'path',q:'40yo woman with new dyspnea. Echo: 1.8 cm mobile left atrial mass attached by stalk to atrial septum. Irregular gelatinous tumor with bland spindle cells. Most likely diagnosis?',opts:['Leiomyoma','Fibroma','Myxoma','Rhabdomyosarcoma','Angiosarcoma'],ans:2,exp:'Cardiac myxoma: most common primary cardiac tumor, typically in LEFT atrium attached to fossa ovalis by a stalk, gelatinous appearance, can cause emboli, syncopal episodes, and obstruction.'},
+  {id:135,cat:'path',q:'56yo man found unconscious, hemopericardium at autopsy, proximal aorta shows cystic medial degeneration. Most likely underlying condition?',opts:['Hypercholesterolemia','Viral infection','Bacterial infection','Connective tissue disorder','Alcohol abuse'],ans:3,exp:'Cystic medial degeneration of the aorta = aortic dissection. Associated with Marfan syndrome, Ehlers-Danlos syndrome (connective tissue disorders), and hypertension. Hemopericardium = cardiac tamponade from proximal dissection.'},
+  {id:136,cat:'path',q:'Which is NOT true regarding the HEART score for cardiac risk assessment?',opts:['Can be applied to adult chest pain patients for urgent assessment','The R in the mnemonic stands for heart Rate','History scoring is subjective based on ACS suspicion','ECG scoring based on ST segment analysis','Serum troponin is a necessary component'],ans:1,exp:'HEART score: H=History, E=ECG, A=Age, R=Risk factors (NOT heart rate!), T=Troponin. Risk factors include known atherosclerosis, DM, hypertension, etc.'},
+  {id:137,cat:'path',q:'47yo man with PE presents in obstructive shock. Which characterizes changes in cardiac output?',opts:['CO reduced from mechanical blockage, SVR increased','CO reduced from myocardial dysfunction, SVR increased','CO reduced from reduced preload, SVR increased','CO increased from reduced SVR','CO increased from increased preload, SVR reduced'],ans:0,exp:'Obstructive shock (PE, tension pneumo, tamponade): mechanical obstruction → reduced RV output → reduced CO. Compensatory sympathetic activation → increased SVR. Different from distributive shock (sepsis) where SVR drops.'},
+  {id:138,cat:'path',q:'48yo man, stable angina with 70% RCA stenosis on CT. Started aspirin + atorvastatin. Next best step?',opts:['Outpatient stress test','Refer for PCI of lesion','Refer to ED for thrombolytics','Prescribe dabigatran','Prescribe metoprolol'],ans:4,exp:'Stable angina + confirmed CAD: medical management is first-line. Beta-blocker (metoprolol) for angina control, reduce O2 demand, and post-MI survival benefit if MI occurs.'},
+  {id:139,cat:'misc',q:'ST elevations in leads II, III, aVF — after nitroglycerin, patient becomes hypotensive. Most likely additional ECG finding?',opts:['ST elevation in V1-V3','ST elevation in right-sided leads (V4R)','ST depression in V5-V6','ST elevation in aVL','No additional changes'],ans:1,exp:'Inferior STEMI (II, III, aVF) often involves RV. RV infarction → ST elevation in right-sided leads (V4R). Nitro is CONTRAINDICATED in RV infarction — reduces preload which RV-dependent filling needs.'},
+  {id:140,cat:'misc',q:'55yo woman with chronic HF, develops hypotension after CABG with low CO. Given milrinone. How does milrinone work?',opts:['Cholinergic agonist','Reduces left ventricular filling pressure','Potentiates cardiac phosphodiesterase type 3','Decreases cyclic AMP','Decreases intracellular calcium'],ans:1,exp:'Milrinone inhibits phosphodiesterase III → increased cAMP → positive inotropy + vasodilation. Net effect: increased CO and DECREASED filling pressure (preload reduction via venodilation).'},
+  {id:141,cat:'misc',q:'64yo post-surgical patient with cardiogenic shock. Which is TRUE about dobutamine?',opts:['Acts on dopamine receptors','Activates alpha receptors','Activates cAMP-related pathways','Increases peripheral resistance','Produces bradycardia'],ans:2,exp:'Dobutamine is a β1/β2 agonist → activates adenylate cyclase → increased cAMP → positive inotropy. It slightly reduces SVR (β2 effect) and increases HR. NOT a dopamine receptor agonist.'},
+  {id:142,cat:'misc',q:'16yo with head injury, BP 220/170, given nitroprusside. After 72 hours, patient becomes fatigued and nauseous. Most likely cause?',opts:['Thiocyanate accumulation from nitroprusside','Negative inotropic activity of nitroprusside','Renal precipitation of nitroprusside','Long half-life accumulation','Production of hydroxocobalamin'],ans:0,exp:'Nitroprusside → releases cyanide → metabolized to thiocyanate. With prolonged infusion (especially in renal failure or high doses), thiocyanate accumulates → nausea, fatigue, psychosis, lactic acidosis.'},
+  {id:143,cat:'misc',q:'66yo man with 5-month dry cough post-MI on several new medications. Most likely culprit?',opts:['Lisinopril','Nitroglycerin','Lovastatin','Digoxin','Quinidine'],ans:0,exp:'ACE inhibitor (lisinopril) dry cough is a classic side effect — bradykinin accumulation (ACE also breaks down bradykinin) causes irritation of bronchial mucosa. Affects ~10-15% of patients.'},
+  {id:144,cat:'misc',q:'Patient cannot take ACE inhibitor due to cough. Switch to agent with similar mortality benefits but slightly different mechanism. Which agent?',opts:['Furosemide','Captopril','Losartan','Esmolol','Ezetimibe'],ans:2,exp:'Losartan (ARB) blocks AT1 receptors directly. Same mortality benefits in HF/post-MI as ACE inhibitors. Does NOT cause cough (no bradykinin accumulation).'},
+  {id:145,cat:'misc',q:'54yo woman with CHF on captopril. Which effect does captopril cause?',opts:['High affinity for angiotensin II receptors','Promotes increased peripheral vascular resistance','Decreases CO and increases afterload','Causes venodilation and induces natriuresis','Increases preload'],ans:3,exp:'ACE inhibitor effects: arteriolar and venous dilation (reduces both afterload and preload) + natriuresis (reduces aldosterone). Net: decreased preload AND afterload → increased CO.'},
+  {id:146,cat:'misc',q:'76yo with AF on amiodarone and diltiazem, now adding digoxin. How does digoxin work?',opts:['Decreases intracellular Na, increases intracellular K','Lowers intracellular calcium','Decreases stroke volume and CO','Diminishes elimination of sodium and water','Increases vagal activity and decreases sympathetic tone'],ans:4,exp:'Digoxin mechanism: (1) inhibits Na/K ATPase → intracellular Na rises → NCX exchanger reverses → intracellular Ca rises → positive inotropy; (2) increases vagal tone → slows AV conduction (rate control in AF).'},
+  {id:147,cat:'misc',q:'47yo woman with AF on digoxin, you add antihypertensive. She develops dangerous arrhythmia. Which drug increased digoxin effects?',opts:['Valsartan','Hydrochlorothiazide','Hydralazine','Tadalafil','Lovastatin'],ans:1,exp:'HCTZ causes hypokalemia → digoxin toxicity (low K+ means more digoxin binding to Na/K ATPase). Signs: AV block, ventricular arrhythmias, nausea/vomiting, visual changes (yellow-green halos).'},
+  {id:148,cat:'misc',q:'75yo woman with stroke, BP 195/105, HR 95. Physician uses fast-acting vasodilating agent also used for severe decompensated CHF. Which drug?',opts:['Nitroprusside','Furosemide','Dobutamine','Losartan','Digoxin'],ans:0,exp:'Nitroprusside: immediate-onset, IV vasodilator (arterial + venous), used for hypertensive emergencies and acute decompensated CHF (reduces both afterload and preload).'},
+  {id:149,cat:'misc',q:'Ventricular fibrillation → converted to AF with rapid ventricular response. Senior orders amiodarone. Mechanism as Class III antiarrhythmic?',opts:['Beta-receptor antagonist','Blocks fast sodium channels','Decreases refractoriness','Interferes with outward potassium current','Relatively short half-life'],ans:3,exp:'Class III mechanism = blockade of outward K+ current (IKr, IKs) → prolongs action potential duration → prolongs QT → increased refractory period. Amiodarone has VERY long half-life (40-55 days).'},
+  {id:150,cat:'misc',q:'40yo man with HTN on lisinopril, amlodipine, HCTZ. BP 140-155/85-95, HR 55-65 with normal labs. What medication adjustment can help lower BP?',opts:['Add doxazosin','Add valsartan','Add spironolactone','Switch HCTZ to furosemide','Switch lisinopril to valsartan'],ans:2,exp:'Triple therapy (ACE + CCB + thiazide) not at goal → add spironolactone. Aldosterone antagonist is particularly effective as 4th agent in resistant HTN (PATHWAY-2 trial). Avoid ACE + ARB combination.'},
+  {id:151,cat:'misc',q:'Which drugs improve survival in chronic systolic HF? (1) Enalapril (2) Digoxin (3) Carvedilol (4) Furosemide',opts:['1, 2, 3 correct','1 and 3 correct','2 and 4 correct','4 only','All correct'],ans:1,exp:'Only enalapril (ACE inhibitor) and carvedilol (beta-blocker) have proven mortality benefit. Digoxin reduces hospitalizations but NOT mortality (DIG trial). Furosemide relieves symptoms but no mortality benefit.'},
+  {id:152,cat:'misc',q:'Drug(s) that decrease STANDING blood pressure more than SUPINE blood pressure: (1) Metoprolol (2) Nitroprusside (3) Captopril (4) Prazosin',opts:['1, 2, 3 correct','1 and 3 correct','2 and 4 correct','4 only correct','All correct'],ans:3,exp:'Prazosin (α1 blocker) causes ORTHOSTATIC hypotension because alpha-1 blockade prevents the normal standing vasoconstriction reflex. Nitroprusside causes equal BP reduction. Metoprolol and captopril have less postural effect.'},
+  {id:153,cat:'misc',q:'Drugs that counteract hypokalemia from thiazide diuretics: (1) Eplerenone (2) Aliskiren (3) Triamterene (4) Acetazolamide',opts:['1, 2, 3 correct','1 and 3 correct','2 and 4 correct','4 only','All correct'],ans:0,exp:'Eplerenone and triamterene both SPARE potassium. Aliskiren (renin inhibitor) → reduces aldosterone → K-sparing effect. Acetazolamide causes metabolic acidosis but does not counter hypokalemia.'},
+  {id:154,cat:'misc',q:'Drugs reported to INCREASE new onset Type 2 diabetes: (1) Aliskiren (2) Amlodipine (3) Lisinopril (4) Metoprolol',opts:['1, 2, 3 correct','1 and 3 correct','2 and 4 correct','4 only correct','All correct'],ans:3,exp:'Beta-blockers (metoprolol) increase diabetes risk by masking hypoglycemia symptoms and impairing glucose metabolism. Thiazides also increase DM risk. ACE inhibitors and CCBs actually REDUCE DM risk.'},
+  {id:155,cat:'misc',q:'ARBs vs ACE inhibitors — which statement is INCORRECT?',opts:['ARBs reduce AT1 receptor activation more effectively than ACE inhibitors','ARBs result in greater AT2 stimulation than ACE inhibitors','Both ARBs and ACE inhibitors increase plasma angiotensin I level','ARBs are more effective at lowering BP to goal than ACE inhibitors'],ans:3,exp:'ARBs and ACE inhibitors are roughly EQUALLY effective at lowering blood pressure to goal — no superiority of one over the other in BP reduction.'},
+  {id:156,cat:'misc',q:'Which statement regarding inhibitors of the renin-angiotensin system is FALSE?',opts:['Increased bradykinin from ACE inhibition may play a role in hemodynamic/anti-remodeling effects','Inhibitors of the RAS produce an increase in EF in patients with HTN, but NOT in systolic HF patients','AT1 receptor antagonists may provide more effective reduction of AT1 receptor mediated effects than ACE inhibitors','AT2 receptors are stimulated more in the presence of an AT1 receptor blocker than an ACE inhibitor'],ans:1,exp:'Statement B is FALSE — inhibitors of the RAS DO produce increased EF in systolic HF patients (anti-remodeling effect). They do NOT produce EF changes in hypertensive patients without HF.'},
+  {id:157,cat:'misc',q:'Which is TRUE about HF statements: (1) Increases in afterload → substantial reductions in LV stroke volume. (2) In HF on plateau of Frank-Starling, preload reduction can occur without reduction in CO. (3) Neurohumoral substances (NE, Ang II, aldosterone) produce myocyte apoptosis, hypertrophy, and extracellular matrix changes. (4) Decreased EF = diastolic HF.',opts:['1, 2, 3 correct','1 and 3 correct','2 and 4 correct','4 only','All correct'],ans:0,exp:'Statements 1, 2, 3 are correct. Statement 4 is FALSE — decreased EF = SYSTOLIC HF. Diastolic HF (HFpEF) is characterized by preserved EF with impaired relaxation.'},
+  {id:158,cat:'misc',q:'Carvedilol: (1) Reduces mortality in systolic HF. (2) Improves symptoms in patients with ACUTE heart failure. (3) Reduces TPR. (4) In HF patients, should not be combined with thiazides due to hypokalemia risk.',opts:['1, 2, 3 correct','1 and 3 correct','2 and 4 correct','4 only','All correct'],ans:1,exp:'Statements 1 and 3 correct. Statement 2 is FALSE — carvedilol should NOT be initiated in ACUTE decompensated HF (worsens symptoms). Statement 4 is false — no such specific contraindication.'},
+  {id:159,cat:'misc',q:'A 34yo female with UTI. Nitrites, leukocyte esterase, mild hematuria positive. Pregnancy negative. She is allergic to indomethacin. Best antibiotic and relevant allergy concern?',opts:['Nitrofurantoin 100mg BID x5 days; allergy irrelevant','TMP-SMX DS BID x3 days; contraindicated due to NSAID allergy','Ciprofloxacin 500mg BID x7 days; contraindicated','Amoxicillin 500mg TID x10 days; allergy relevant','No treatment needed'],ans:0,exp:'Nitrofurantoin is first-line for uncomplicated UTI in non-pregnant women. Indomethacin allergy (NSAID) has no relevance to UTI antibiotic choice.'},
+  {id:160,cat:'misc',q:'Patient with hypertension and rheumatoid arthritis on chronic naproxen (NSAID). Best antihypertensive?',opts:['Amlodipine','Hydrochlorothiazide','Lisinopril','Metoprolol','Spironolactone'],ans:0,exp:'NSAIDs blunt the efficacy of diuretics (thiazides, loops), ACE inhibitors, and ARBs. CCBs (amlodipine) are NSAID-resistant and remain effective.'},
+  {id:161,cat:'misc',q:'Drugs that produce anti-remodeling effect on failing heart: (1) Spironolactone (2) Carvedilol (3) Lisinopril (4) Furosemide',opts:['1, 2, 3 correct','1 and 3 correct','2 and 4 correct','4 only','All correct'],ans:0,exp:'Spironolactone, carvedilol, and lisinopril all have anti-remodeling effects. Furosemide is purely a diuretic — no anti-remodeling effect.'},
+  {id:162,cat:'misc',q:'Which statements about nitroglycerin are TRUE? (1) At therapeutic doses, predominantly arterial vasodilation. (2) In coronary circulation, dilates coronary resistance vessels (arterioles). (3) NO conversion occurs within endothelial cell. (4) Nitroglycerin dilates coronary collateral vessels.',opts:['1, 2, 3 correct','1 and 3 correct','2 and 4 correct','4 only correct','All correct'],ans:3,exp:'Only statement 4 is TRUE. Nitroglycerin at therapeutic doses primarily dilates VEINS (reduces preload), NOT arteries. It dilates large epicardial vessels, NOT resistance arterioles. NO conversion occurs in smooth muscle cells, NOT endothelial cells. But it DOES dilate collateral vessels.'},
+  {id:163,cat:'misc',q:'Some effects of chronic metoprolol therapy are similar in patients with and without systolic HF. Which effect is NOT similar in both populations?',opts:['Slowing in ventricular rate in patients with atrial fibrillation','Slowing in sinus rate in patients with sinus tachycardia','Decrease in ejection fraction','Abrupt withdrawal can result in up-regulation of beta-1 adrenergic receptors'],ans:2,exp:'In normal hearts, metoprolol DECREASES EF (negative inotropy). In HF patients, chronic therapy INCREASES EF (reverse remodeling, beneficial effect). This paradoxical difference is unique to HF.'},
+  {id:164,cat:'misc',q:'Which is INCORRECT about ACE inhibitors and ARBs?',opts:['Use of ACE inhibitors for HTN is associated with increased risk of development of diabetes mellitus','Use of ACE inhibitors for HTN is associated with significant incidence of cough','Use of ARBs in hypertensive patients with bilateral renal artery stenosis is associated with renal failure','Use of ACE inhibitors and ARBs is contraindicated for hypertensive pregnant patients'],ans:0,exp:'ACE inhibitors actually DECREASE the risk of new-onset diabetes. This is the incorrect statement. ARBs and ACE inhibitors are anti-diabetogenic (improve insulin sensitivity).'},
+  {id:165,cat:'misc',q:'Which of the following is the MOST appropriate therapy for a hypertensive patient (Stage 1) who also has benign prostatic hyperplasia (BPH)?',opts:['Doxazosin alone','Doxazosin plus metoprolol','Doxazosin plus tamsulosin','Chlorthalidone plus tamsulosin'],ans:3,exp:'For BPH + hypertension: doxazosin alone addresses both conditions (α1 blocker lowers BP AND relaxes prostate smooth muscle → improves urinary symptoms). Adding tamsulosin is redundant and increases hypotension risk.'},
+  {id:166,cat:'misc',q:'Which antihypertensive drugs have a GREATER effect to lower standing blood pressure than supine? (1) Captopril (2) Labetalol (3) Amlodipine (4) Doxazosin',opts:['1, 2, 3 correct','1 and 3 correct','2 and 4 correct','4 only correct','All correct'],ans:3,exp:'Doxazosin (alpha-1 blocker) causes selective orthostatic hypotension. Labetalol (alpha+beta blocker) also causes orthostatic hypotension. So statements 2 and 4 are correct — answer is C (2 and 4).'},
+  {id:167,cat:'misc',q:'Increases intracellular cGMP levels in vascular smooth muscle cells:',opts:['Amlodipine','Digoxin','Nitroprusside','Ranolazine'],ans:2,exp:'Nitroprusside releases NO → directly stimulates guanylate cyclase → increases cGMP → smooth muscle relaxation.'},
+  {id:168,cat:'misc',q:'Blocks the Na/K ATPase in cardiac muscle cells:',opts:['Amlodipine','Digoxin','Nitroprusside','Ranolazine'],ans:1,exp:'Digoxin inhibits Na/K ATPase → intracellular Na rises → NCX exchanger reverses → intracellular Ca rises → positive inotropy.'},
+  {id:169,cat:'misc',q:'Blocks the late sodium channels in cardiac myocytes that fail to inactivate in ischemic tissue:',opts:['Amlodipine','Digoxin','Nitroprusside','Ranolazine'],ans:3,exp:'Ranolazine selectively inhibits late sodium current (late INa) in ischemic myocardium → reduces intracellular Na and Ca overload → decreases oxygen demand without affecting HR or BP.'},
+  {id:170,cat:'misc',q:'Which of the following antihypertensive drug combinations is recommended for Stage 2 hypertension in a patient with no comorbid conditions?',opts:['Captopril plus metoprolol','Metoprolol plus verapamil','Amlodipine plus lisinopril','Captopril plus eplerenone'],ans:2,exp:'First-line combination for stage 2 HTN without comorbidities: ACE inhibitor + CCB (amlodipine + lisinopril). Metoprolol + verapamil is dangerous (AV block). Dual RAAS blockade (captopril + eplerenone) is not recommended.'},
+];
+
+const CAT_LABELS = {lipid:'Lipid-lowering',anticoag:'Anticoagulation',angina:'Angina',htn:'Hypertension',hf:'Heart failure',antiarr:'Antiarrhythmics',path:'Pathology/clinical',misc:'Misc/mixed'};
+let currentCat = 'all';
+let filteredQs = [...ALL_QUESTIONS];
+let currentIdx = 0;
+let answeredMap = {};
+let correctMap = {};
+let revealed = {};
+let mode = 'quiz';
+let flashIdx = 0;
+let flashShown = {};
+let flashRatings = {};
+let multiSelected = [];
+
+function updateStats() {
+  const answered = Object.keys(answeredMap).length;
+  const correct = Object.keys(correctMap).length;
+  document.getElementById('stat-answered').textContent = answered;
+  document.getElementById('stat-correct').textContent = correct;
+  document.getElementById('stat-score').textContent = answered > 0 ? Math.round(correct/answered*100)+'%' : '—';
+}
+
+function setCat(cat, el) {
+  currentCat = cat;
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  applyFilter();
+}
+
+function filterSearch() { applyFilter(); }
+
+function applyFilter() {
+  const term = document.getElementById('search').value.toLowerCase();
+  filteredQs = ALL_QUESTIONS.filter(q => {
+    const catMatch = currentCat === 'all' || q.cat === currentCat;
+    const textMatch = !term || q.q.toLowerCase().includes(term) || q.opts.some(o => o.toLowerCase().includes(term));
+    return catMatch && textMatch;
+  });
+  currentIdx = 0;
+  document.getElementById('stat-total').textContent = filteredQs.length;
+  renderQ();
+}
+
+function shuffleQ() {
+  for(let i = filteredQs.length-1; i>0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [filteredQs[i], filteredQs[j]] = [filteredQs[j], filteredQs[i]];
+  }
+  currentIdx = 0;
+  renderQ();
+}
+
+function resetProgress() {
+  answeredMap = {}; correctMap = {}; revealed = {};
+  flashRatings = {}; flashShown = {};
+  updateStats();
+  renderQ();
+  if(mode === 'flash') renderFlash();
+}
+
+function goQ(dir) {
+  currentIdx = Math.max(0, Math.min(filteredQs.length-1, currentIdx+dir));
+  renderQ();
+}
+
+function renderQ() {
+  const q = filteredQs[currentIdx];
+  if(!q) { document.getElementById('q-container').innerHTML = '<p style="color:#666;font-size:14px">No questions match your filter.</p>'; return; }
+  const total = filteredQs.length;
+  document.getElementById('q-counter').textContent = (currentIdx+1)+' / '+total;
+  document.getElementById('progress-fill').style.width = ((currentIdx+1)/total*100)+'%';
+  document.getElementById('prev-btn').disabled = currentIdx === 0;
+  document.getElementById('next-btn').disabled = currentIdx === filteredQs.length-1;
+  const isAnswered = answeredMap[q.id] !== undefined;
+  const isMulti = Array.isArray(q.ans);
+  let optsHtml = '';
+  const letters = ['A','B','C','D','E','F'];
+  q.opts.forEach((opt,i) => {
+    let cls = 'opt';
+    if(isAnswered) {
+      cls += ' disabled';
+      const correctArr = isMulti ? q.ans : [q.ans];
+      if(correctArr.includes(i)) cls += ' correct';
+      else if(isMulti ? (Array.isArray(answeredMap[q.id]) && answeredMap[q.id].includes(i)) : answeredMap[q.id]===i) cls += ' wrong';
+    }
+    optsHtml += `<button class="${cls}" onclick="selectOpt(${q.id},${i})"><span class="opt-letter">${letters[i]}.</span> ${opt}</button>`;
+  });
+  const expHtml = (isAnswered || revealed[q.id]) ? `<div class="explanation"><strong>Explanation:</strong> ${q.exp}</div>` : `<button class="reveal-btn" onclick="revealExp(${q.id})">Show explanation</button>`;
+  const badge = isAnswered ? (correctMap[q.id] ? '<span class="badge badge-correct">Correct</span>' : '<span class="badge badge-wrong">Incorrect</span>') : '';
+  document.getElementById('q-container').innerHTML = `
+    <div class="card">
+      <div class="q-meta">
+        <span class="q-num">Q${q.id}</span>
+        <span class="q-cat cat-${q.cat}">${CAT_LABELS[q.cat]||q.cat}</span>
+        ${isMulti ? '<span style="font-size:11px;color:#888">(select all that apply)</span>' : ''}
+        ${badge}
+      </div>
+      <div class="q-text">${q.q}</div>
+      <div class="options">${optsHtml}</div>
+      ${expHtml}
+    </div>`;
+}
+
+function selectOpt(qid, optIdx) {
+  const q = filteredQs.find(x => x.id===qid);
+  if(!q || answeredMap[qid] !== undefined) return;
+  const isMulti = Array.isArray(q.ans);
+  if(!isMulti) {
+    const correct = optIdx === q.ans;
+    answeredMap[qid] = optIdx;
+    if(correct) correctMap[qid] = true;
+    updateStats();
+    renderQ();
+  } else {
+    if(!multiSelected.includes(optIdx)) multiSelected.push(optIdx);
+    const correctArr = q.ans.slice().sort().join(',');
+    const selectedArr = multiSelected.slice().sort().join(',');
+    if(selectedArr === correctArr) {
+      answeredMap[qid]=multiSelected.slice(); correctMap[qid]=true; multiSelected=[];
+      updateStats(); renderQ();
+    } else if(multiSelected.length >= q.opts.length) {
+      answeredMap[qid]=multiSelected.slice(); multiSelected=[];
+      updateStats(); renderQ();
+    } else {
+      const btns = document.querySelectorAll('.opt');
+      btns[optIdx] && (btns[optIdx].style.borderColor = '#185FA5');
+    }
+  }
+}
+
+function revealExp(qid) { revealed[qid] = true; renderQ(); }
+
+function goFlash(dir) {
+  flashIdx = Math.max(0, Math.min(filteredQs.length-1, flashIdx+dir));
+  renderFlash();
+}
+
+function renderFlash() {
+  const q = filteredQs[flashIdx];
+  if(!q) return;
+  const total = filteredQs.length;
+  document.getElementById('fp-counter').textContent = (flashIdx+1)+' / '+total;
+  document.getElementById('fp-prog').style.width = ((flashIdx+1)/total*100)+'%';
+  document.getElementById('fp-prev').disabled = flashIdx === 0;
+  document.getElementById('fp-next').disabled = flashIdx === filteredQs.length-1;
+  const shown = flashShown[q.id];
+  const rating = flashRatings[q.id];
+  const letters = ['A','B','C','D','E','F'];
+  const ansArr = Array.isArray(q.ans) ? q.ans : [q.ans];
+  const ansText = ansArr.map(i => letters[i]+'. '+q.opts[i]).join(', ');
+  const ratingHtml = rating ? `<p style="font-size:12px;color:#999;margin-top:8px">Rated: ${rating}</p>` : '';
+  document.getElementById('flash-container').innerHTML = `
+    <div class="card">
+      <div class="q-meta"><span class="q-num">Q${q.id}</span><span class="q-cat cat-${q.cat}">${CAT_LABELS[q.cat]||q.cat}</span></div>
+      <div class="flash-front">${q.q}</div>
+      ${shown ? `<div class="flash-back"><strong>Answer:</strong> ${ansText}<br><br><em>${q.exp}</em></div>
+        <div class="self-btns">
+          <button class="self-btn know" onclick="rateFlash(${q.id},'know')">Know it</button>
+          <button class="self-btn unsure" onclick="rateFlash(${q.id},'unsure')">Unsure</button>
+          <button class="self-btn dontknow" onclick="rateFlash(${q.id},'dontknow')">Don't know</button>
+        </div>${ratingHtml}` :
+        `<button class="flip-btn" onclick="flipFlash(${q.id})">Show answer</button>`}
+    </div>`;
+}
+
+function flipFlash(qid) { flashShown[qid] = true; renderFlash(); }
+function rateFlash(qid, rating) { flashRatings[qid] = rating; goFlash(1); }
+
+function setMode(m) {
+  mode = m;
+  ['quiz','flash','drugs'].forEach(x => {
+    document.getElementById(x+'-panel').style.display = x===m ? 'block' : 'none';
+    document.getElementById('btn-'+x).classList.toggle('active', x===m);
+  });
+  if(m==='flash') renderFlash();
+  if(m==='drugs') renderDrugGrid();
+}
+
+const DRUGS = [
+  {name:'Atorvastatin / Rosuvastatin / Pravastatin',class:'HMG-CoA reductase inhibitor (Statin)',tags:['CYP3A4 (atorva)','LDL↓↓↓','myopathy'],moa:'Inhibit HMG-CoA reductase → block hepatic cholesterol synthesis → upregulate LDL receptors → LDL clearance',ind:'Hypercholesterolemia, primary/secondary CV prevention (4 ACC/AHA groups)',se:'Myopathy/rhabdomyolysis (check CK if symptoms), hepatotoxicity (check ALT at baseline), teratogenic',pearls:'Pravastatin: NOT CYP3A4 → safe with verapamil/diltiazem. Atorvastatin: CYP3A4 substrate. Rosuvastatin: prevents CV events in normal-LDL patients (JUPITER trial).'},
+  {name:'Ezetimibe',class:'Cholesterol absorption inhibitor',tags:['NPC1L1','brush border','synergy'],moa:'Inhibits NPC1L1 transporter on intestinal brush border → blocks dietary and biliary cholesterol absorption',ind:'Hypercholesterolemia (monotherapy or + statin for synergistic LDL lowering)',se:'Well tolerated; mild GI effects',pearls:'Synergistic with statins (statin blocks synthesis, ezetimibe blocks absorption). Does NOT affect TG significantly.'},
+  {name:'Colesevelam',class:'Bile acid sequestrant',tags:['drug binding','TG↑','constipation'],moa:'Binds bile acids in gut → interrupts enterohepatic circulation → liver uses cholesterol to make more bile acids → LDL↓',ind:'Hypercholesterolemia, T2DM (modest glucose-lowering)',se:'Constipation, bloating, INCREASES triglycerides, binds other drugs (warfarin, digoxin)',pearls:'Take other meds 1 hr before or 4-6 hr after. Contraindicated in hypertriglyceridemia. Decreases warfarin bioavailability.'},
+  {name:'Fenofibrate / Gemfibrozil',class:'Fibrate (PPAR-alpha agonist)',tags:['TG↓↓↓','HDL↑','myopathy with statins'],moa:'Activates PPAR-α → increases lipoprotein lipase → decreases TG, increases HDL',ind:'Hypertriglyceridemia, mixed dyslipidemia',se:'Myopathy (especially with statins), hepatotoxicity, gallstones',pearls:'Gemfibrozil has more drug interactions with statins (rhabdomyolysis risk). Fenofibrate preferred with statins.'},
+  {name:'Aspirin',class:'COX-1 inhibitor / Antiplatelet',tags:['irreversible','TXA2↓','7-10 days'],moa:'Irreversibly acetylates COX-1 → blocks TXA2 synthesis → platelet aggregation inhibited for platelet lifetime',ind:'ACS (first-line, give immediately), stroke prevention, post-MI, primary prevention in high-risk',se:'GI bleeding, peptic ulcer, Reye syndrome in children',pearls:'Effect lasts 7-10 days (platelet lifespan). Single dose permanently inhibits platelet. Does NOT affect Protein C/S.'},
+  {name:'Clopidogrel / Ticagrelor / Prasugrel',class:'P2Y12 ADP receptor antagonist',tags:['ADP block','irreversible','stent'],moa:'Irreversibly binds P2Y12 receptor on platelets → blocks ADP-mediated aggregation',ind:'ACS (+ aspirin = dual antiplatelet), PCI/stent, stroke prevention',se:'Bleeding, bruising',pearls:'Clopidogrel is a PRODRUG (CYP2C19 activation). Effect lasts 7-10 days. Used WITH aspirin post-stent. Prasugrel more potent. Ticagrelor reversible.'},
+  {name:'Warfarin',class:'Vitamin K antagonist',tags:['INR monitoring','slow onset','FFP reversal'],moa:'Inhibits vitamin K epoxide reductase → blocks synthesis of factors II, VII, IX, X, protein C, protein S',ind:'AF, DVT/PE, mechanical heart valves, high-risk conditions',se:'Bleeding (many drug interactions), teratogenic, early hypercoagulable state (protein C/S deficiency)',pearls:'Reversed by FFP (immediate) or vitamin K (hours). INR 2-3 for most indications. CANNOT use DOACs for mechanical heart valves.'},
+  {name:'Heparin (UFH)',class:'Indirect thrombin inhibitor (via antithrombin III)',tags:['aPTT monitoring','HIT risk','IV only'],moa:'Binds antithrombin III → greatly accelerates inhibition of thrombin (IIa) and factor Xa',ind:'Acute DVT/PE, ACS bridge therapy, surgical prophylaxis',se:'HIT (Type II = immune, >5 days, thrombocytopenia + thrombosis), bleeding, osteoporosis with prolonged use',pearls:'Requires aPTT monitoring. Reversed by protamine sulfate. HIT: stop all heparin, use argatroban/bivalirudin.'},
+  {name:'Argatroban / Bivalirudin',class:'Direct thrombin inhibitor',tags:['HIT treatment','no PF4','IV'],moa:'Directly inhibit thrombin (factor IIa) without requiring antithrombin III',ind:'HIT — alternative anticoagulation when heparin contraindicated',se:'Bleeding; prolonged aPTT',pearls:'First-line anticoagulation in HIT. Does NOT interact with platelet factor 4.'},
+  {name:'Apixaban / Rivaroxaban',class:'Direct Factor Xa inhibitor (DOAC)',tags:['no monitoring','AF','not for mechanical valves'],moa:'Directly inhibit factor Xa → reduce thrombin generation',ind:'AF stroke prevention (apixaban: ARISTOTLE trial), DVT/PE treatment, post-orthopedic surgery VTE prophylaxis',se:'Bleeding; no routine monitoring required',pearls:'DO NOT use for mechanical heart valves. Reversal agent: andexanet alfa.'},
+  {name:'Dabigatran',class:'Direct thrombin inhibitor (DOAC)',tags:['oral','AF','idarucizumab reversal'],moa:'Directly inhibits thrombin (factor IIa)',ind:'AF, DVT/PE treatment and prevention',se:'GI bleeding (highest among DOACs), dyspepsia',pearls:'Reversal agent: idarucizumab. Renal elimination — reduce dose in CKD.'},
+  {name:'Alteplase (tPA)',class:'Fibrinolytic / Thrombolytic',tags:['STEMI','ischemic stroke','plasminogen → plasmin'],moa:'Activates plasminogen → plasmin → cleaves fibrin in formed clots (thrombolysis)',ind:'STEMI when PCI unavailable within 120 min, ischemic stroke within 3-4.5 hours, massive PE',se:'Bleeding (especially intracranial hemorrhage), contraindicated with recent surgery/bleeding',pearls:'DISSOLVES existing clots (not for prevention). Give aspirin first in STEMI, then tPA if no cath lab. Does NOT prevent new clot formation.'},
+  {name:'Nitroglycerin / Isosorbide',class:'Organic nitrate',tags:['NO donor','preload↓','tolerance'],moa:'Converted to NO by mitochondrial aldehyde dehydrogenase → activates guanylate cyclase → cGMP → vasodilation (predominantly venous at low doses)',ind:'Stable angina (acute + chronic), variant angina, ACS, hypertensive emergency',se:'Headache, reflex tachycardia, orthostatic hypotension, tolerance with continuous use',pearls:'CONTRAINDICATED with sildenafil/PDE5 inhibitors. Nitrate-free interval (8-12hr) prevents tolerance. Does NOT reduce mortality post-MI.'},
+  {name:'Amlodipine',class:'Dihydropyridine CCB',tags:['arteriolar','variant angina','edema SE'],moa:'Blocks L-type Ca2+ channels in vascular smooth muscle → arteriolar dilation → reduced afterload',ind:'Hypertension, stable angina, variant angina, NSAID users, asthma patients',se:'Peripheral edema (arteriolar → increased hydrostatic pressure — NOT fluid retention), flushing, headache',pearls:'Does NOT slow AV node. Safe in asthma. Works despite NSAID use. Edema NOT responsive to diuretics.'},
+  {name:'Verapamil / Diltiazem',class:'Non-dihydropyridine CCB',tags:['AV node↓','AF rate control','avoid with BB'],moa:'Block L-type Ca2+ channels in cardiac tissue AND vascular smooth muscle → slow AV conduction, reduce HR, vasodilation',ind:'Angina (stable + variant), AF/flutter rate control, AVNRT, SVT, hypertension',se:'Constipation (verapamil), AV block, bradycardia',pearls:'CONTRAINDICATED with beta-blockers (additive AV block). Inhibit CYP3A4 → increase atorvastatin/simvastatin levels (use pravastatin). NOT effective for ventricular arrhythmias.'},
+  {name:'Metoprolol / Atenolol / Carvedilol',class:'Beta-adrenergic receptor blocker',tags:['β1 selective','post-MI','HFrEF mortality'],moa:'Block β1 receptors → reduce HR, contractility, renin release, AV conduction. Carvedilol also blocks α1 → reduces TPR',ind:'HTN, angina, post-MI (mortality benefit), HFrEF, AF rate control, thyrotoxicosis',se:'Bradycardia, AV block, bronchospasm (non-selective), masking hypoglycemia, CNS effects (lipophilic)',pearls:'CONTRAINDICATED in variant angina. Atenolol: less lipophilic → less CNS SE. Carvedilol: α1+β → reduces both HR and TPR. Abrupt withdrawal → rebound hypertension/angina.'},
+  {name:'Lisinopril / Enalapril / Captopril',class:'ACE inhibitor',tags:['cough','K+↑','nephroprotection'],moa:'Inhibit ACE → block conversion of Ang I to Ang II → reduce aldosterone → venodilation + natriuresis + reduced remodeling; also increase bradykinin',ind:'HTN, HFrEF (mortality benefit), post-MI, diabetic nephropathy, proteinuria',se:'Dry cough (bradykinin, 10-15%), hyperkalemia, angioedema (rare but serious), hypotension, teratogenic',pearls:'Enalapril is a prodrug. Cough → switch to ARB. Contraindicated in bilateral renal artery stenosis. CANNOT combine ACE + ARB. Reduces intraglomerular pressure via efferent arteriole dilation.'},
+  {name:'Losartan / Valsartan / Sacubitril-Valsartan',class:'ARB / ARNI',tags:['AT1 block','AT2↑','no cough'],moa:'ARBs block AT1 receptors → Ang II shunted to AT2 (beneficial). ARNI (sacubitril) also inhibits neprilysin → increases natriuretic peptides',ind:'HTN, HFrEF, diabetic nephropathy, ACE inhibitor intolerance',se:'Hyperkalemia, hypotension, teratogenic; NO cough',pearls:'ARBs: most AT2 stimulation (Ang II builds up, all shunted to AT2). Sacubitril/valsartan (Entresto): preferred over ARB alone in HFrEF.'},
+  {name:'Furosemide',class:'Loop diuretic',tags:['acute HF','Na/K/2Cl blocker','Ca↓Mg↓K↓'],moa:'Blocks Na+/K+/2Cl- cotransporter in thick ascending loop of Henle → disrupts medullary concentration gradient → massive diuresis',ind:'Acute pulmonary edema, HF symptoms, severe hypertension, hypercalcemia',se:'Hypokalemia, hypomagnesemia, hypocalcemia, hyponatremia, metabolic alkalosis, ototoxicity, hyperuricemia',pearls:'Unlike thiazides, DECREASES calcium (washout). No anti-remodeling benefit. Does NOT increase EF. Reflex renin increase. Worsens digoxin toxicity via hypokalemia.'},
+  {name:'Chlorthalidone / HCTZ',class:'Thiazide diuretic',tags:['Ca↑','K↓','metabolic effects'],moa:'Block Na+/Cl- cotransporter in distal convoluted tubule → Na/H2O excretion; also increase Ca2+ reabsorption in DCT',ind:'Hypertension (first-line), heart failure, nephrolithiasis (calcium stones), osteoporosis',se:'Hypokalemia, hyperglycemia, hyperuricemia (gout), hyperlipidemia, metabolic alkalosis; HYPER-calcemia (saves Ca)',pearls:'SAVE calcium (opposite of loop diuretics). Metabolic effects: ↑glucose, ↑uric acid, ↑lipids, ↑Ca, ↓K. NSAIDs blunt efficacy. Does NOT decrease cholesterol.'},
+  {name:'Spironolactone / Eplerenone',class:'Aldosterone antagonist (K-sparing diuretic)',tags:['HFrEF mortality','anti-remodeling','K+↑'],moa:'Competitively antagonize aldosterone at mineralocorticoid receptors in kidney AND heart → K+ sparing, anti-fibrotic/remodeling',ind:'HFrEF (mortality benefit), hyperaldosteronism, resistant HTN, ascites in cirrhosis',se:'Hyperkalemia (dangerous with ACE/ARB), gynecomastia (spironolactone, not eplerenone)',pearls:'Cardiac benefit in HF is primarily from blocking aldosterone\'s effects on the HEART (preventing fibrosis), not just diuresis.'},
+  {name:'Digoxin',class:'Cardiac glycoside / Na/K ATPase inhibitor',tags:['positive inotrope','vagal↑','narrow therapeutic index'],moa:'Inhibits Na+/K+ ATPase → intracellular Na+ ↑ → NCX exchanger reverses → intracellular Ca2+ ↑ → positive inotropy. Also increases vagal tone → slows AV node.',ind:'HFrEF (symptom control, NOT mortality), AF rate control',se:'Toxicity: nausea/vomiting, visual changes (yellow-green halos), AV block, ventricular arrhythmias. Hypokalemia/hypomagnesemia WORSEN toxicity',pearls:'Does NOT reduce mortality in HF (DIG trial). Hypokalemia from diuretics → more digoxin binding → toxicity. Quinidine increases digoxin levels. Treat toxicity: correct electrolytes, digoxin Fab antibodies.'},
+  {name:'Amiodarone',class:'Class III antiarrhythmic (also I, II, IV)',tags:['multi-class','WPW safe','many SE'],moa:'Blocks IKr (K+ channels) → prolongs QT; also Na+ channels, Ca2+ channels, beta receptors. Prolongs refractory period in all cardiac tissue including accessory pathways',ind:'Ventricular tachycardia/fibrillation (resistant), AF (rhythm control), WPW',se:'Pulmonary fibrosis (most serious, dose-related), hypo/hyperthyroidism, corneal microdeposits, hepatotoxicity, photosensitivity, peripheral neuropathy, LONG QT',pearls:'Half-life 40-55 days. Active metabolite (desethylamiodarone). Does NOT cause lupus (procainamide does). Safe for accessory pathways in WPW. Avoid in thyroid disease history.'},
+  {name:'Lidocaine',class:'Class IB antiarrhythmic',tags:['ventricular','post-MI','ischemia-selective'],moa:'Blocks fast Na+ channels (fast recovery). Preferentially suppresses ischemic/partially depolarized tissue. Slows conduction, shortens action potential duration',ind:'Acute ventricular tachycardia (IV), ventricular fibrillation post-DC shock',se:'CNS toxicity (seizures, tremor) with high levels, tinnitus',pearls:'NOT effective for atrial arrhythmias. IV only. Useful in acute MI (ischemic tissue is partially depolarized → lidocaine selectively suppresses it).'},
+  {name:'Adenosine',class:'Endogenous nucleoside / AV nodal blocker',tags:['AVNRT first-line','IV bolus','very short half-life'],moa:'Activates A1 receptors in AV node → increased K+ conductance, decreased Ca2+ → transient AV block (seconds)',ind:'Acute termination of AVNRT, AVRT (re-entrant SVTs), diagnostic use in wide-complex tachycardia',se:'Transient flushing, dyspnea, chest tightness (extremely brief — ~10 second half-life)',pearls:'Give as rapid IV bolus. Antagonized by caffeine and theophylline. First-line for SVT regardless of underlying disease (even COPD). Safe in pregnancy.'},
+  {name:'Flecainide / Propafenone',class:'Class IC antiarrhythmic',tags:['WPW use','proarrhythmic post-MI','increases pacing threshold'],moa:'Slow Na+ channel recovery → marked slowing of conduction velocity. Also increase pacing and defibrillation thresholds',ind:'AF in structurally normal hearts, WPW (NOT for post-MI patients)',se:'Proarrhythmic in ischemic hearts (CAST trial), accelerate ventricular rate in flutter, increase pacing threshold',pearls:'CONTRAINDICATED post-MI or in structural heart disease. Paradoxical ventricular acceleration in atrial flutter (must give AV node blocker first).'},
+  {name:'Nitroprusside',class:'Vasodilator (NO donor)',tags:['hypertensive emergency','balanced arteries+veins','thiocyanate toxicity'],moa:'Spontaneously releases NO → directly stimulates guanylate cyclase → cGMP → balanced arterial + venous dilation',ind:'Hypertensive emergencies, severe decompensated CHF, aortic dissection',se:'Thiocyanate toxicity with prolonged use (fatigue, nausea, lactic acidosis), cyanide toxicity, reflex tachycardia',pearls:'Does NOT require endothelial cells. Both arterial + venous dilation. Maximum infusion duration ~72h to avoid cyanide/thiocyanate accumulation.'},
+  {name:'Minoxidil',class:'K+ATP channel opener / Direct vasodilator',tags:['K+ channel','hair growth SE','severe HTN'],moa:'Opens ATP-sensitive K+ channels → hyperpolarization → closure of voltage-gated Ca2+ channels → arteriolar vasodilation',ind:'Severe/refractory hypertension, alopecia (topical)',se:'Severe edema (requires diuretic), reflex tachycardia (requires beta-blocker), hirsutism, pericardial effusion',pearls:'Almost always given with a diuretic + beta-blocker to combat edema and tachycardia side effects.'},
+];
+
+function renderDrugGrid() {
+  const grid = document.getElementById('drug-grid');
+  grid.innerHTML = DRUGS.map((d,i) => `
+    <div class="drug-card" onclick="showDrug(${i})">
+      <div class="drug-name">${d.name}</div>
+      <div class="drug-class">${d.class}</div>
+      <div class="drug-tags">${d.tags.map(t=>`<span class="drug-tag">${t}</span>`).join('')}</div>
+    </div>`).join('');
+}
+
+function showDrug(idx) {
+  document.getElementById('drug-list-view').style.display = 'none';
+  const d = DRUGS[idx];
+  document.getElementById('drug-detail-view').style.display = 'block';
+  document.getElementById('drug-detail-view').innerHTML = `
+    <button class="back-btn" onclick="backToDrugs()">← All drugs</button>
+    <div class="card">
+      <h2 style="font-size:18px;font-weight:500;margin-bottom:4px">${d.name}</h2>
+      <p style="font-size:13px;color:#666;margin-bottom:16px">${d.class}</p>
+      <div class="detail-section"><div class="detail-label">Mechanism of action</div><div class="detail-val">${d.moa}</div></div>
+      <div class="detail-section"><div class="detail-label">Indications</div><div class="detail-val">${d.ind}</div></div>
+      <div class="detail-section"><div class="detail-label">Side effects</div><div class="detail-val">${d.se}</div></div>
+      <div class="detail-section"><div class="detail-label">Exam pearls</div><div class="detail-val">${d.pearls}</div></div>
+    </div>`;
+}
+
+function backToDrugs() {
+  document.getElementById('drug-list-view').style.display = 'block';
+  document.getElementById('drug-detail-view').style.display = 'none';
+}
+
+renderQ();
+</script>
+
+
+</body></html>
