@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cardio Path — Flashcard Drill</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161920;
+    --surface2: #1e2230;
+    --border: #2a2f3d;
+    --text: #e8eaf0;
+    --muted: #7a8099;
+    --accent: #4f9cf9;
+    --green: #3dd68c;
+    --red: #f96060;
+    --amber: #f9a84f;
+    --purple: #a78bfa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+
+  header {
+    padding: 24px 32px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  .logo { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--accent); }
+  .logo span { color: var(--muted); font-size: 13px; font-family: 'DM Sans', sans-serif; margin-left: 8px; }
+
+  .filters {
+    display: flex; gap: 8px; flex-wrap: wrap; padding: 16px 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .filter-btn {
+    padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border);
+    background: transparent; color: var(--muted); font-family: 'DM Sans', sans-serif;
+    font-size: 13px; cursor: pointer; transition: all 0.15s;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .stats {
+    display: flex; gap: 24px; padding: 14px 32px;
+    border-bottom: 1px solid var(--border); font-size: 13px;
+  }
+  .stat { display: flex; align-items: center; gap: 6px; }
+  .stat-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .stat-remaining .stat-dot { background: var(--accent); }
+  .stat-known .stat-dot { background: var(--green); }
+  .stat-review .stat-dot { background: var(--amber); }
+
+  .progress-bar {
+    height: 3px; background: var(--border); margin: 0 32px;
+  }
+  .progress-fill {
+    height: 100%; background: linear-gradient(90deg, var(--accent), var(--purple));
+    transition: width 0.4s ease;
+  }
+
+  .card-area {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; padding: 40px 32px; min-height: 480px;
+  }
+
+  .card-counter { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+  .card {
+    width: 100%; max-width: 680px;
+    perspective: 1200px;
+  }
+  .card-inner {
+    position: relative; width: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .card-inner.flipped { transform: rotateY(180deg); }
+
+  .card-face {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px;
+    min-height: 260px;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .card-back {
+    position: absolute; top: 0; left: 0; right: 0;
+    transform: rotateY(180deg);
+    background: var(--surface2);
+    border-color: var(--accent);
+  }
+
+  .card-tag {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muted);
+    background: var(--border); padding: 4px 10px; border-radius: 4px;
+    margin-bottom: 20px;
+  }
+  .card-face .card-tag { color: var(--accent); background: rgba(79,156,249,0.12); }
+  .card-back .card-tag { color: var(--green); background: rgba(61,214,140,0.12); }
+
+  .card-q {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px; line-height: 1.4; color: var(--text);
+    margin-bottom: 16px;
+  }
+  .card-hint { font-size: 13px; color: var(--muted); font-style: italic; }
+
+  .card-a {
+    font-size: 17px; font-weight: 500; color: var(--text);
+    line-height: 1.6; margin-bottom: 12px;
+  }
+  .card-explanation {
+    font-size: 13px; color: var(--muted); line-height: 1.6;
+    border-top: 1px solid var(--border); padding-top: 12px; margin-top: 4px;
+    text-align: left; width: 100%;
+  }
+  .card-explanation strong { color: var(--accent); }
+
+  .flip-hint {
+    margin-top: 16px; font-size: 12px; color: var(--muted);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .flip-hint kbd {
+    background: var(--border); padding: 2px 7px; border-radius: 4px;
+    font-family: 'DM Sans', sans-serif; font-size: 11px;
+  }
+
+  .actions {
+    display: flex; gap: 12px; justify-content: center;
+    padding: 8px 32px 32px; flex-wrap: wrap;
+  }
+  .btn {
+    padding: 12px 28px; border-radius: 10px; border: none;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
+    cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 8px;
+  }
+  .btn-flip { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-flip:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-know { background: rgba(61,214,140,0.15); color: var(--green); border: 1px solid rgba(61,214,140,0.3); }
+  .btn-know:hover { background: rgba(61,214,140,0.25); }
+  .btn-review { background: rgba(249,168,79,0.15); color: var(--amber); border: 1px solid rgba(249,168,79,0.3); }
+  .btn-review:hover { background: rgba(249,168,79,0.25); }
+  .btn-restart { background: rgba(79,156,249,0.15); color: var(--accent); border: 1px solid rgba(79,156,249,0.3); }
+
+  .complete-screen {
+    display: none; flex-direction: column; align-items: center;
+    justify-content: center; padding: 60px 32px; text-align: center; min-height: 400px;
+  }
+  .complete-screen h2 { font-family: 'DM Serif Display', serif; font-size: 32px; margin-bottom: 12px; }
+  .complete-screen p { color: var(--muted); margin-bottom: 32px; }
+  .score-grid { display: flex; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; justify-content: center; }
+  .score-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 28px; }
+  .score-num { font-family: 'DM Serif Display', serif; font-size: 36px; }
+  .score-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .card { animation: slideIn 0.3s ease; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">Cardio Path <span>Flashcard Drill</span></div>
+  </div>
+  <div style="font-size:13px;color:var(--muted)">Press <kbd style="background:var(--border);padding:2px 7px;border-radius:4px;font-size:11px">Space</kbd> to flip</div>
+</header>
+
+<div class="filters" id="filters">
+  <button class="filter-btn active" onclick="setFilter('all')">All Topics</button>
+  <button class="filter-btn" onclick="setFilter('congenital')">Congenital HD</button>
+  <button class="filter-btn" onclick="setFilter('ischemia')">Ischemia / MI</button>
+  <button class="filter-btn" onclick="setFilter('valvular')">Valvular Disease</button>
+  <button class="filter-btn" onclick="setFilter('cardiomyopathy')">Cardiomyopathy / HF</button>
+  <button class="filter-btn" onclick="setFilter('endocarditis')">Endocarditis</button>
+  <button class="filter-btn" onclick="setFilter('vascular')">Vascular / Dissection</button>
+  <button class="filter-btn" onclick="setFilter('pericardial')">Pericardial</button>
+  <button class="filter-btn" onclick="setFilter('coagulation')">Coagulation</button>
+  <button class="filter-btn" onclick="setFilter('review')">⭐ Review Again</button>
+</div>
+
+<div class="stats">
+  <div class="stat stat-remaining"><div class="stat-dot"></div><span id="stat-rem">0 remaining</span></div>
+  <div class="stat stat-known"><div class="stat-dot"></div><span id="stat-know">0 known</span></div>
+  <div class="stat stat-review"><div class="stat-dot"></div><span id="stat-rev">0 to review</span></div>
+</div>
+<div style="padding: 8px 32px 0;">
+  <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+</div>
+
+<div id="main-view">
+  <div class="card-area">
+    <div class="card-counter" id="counter"></div>
+    <div class="card" id="card">
+      <div class="card-inner" id="card-inner">
+        <div class="card-face" id="front">
+          <div class="card-tag" id="front-tag">QUESTION</div>
+          <div class="card-q" id="q-text"></div>
+          <div class="card-hint" id="q-hint"></div>
+          <div class="flip-hint">
+            <kbd>Space</kbd> or tap to reveal answer
+          </div>
+        </div>
+        <div class="card-face card-back" id="back">
+          <div class="card-tag">ANSWER</div>
+          <div class="card-a" id="a-text"></div>
+          <div class="card-explanation" id="a-exp"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-flip" onclick="flip()">🔄 Flip Card</button>
+    <button class="btn btn-review" onclick="rate('review')" id="btn-rev" style="display:none">⭐ Review Again</button>
+    <button class="btn btn-know" onclick="rate('know')" id="btn-know" style="display:none">✓ Got It</button>
+  </div>
+</div>
+
+<div class="complete-screen" id="done-view">
+  <h2>Deck Complete! 🎉</h2>
+  <p id="done-msg">Here's how you did:</p>
+  <div class="score-grid">
+    <div class="score-box"><div class="score-num" id="done-know" style="color:var(--green)">0</div><div class="score-label">Got It</div></div>
+    <div class="score-box"><div class="score-num" id="done-rev" style="color:var(--amber)">0</div><div class="score-label">Review Again</div></div>
+  </div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+    <button class="btn btn-restart" onclick="restartReview()">Study Review Cards</button>
+    <button class="btn btn-flip" onclick="restartAll()">Restart All</button>
+  </div>
+</div>
+
+<script>
+const ALL_CARDS = [
+  // CONGENITAL
+  {q:"What is the most common congenital heart defect?", a:"VSD — Ventricular Septal Defect", exp:"Accounts for ~20% of all CHD. Holosystolic murmur at LLSB. Small muscular VSDs often close spontaneously via fibroblast proliferation.", tag:"congenital"},
+  {q:"Fixed split S2 → think?", a:"ASD (Atrial Septal Defect)", exp:"P2 closure is delayed due to ↑ RV stroke volume. The split is fixed because it doesn't change with respiration. The murmur is SEM at LUSB from increased pulmonary valve flow — NOT from the defect.", tag:"congenital"},
+  {q:"Continuous 'machine-like' murmur + bounding pulses + wide pulse pressure → ?", a:"PDA — Patent Ductus Arteriosus", exp:"Aorta → PA shunt. Indomethacin closes it. PGE1 keeps it open (for ductus-dependent lesions like TGA).", tag:"congenital"},
+  {q:"Squatting relieves cyanosis in a child → ?", a:"Tetralogy of Fallot (TOF)", exp:"Squatting ↑ SVR → blood preferentially flows to lungs → ↓ cyanosis. Severity determined by degree of pulmonary stenosis. PROVe: PS + RVH + Overriding aorta + VSD.", tag:"congenital"},
+  {q:"Immediate cyanosis at birth, no major murmur, maternal diabetes → ?", a:"Transposition of the Great Arteries (TGA)", exp:"Parallel circuits — aorta from RV, PA from LV. Survival requires PDA/ASD/VSD for mixing. Immediate Rx: PGE1 to keep PDA open.", tag:"congenital"},
+  {q:"Upper extremity HTN + weak femoral pulses + rib notching → ?", a:"Coarctation of the Aorta", exp:"Turner syndrome + bicuspid AV + Berry aneurysms are associated findings. LV pressure overload → LVH → LHF if untreated.", tag:"congenital"},
+  {q:"PGE1 opens or closes the PDA?", a:"OPENS the PDA (keeps it patent)", exp:"Prostaglandin E1 maintains ductal patency. Indomethacin (NSAID, ↓ prostaglandins) closes the PDA.", tag:"congenital"},
+  {q:"L→R shunt that reverses direction over time → ?", a:"Eisenmenger Syndrome", exp:"Long-standing L→R shunt → pulmonary HTN → RV pressure > LV → shunt reverses to R→L → late-onset cyanosis. IRREVERSIBLE once established.", tag:"congenital"},
+  {q:"R→L shunt → what unique infectious complication?", a:"Brain abscess (paradoxical emboli)", exp:"Blood bypasses lungs (the bacterial filter) → bacteria reach brain directly. Brain abscess risk is specific to R→L shunts.", tag:"congenital"},
+  {q:"Down syndrome + cardiac defect → ?", a:"Endocardial cushion defect (AV canal = inlet VSD + ASD)", exp:"Caused by autosomal trisomy 21 (NOT gestational diabetes or teratogen exposure).", tag:"congenital"},
+  {q:"DiGeorge syndrome (22q11 deletion) → cardiac defect?", a:"Conotruncal defects: ToF, truncus arteriosus, interrupted aortic arch", exp:"CATCH-22: Cardiac, Abnormal face, Thymic aplasia (T-cell deficiency), Cleft palate, Hypocalcemia (parathyroid aplasia).", tag:"congenital"},
+  {q:"Turner syndrome (45,X) → cardiac defect?", a:"Coarctation of aorta + bicuspid aortic valve", exp:"Present in ~30% of Turner females. Short female + webbed neck + infertility.", tag:"congenital"},
+  {q:"Williams-Beuren (7q11 deletion) → cardiac defect?", a:"Supravalvular aortic AND pulmonary stenosis (elastin gene)", exp:"'Elfin facies,' hypercalcemia, intellectual disability. Stenosis is supravalvular (not valvular or subvalvular).", tag:"congenital"},
+  {q:"TAPVR — what is the hemodynamic problem?", a:"All pulmonary veins drain to RA → small LA → cyanosis from birth", exp:"CXR shows 'snowman' appearance and prominent hilar markings. Patent foramen ovale is necessary for survival.", tag:"congenital"},
+
+  // ISCHEMIA / MI
+  {q:"Exertional chest pain relieved by rest + no troponin → ?", a:"Stable Angina", exp:"Fixed plaque >70% stenosis → demand mismatch. NO necrosis. Relieved by rest and nitroglycerin. Troponin normal.", tag:"ischemia"},
+  {q:"Chest pain at rest + normal biomarkers + worsening pattern → ?", a:"Unstable Angina", exp:"Plaque rupture with non-occlusive thrombus. No necrosis → troponin negative. Once troponin rises = NSTEMI.", tag:"ischemia"},
+  {q:"Chest pain at rest + ST elevation + ↑ troponin → ?", a:"STEMI — complete coronary occlusion → transmural infarct", exp:"Transmural infarct. Needs urgent reperfusion (PCI or thrombolytics). ECG: localized ST elevation + reciprocal depressions.", tag:"ischemia"},
+  {q:"Chest pain at rest + transient ST elevation + normal coronaries on cath → ?", a:"Prinzmetal (variant) angina — coronary vasospasm", exp:"Vasospasm → transient ST elevation that resolves. More common in Japan. Treat with CCB + nitrates.", tag:"ischemia"},
+  {q:"Best test for acute MI?", a:"Troponin I or T (most sensitive and specific)", exp:"Rises at 3–4h, peaks 24–48h. Remains elevated for days. CK-MB is better for detecting REinfarction (returns to baseline faster).", tag:"ischemia"},
+  {q:"Best test for detecting reinfarction shortly after a prior MI?", a:"CK-MB", exp:"CK-MB returns to baseline in ~2 days, so a new rise indicates a new infarction. Troponin remains elevated for too long to detect a new event.", tag:"ischemia"},
+  {q:"Most common early cause of death after MI (<24 hours)?", a:"Arrhythmia — ventricular fibrillation (V-fib)", exp:"EARLY = ELECTRICAL. Ischemia destabilizes myocardial electrical activity → V-fib. Later (3–7d) = structural rupture.", tag:"ischemia"},
+  {q:"Post-MI complication at 3–7 days: why is this the rupture window?", a:"Macrophages digest necrotic tissue before collagen scar forms → wall weakest", exp:"Neutrophils (1–3d) → macrophages (3–7d) → granulation tissue (weeks). The 3–7 day window is when the wall is most vulnerable.", tag:"ischemia"},
+  {q:"New holosystolic murmur at LLSB 3–5 days post-MI → ?", a:"Septal rupture → acute VSD", exp:"Interventricular septum rupture from macrophage degradation. New harsh murmur at LLSB. Different from papillary muscle rupture (apex → axilla).", tag:"ischemia"},
+  {q:"New murmur at apex radiating to axilla 3–7 days post-MI → ?", a:"Papillary muscle rupture → acute mitral regurgitation", exp:"Flash pulmonary edema + new systolic murmur at apex → axilla. Surgical emergency.", tag:"ischemia"},
+  {q:"Post-MI sudden collapse + tamponade → ?", a:"Free wall rupture → hemopericardium → cardiac tamponade", exp:"LV free wall rupture 3–7 days post-MI. Sudden death. High-pressure LV chamber most affected. RV rupture is rare.", tag:"ischemia"},
+  {q:"MI grossappearance at 3–7 days?", a:"Soft yellow-tan center + bright red hyperemic border", exp:"Macrophage infiltration creates the yellow softening. Red border = inflammatory response at margin. Most dangerous rupture window.", tag:"ischemia"},
+  {q:"Pericarditis 2–10 weeks after MI → ?", a:"Dressler syndrome — autoimmune pericarditis", exp:"Anti-heart antibodies form against exposed myocardial antigens. Fever + pleuritic chest pain + friction rub weeks after MI. Treat with NSAIDs.", tag:"ischemia"},
+  {q:"LAD occlusion → ECG leads affected?", a:"V1–V4 (anterior STEMI)", exp:"LAD = 'widow-maker.' Supplies anterior wall + anterior septum. Most common culprit artery.", tag:"ischemia"},
+  {q:"RCA occlusion → ECG leads + unique complication?", a:"II, III, aVF (inferior STEMI) + risk of AV block", exp:"RCA supplies inferior wall + AV node (in ~85% of people). Inferior MI → watch for AV block.", tag:"ischemia"},
+  {q:"Pericarditis ECG vs STEMI ECG — key distinguishing feature?", a:"Pericarditis = diffuse ST elevation + NO reciprocal changes + PR depression", exp:"STEMI = localized ST elevation + reciprocal depressions. Pericarditis = almost all leads elevated with NO reciprocal changes. PR depression is pathognomonic for pericarditis.", tag:"ischemia"},
+
+  // VALVULAR
+  {q:"Harsh crescendo-decrescendo systolic murmur at RUSB → carotids → ?", a:"Aortic Stenosis (AS)", exp:"SAD triad: Syncope (3yr) → Angina (5yr) → Dyspnea (1–2yr). Concentric LVH. Pulsus parvus et tardus. Bicuspid AV (young) vs senile calcification (elderly).", tag:"valvular"},
+  {q:"Diastolic decrescendo murmur at LSB + wide pulse pressure + water-hammer pulse → ?", a:"Aortic Regurgitation (AR)", exp:"Volume overload → eccentric LVH. Wide pulse pressure (↑ SBP from ↑ SV; ↓ DBP from regurgitation). Peripheral signs: de Musset, Quincke, Hill.", tag:"valvular"},
+  {q:"Holosystolic murmur at apex radiating to axilla → ?", a:"Mitral Regurgitation (MR)", exp:"Volume overload → eccentric LVH. Increases with handgrip/squatting (↑ SVR). Causes: MVP, rheumatic, papillary rupture, DCM.", tag:"valvular"},
+  {q:"Opening snap + low-pitched diastolic rumble at apex + no LVH → ?", a:"Mitral Stenosis (MS)", exp:"LV is UNDERFILLED → no LVH. LA dilates. Downstream: LA dilation → AFib → pulmonary HTN → RHF. OS closer to S2 = MORE severe.", tag:"valvular"},
+  {q:"Mid-systolic click + late systolic murmur in young person → ?", a:"Mitral Valve Prolapse (MVP)", exp:"Myxomatous degeneration → spongiosa expands → fibrosa thins → floppy leaflets. Valsalva/standing → click moves EARLIER.", tag:"valvular"},
+  {q:"Which valve lesion does NOT cause LVH?", a:"Mitral Stenosis — LV is underfilled, LA enlarges instead", exp:"All other significant valve lesions cause LVH. MS blocks blood from entering LV → LV stays normal size → LA enlarges from backup.", tag:"valvular"},
+  {q:"Valsalva maneuver → which murmur gets LOUDER?", a:"HCM (dynamic LVOTO) — also MVP click moves EARLIER", exp:"Valsalva ↓ preload → smaller LV → more LVOTO in HCM → louder murmur. All other murmurs get softer. MVP click moves earlier (prolapse occurs sooner).", tag:"valvular"},
+  {q:"SAD triad: what does each symptom mean for prognosis in AS?", a:"Syncope (~3yr), Angina (~5yr), Dyspnea/HF (~1–2yr)", exp:"Each symptom marks progressive decompensation. Syncope = compensatory mechanisms failing. HF = worst prognosis.", tag:"valvular"},
+  {q:"OS–S2 interval in mitral stenosis — shorter interval means?", a:"More severe stenosis (higher LA pressure opens valve sooner after S2)", exp:"As MS worsens, LA pressure rises → the mitral valve opens earlier in diastole → OS gets closer to S2.", tag:"valvular"},
+  {q:"Calcific aortic stenosis starts in which valve layer?", a:"Fibrosa layer (dense collagen, outflow side)", exp:"Repetitive mechanical stress → dystrophic calcification in the Fibrosa. Shares risk factors with atherosclerosis (HTN, hyperlipidemia, smoking).", tag:"valvular"},
+  {q:"Bicuspid aortic valve → most common consequence?", a:"Aortic stenosis in young adults (<65)", exp:"2 of 3 cusps fail to separate → turbulent flow → accelerated calcification. Also associated with coarctation and Turner syndrome.", tag:"valvular"},
+  {q:"MVP — which valve layer expands? Which layer thins?", a:"Spongiosa EXPANDS (proteoglycans) → Fibrosa THINS", exp:"Spongiosa fills with mucoid material → mechanically thins the overlying collagen-rich Fibrosa → leaflets become floppy.", tag:"valvular"},
+  {q:"Acute MR (papillary rupture post-MI) — why is the murmur soft?", a:"Rapid LA–LV pressure equalization → murmur is short and soft despite severe regurgitation", exp:"In acute MR, the LA hasn't had time to dilate and accommodate. Pressure equalizes quickly → short, soft murmur. Paradoxically more severe = softer murmur.", tag:"valvular"},
+
+  // CARDIOMYOPATHY / HF
+  {q:"Low EF + enlarged dilated heart + alcohol history → ?", a:"Dilated Cardiomyopathy (DCM)", exp:"Most common CMP (90%). Systolic dysfunction. Causes: alcohol, Coxsackie B, doxorubicin, peripartum, Chagas. TTN (titin) mutation = most common genetic cause.", tag:"cardiomyopathy"},
+  {q:"Young athlete sudden cardiac death + asymmetric septal hypertrophy → ?", a:"Hypertrophic Cardiomyopathy (HCM)", exp:"β-myosin heavy chain or MYBPC3 mutation. Myofiber disarray on histology. Normal or ↑ EF. Dynamic LVOTO. Valsalva → murmur louder.", tag:"cardiomyopathy"},
+  {q:"Normal EF + diastolic dysfunction + Congo red → apple-green birefringence → ?", a:"Cardiac Amyloidosis → Restrictive Cardiomyopathy", exp:"Stiff myocardium impairs filling. Biatrial dilation. Normal-sized heart. Treat underlying cause.", tag:"cardiomyopathy"},
+  {q:"S3 gallop vs S4 gallop — what does each indicate?", a:"S3 = dilated ventricle (HFrEF, volume overload). S4 = stiff ventricle (HFpEF, hypertrophy).", exp:"S3 = 'sloshing' into dilated LV (early diastole). S4 = blood hitting stiff LV (atrial kick, end diastole).", tag:"cardiomyopathy"},
+  {q:"BNP — what triggers its release and what does elevation indicate?", a:"Released by ventricular STRETCH → indicates elevated filling pressures → HF biomarker", exp:"BNP antagonizes RAAS + SNS → promotes natriuresis. Elevated BNP = heart is volume overloaded. Used for diagnosis and monitoring HF severity.", tag:"cardiomyopathy"},
+  {q:"GDMT 4 pillars for HFrEF?", a:"Beta-blocker + ARNI/ACEi/ARB + MRA (spironolactone) + SGLT2 inhibitor", exp:"All four provide survival benefit. Diuretics provide symptom relief only (no survival benefit). Never start beta-blockers in acute decompensation (only when euvolemic).", tag:"cardiomyopathy"},
+  {q:"HCM — what NOT to give (and why)?", a:"Avoid nitrates, diuretics, vasodilators — they ↓ preload → worsen LVOTO obstruction", exp:"HCM obstruction worsens when LV is smaller. Anything that decreases preload or afterload makes the dynamic obstruction worse.", tag:"cardiomyopathy"},
+  {q:"Peripartum cardiomyopathy — timing?", a:"Last month of pregnancy to 5 months postpartum", exp:"Multifactorial (volume overload, genetics, autoimmune). Presents as dilated CMP with low EF.", tag:"cardiomyopathy"},
+  {q:"Takotsubo syndrome — mechanism and reversal?", a:"Catecholamine surge ('broken heart') → apical LV ballooning → reversible systolic dysfunction", exp:"Also called stress cardiomyopathy. Triggered by acute emotional or physical stress. 'Octopus pot' shape on echo. Usually fully reversible.", tag:"cardiomyopathy"},
+  {q:"ARVC — gene and finding on biopsy/echo?", a:"Desmosomal protein mutations → RV wall replaced by fat and fibrosis", exp:"Autosomal dominant. RV failure + arrhythmias + sudden death risk. Epsilon wave on ECG.", tag:"cardiomyopathy"},
+
+  // ENDOCARDITIS
+  {q:"S. bovis (S. gallolyticus) endocarditis → always do what?", a:"Screen for colorectal cancer", exp:"S. bovis lives in the GI tract. Colorectal cancer disrupts mucosal barrier → bacteremia. Classic boards association.", tag:"endocarditis"},
+  {q:"IV drug use + fever + cavitary lung nodules → ?", a:"Right-sided IE (tricuspid) → S. aureus → septic pulmonary emboli", exp:"Right-sided IE emboli go to LUNGS (cavitary nodules). Left-sided IE emboli go to brain, kidneys, spleen.", tag:"endocarditis"},
+  {q:"Janeway lesions vs Osler nodes — which is painful?", a:"Osler nodes = PAINFUL (immune complex). Janeway = PAINLESS (septic emboli).", exp:"Osler = 'Ouch!' = immune complex deposition. Janeway = painless macules on palms/soles from septic microabscesses.", tag:"endocarditis"},
+  {q:"Dental procedure + history of RHD + slow-onset fever → organism?", a:"Streptococcus viridans (subacute IE)", exp:"Viridans strep lives in oropharynx. Enters bloodstream via dental procedures. Targets previously damaged valves. Slower, less destructive than S. aureus.", tag:"endocarditis"},
+  {q:"Prosthetic valve IE within 60 days of surgery → organism?", a:"Staph epidermidis (skin flora contamination at time of surgery)", exp:"Early prosthetic valve IE <60 days = S. epidermidis. Late >60 days = S. viridans (community-acquired, same as native valve).", tag:"endocarditis"},
+  {q:"SLE + flat vegetations on both surfaces of mitral valve + afebrile + negative cultures → ?", a:"Libman-Sacks Endocarditis", exp:"Immune complex deposition + fibrinoid necrosis. UNIQUE feature: affects BOTH sides of the valve. No other endocarditis does this.", tag:"endocarditis"},
+  {q:"Malignancy + sterile small vegetations along lines of valve closure → ?", a:"NBTE — Nonbacterial Thrombotic Endocarditis (Marantic)", exp:"Trousseau syndrome. Loosely adherent → HIGH embolic risk. Afebrile + negative cultures + cancer history.", tag:"endocarditis"},
+
+  // VASCULAR
+  {q:"Older patient + tearing chest pain → most common risk factor for aortic dissection?", a:"Chronic hypertension (most common overall RF)", exp:"Cystic medial degeneration from chronic shear stress → intimal tear → false lumen. Young patient = Marfan/EDS.", tag:"vascular"},
+  {q:"Type A vs Type B aortic dissection — management difference?", a:"Type A (ascending) = surgical emergency. Type B (descending) = medical management.", exp:"Type A can rupture into pericardium → cardiac tamponade. Type B managed with BP + HR control (labetalol).", tag:"vascular"},
+  {q:"'Tree-bark' aorta + vasa vasorum obliteration → ?", a:"Syphilitic aortitis → ascending aortic aneurysm", exp:"Tertiary syphilis. Vasa vasorum endarteritis → medial ischemia → elastic fiber loss → aneurysm. Always ASCENDING aorta.", tag:"vascular"},
+  {q:"AAA surgical threshold?", a:">5 cm (surgical mortality ~5% vs rupture mortality >50–90%)", exp:"<4cm: surveillance. 4–5cm: 1%/yr risk. 5–6cm: 11%/yr. >6cm: >25%/yr. Surgical intervention recommended at >5cm.", tag:"vascular"},
+  {q:"Young woman + secondary HTN + 'string of pearls' on angiography → ?", a:"Fibromuscular Dysplasia (FMD) → renal artery stenosis", exp:"Non-inflammatory, non-atherosclerotic medial hyperplasia. RAAS activation → secondary HTN.", tag:"vascular"},
+  {q:"Chronic HTN + cocaine + deep brain hemorrhage (basal ganglia) → ?", a:"Charcot-Bouchard microaneurysm rupture", exp:"HTN → lipohyalinosis of deep brain arterioles → microaneurysm. Cocaine = acute BP spike → rupture → intracerebral hemorrhage.", tag:"vascular"},
+  {q:"'Worst headache of life' + meningismus → ?", a:"Berry aneurysm rupture → subarachnoid hemorrhage (SAH)", exp:"Circle of Willis bifurcations. Associated with ADPKD and coarctation. Not the same as Charcot-Bouchard (which is deep brain, HTN-related).", tag:"vascular"},
+  {q:"Elderly patient + DVT + PE + stroke → mechanism?", a:"Paradoxical embolism through patent foramen ovale (PFO)", exp:"DVT → PE → ↑ RA pressure → PFO opens → clot crosses to left heart → systemic embolism.", tag:"vascular"},
+  {q:"Young male smoker + superficial thrombophlebitis + distal ulcers + segmental occlusions → ?", a:"Buerger Disease (Thromboangiitis Obliterans) → STOP SMOKING", exp:"Non-atherosclerotic, non-autoimmune. Tobacco toxins → inflammatory thrombus + microabscesses. STOP SMOKING is the only treatment.", tag:"vascular"},
+
+  // PERICARDIAL
+  {q:"Pleuritic chest pain better leaning forward + friction rub → ?", a:"Acute Pericarditis", exp:"Viral (Coxsackie) most common. ECG: diffuse ST elevation + no reciprocal changes + PR depression. Treat with NSAIDs + colchicine.", tag:"pericardial"},
+  {q:"Beck's triad → diagnosis and treatment?", a:"Cardiac tamponade → pericardiocentesis", exp:"Triad: Hypotension + Elevated JVP/JVD + Muffled heart sounds. Pulsus paradoxus >10mmHg + electrical alternans on ECG + water-bottle CXR.", tag:"pericardial"},
+  {q:"Post-MI patient + new shock + JVD → think?", a:"Cardiac tamponade from free wall rupture (not heart failure)", exp:"Free wall rupture → hemopericardium → tamponade. JVD + hypotension = tamponade. In ordinary HF you wouldn't see this degree of JVD with shock.", tag:"pericardial"},
+  {q:"Kussmaul sign — what is it and what does it indicate?", a:"JVP RISES with inspiration → constrictive pericarditis", exp:"Normal: JVP falls with inspiration (RV expands). Constrictive: rigid pericardium prevents RV expansion → ↑ RA pressure with each inspiratory venous return.", tag:"pericardial"},
+  {q:"Constrictive pericarditis vs restrictive CMP — key distinguishing finding?", a:"Constrictive = pericardial thickening on CT/MRI + 'square root sign' on cath. RCM = normal pericardium.", exp:"Both present with impaired filling. Constrictive is surgically treatable (pericardiectomy). RCM is myocardial disease.", tag:"pericardial"},
+
+  // COAGULATION
+  {q:"Normal platelets + prolonged bleeding time + normal PT/PTT → ?", a:"von Willebrand Disease (vWD) or Uremia", exp:"vWF needed for platelet adhesion (GpIb). Normal platelet count but platelet FUNCTION impaired → ↑ bleeding time only.", tag:"coagulation"},
+  {q:"↑ PTT only (normal PT, normal platelets, normal bleeding time) → ?", a:"Hemophilia A (Factor VIII deficiency) or B (Factor IX deficiency)", exp:"PTT tests intrinsic pathway (VIII, IX, XI, XII). Factor VIII and IX are the most common hemophilia causes.", tag:"coagulation"},
+  {q:"Virchow's Triad — three components?", a:"Stasis + Endothelial injury + Hypercoagulability", exp:"Memory hook: SHE. All three increase thrombosis risk. Thrombocytopenia → BLEEDING (not thrombosis).", tag:"coagulation"},
+  {q:"DIC labs — pattern?", a:"Low platelets + Low fibrinogen + ↑ PT/PTT + ↑ D-dimer + schistocytes", exp:"Tissue factor release → widespread clotting → consumption → bleeding. D-dimer is the ONE that goes UP (secondary fibrinolysis product).", tag:"coagulation"},
+  {q:"Torsades de pointes — channel blocked and treatment?", a:"Delayed rectifier K+ channel (IKr) blocked → long QT → IV magnesium", exp:"Polymorphic VT with 'twisting' axis. NOT Ca channel. NOT Na channel. Triggers: hypokalemia, QT-prolonging drugs (macrolides, quinidine, haloperidol).", tag:"coagulation"},
+];
+
+let cards = [...ALL_CARDS];
+let current = 0;
+let flipped = false;
+let known = [];
+let review = [];
+let currentFilter = 'all';
+
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  if (f === 'review') {
+    cards = review.length ? [...review] : [...ALL_CARDS.filter(c => false)];
+    if (!cards.length) {
+      alert('No cards marked for review yet!');
+      setFilter('all');
+      return;
+    }
+  } else if (f === 'all') {
+    cards = [...ALL_CARDS];
+  } else {
+    cards = ALL_CARDS.filter(c => c.tag === f);
+  }
+  shuffle(cards);
+  current = 0; known = []; review = [];
+  showCard();
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+function showCard() {
+  const doneView = document.getElementById('done-view');
+  const mainView = document.getElementById('main-view');
+
+  if (current >= cards.length) {
+    mainView.style.display = 'none';
+    doneView.style.display = 'flex';
+    document.getElementById('done-know').textContent = known.length;
+    document.getElementById('done-rev').textContent = review.length;
+    return;
+  }
+
+  mainView.style.display = 'block';
+  doneView.style.display = 'none';
+
+  const c = cards[current];
+  flipped = false;
+  document.getElementById('card-inner').classList.remove('flipped');
+  document.getElementById('q-text').textContent = c.q;
+  document.getElementById('q-hint').textContent = '';
+  document.getElementById('a-text').textContent = c.a;
+  document.getElementById('a-exp').innerHTML = c.exp ? `<strong>Why:</strong> ${c.exp}` : '';
+
+  const tagColors = {
+    congenital: '#4f9cf9', ischemia: '#f96060', valvular: '#a78bfa',
+    cardiomyopathy: '#3dd68c', endocarditis: '#f9a84f',
+    vascular: '#f96060', pericardial: '#4f9cf9', coagulation: '#a78bfa'
+  };
+  const tagNames = {
+    congenital: 'Congenital HD', ischemia: 'Ischemia / MI', valvular: 'Valvular',
+    cardiomyopathy: 'Cardio / HF', endocarditis: 'Endocarditis',
+    vascular: 'Vascular', pericardial: 'Pericardial', coagulation: 'Coagulation'
+  };
+  const ft = document.getElementById('front-tag');
+  ft.textContent = tagNames[c.tag] || c.tag.toUpperCase();
+  ft.style.color = tagColors[c.tag] || '#4f9cf9';
+  ft.style.background = (tagColors[c.tag] || '#4f9cf9') + '20';
+
+  document.getElementById('btn-rev').style.display = 'none';
+  document.getElementById('btn-know').style.display = 'none';
+  document.getElementById('counter').textContent = `Card ${current + 1} of ${cards.length}`;
+
+  const total = known.length + review.length;
+  const pct = cards.length ? (total / cards.length * 100) : 0;
+  document.getElementById('progress').style.width = pct + '%';
+  document.getElementById('stat-rem').textContent = `${cards.length - current} remaining`;
+  document.getElementById('stat-know').textContent = `${known.length} known`;
+  document.getElementById('stat-rev').textContent = `${review.length} to review`;
+}
+
+function flip() {
+  flipped = !flipped;
+  document.getElementById('card-inner').classList.toggle('flipped', flipped);
+  if (flipped) {
+    document.getElementById('btn-rev').style.display = 'flex';
+    document.getElementById('btn-know').style.display = 'flex';
+  }
+}
+
+function rate(r) {
+  if (r === 'know') known.push(cards[current]);
+  else review.push(cards[current]);
+  current++;
+  showCard();
+}
+
+function restartAll() {
+  cards = currentFilter === 'all' ? [...ALL_CARDS] : ALL_CARDS.filter(c => c.tag === currentFilter);
+  shuffle(cards);
+  current = 0; known = []; review = [];
+  showCard();
+}
+
+function restartReview() {
+  if (!review.length) { restartAll(); return; }
+  cards = [...review];
+  shuffle(cards);
+  current = 0; known = []; review = [];
+  showCard();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space') { e.preventDefault(); flip(); }
+  if (e.code === 'ArrowRight' && flipped) rate('know');
+  if (e.code === 'ArrowLeft' && flipped) rate('review');
+});
+
+shuffle(cards);
+showCard();
+</script>
+</body>
+</html>

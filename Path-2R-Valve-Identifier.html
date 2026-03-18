@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cardio Path — Murmur & Clinical Clue Identifier</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Syne+Mono&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f5f0;
+    --surface: #ffffff;
+    --border: #e2ddd6;
+    --text: #1a1814;
+    --muted: #8a8278;
+    --accent: #c0392b;
+    --accent2: #2c3e7a;
+    --green: #1a6b3c;
+    --green-bg: #e8f5ee;
+    --red-bg: #fdecea;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+
+  header {
+    background: var(--accent);
+    color: white;
+    padding: 28px 40px 20px;
+  }
+  header h1 { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
+  header p { font-size: 14px; opacity: 0.8; margin-top: 4px; }
+
+  .mode-bar {
+    background: #fff; border-bottom: 2px solid var(--border);
+    padding: 0 40px; display: flex; gap: 0;
+  }
+  .mode-btn {
+    padding: 14px 20px; font-family: 'Syne', sans-serif; font-size: 13px;
+    font-weight: 600; letter-spacing: 0.04em; background: none; border: none;
+    cursor: pointer; color: var(--muted); border-bottom: 3px solid transparent;
+    margin-bottom: -2px; transition: all 0.15s;
+  }
+  .mode-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .main { padding: 32px 40px; max-width: 900px; margin: 0 auto; }
+
+  /* QUIZ MODE */
+  .quiz-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 32px; margin-bottom: 20px;
+  }
+  .quiz-num { font-family: 'Syne Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 12px; }
+  .quiz-q { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; line-height: 1.4; margin-bottom: 8px; }
+  .quiz-clues { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+  .clue-tag {
+    background: #f0ede8; padding: 6px 12px; border-radius: 20px;
+    font-size: 13px; font-weight: 500; color: var(--text);
+  }
+  .clue-tag.key { background: #fef3e8; color: #b35a00; }
+
+  .options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+  .opt {
+    padding: 14px 16px; border-radius: 8px; border: 2px solid var(--border);
+    background: var(--surface); cursor: pointer; font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500; text-align: left; transition: all 0.15s; color: var(--text);
+  }
+  .opt:hover { border-color: var(--accent2); background: #f0f2fa; }
+  .opt.correct { border-color: var(--green); background: var(--green-bg); color: var(--green); }
+  .opt.wrong { border-color: var(--accent); background: var(--red-bg); color: var(--accent); }
+  .opt.reveal-correct { border-color: var(--green); background: var(--green-bg); color: var(--green); }
+  .opt:disabled { cursor: default; }
+
+  .feedback {
+    display: none; margin-top: 16px; padding: 16px;
+    border-radius: 8px; font-size: 14px; line-height: 1.6;
+  }
+  .feedback.show { display: block; }
+  .feedback.good { background: var(--green-bg); border-left: 4px solid var(--green); }
+  .feedback.bad { background: var(--red-bg); border-left: 4px solid var(--accent); }
+  .feedback strong { font-weight: 600; }
+
+  .next-btn {
+    display: none; margin-top: 16px; padding: 12px 28px;
+    background: var(--accent); color: white; border: none; border-radius: 8px;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
+    cursor: pointer; letter-spacing: 0.02em;
+  }
+  .next-btn.show { display: block; }
+  .next-btn:hover { background: #a93226; }
+
+  .score-bar {
+    display: flex; align-items: center; gap: 16px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px 20px; margin-bottom: 24px; font-size: 14px;
+  }
+  .score-bar strong { font-family: 'Syne', sans-serif; font-size: 18px; }
+
+  /* REFERENCE MODE */
+  .ref-section { margin-bottom: 32px; }
+  .ref-title {
+    font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent);
+    padding: 10px 0; border-bottom: 2px solid var(--accent); margin-bottom: 16px;
+  }
+  .ref-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .ref-table th {
+    background: #f0ede8; padding: 10px 14px; text-align: left;
+    font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+  }
+  .ref-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .ref-table tr:last-child td { border-bottom: none; }
+  .ref-table tr:hover td { background: #faf9f7; }
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+  }
+  .badge-sys { background: #fdecea; color: var(--accent); }
+  .badge-dia { background: #e8eef8; color: var(--accent2); }
+  .badge-cont { background: #e8f5ee; color: var(--green); }
+  .badge-other { background: #f0ede8; color: var(--muted); }
+
+  /* MANEUVERS MODE */
+  .maneuver-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .maneuver-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.15s;
+  }
+  .maneuver-card:hover { border-color: var(--accent); box-shadow: 0 4px 16px rgba(192,57,43,0.08); }
+  .maneuver-card h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 8px; }
+  .maneuver-card .effect { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+  .maneuver-results { display: none; }
+  .maneuver-results.open { display: block; }
+  .maneuver-row { display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .maneuver-row:last-child { border-bottom: none; }
+  .maneuver-row .valve { font-weight: 500; }
+  .change-up { color: var(--green); font-weight: 600; }
+  .change-down { color: var(--accent); font-weight: 500; }
+
+  @keyframes pop { 0% { transform: scale(0.96); } 100% { transform: scale(1); } }
+  .quiz-card { animation: pop 0.2s ease; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Murmur & Clinical Clue Identifier</h1>
+  <p>Master valve disease patterns, murmur characteristics, and dynamic maneuvers</p>
+</header>
+
+<div class="mode-bar">
+  <button class="mode-btn active" onclick="setMode('quiz')">Quiz Mode</button>
+  <button class="mode-btn" onclick="setMode('reference')">Reference Table</button>
+  <button class="mode-btn" onclick="setMode('maneuvers')">Dynamic Maneuvers</button>
+</div>
+
+<div class="main">
+  <!-- QUIZ MODE -->
+  <div id="mode-quiz">
+    <div class="score-bar">
+      <div>Score: <strong id="score-text">0 / 0</strong></div>
+      <div style="color:var(--muted);font-size:13px" id="score-pct"></div>
+      <div style="margin-left:auto">
+        <button onclick="restartQuiz()" style="padding:7px 16px;background:var(--accent);color:white;border:none;border-radius:6px;cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.04em">RESTART</button>
+      </div>
+    </div>
+
+    <div id="quiz-container"></div>
+  </div>
+
+  <!-- REFERENCE MODE -->
+  <div id="mode-reference" style="display:none">
+    <div class="ref-section">
+      <div class="ref-title">Valve Murmur Quick Reference</div>
+      <table class="ref-table">
+        <thead>
+          <tr><th>Diagnosis</th><th>Timing</th><th>Location</th><th>Radiation</th><th>Key Feature</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Aortic Stenosis</strong></td><td><span class="badge badge-sys">Systolic</span> crescendo-decrescendo</td><td>RUSB (R 2nd ICS)</td><td>Carotids</td><td>SAD triad; pulsus parvus et tardus; concentric LVH</td></tr>
+          <tr><td><strong>Aortic Regurgitation</strong></td><td><span class="badge badge-dia">Diastolic</span> decrescendo</td><td>LSB (lean forward)</td><td>None</td><td>Wide pulse pressure; water-hammer pulse; eccentric LVH</td></tr>
+          <tr><td><strong>Mitral Regurgitation</strong></td><td><span class="badge badge-sys">Holosystolic</span></td><td>Apex</td><td><strong>Axilla ★</strong></td><td>Volume overload → eccentric LVH; ↑ with handgrip</td></tr>
+          <tr><td><strong>Mitral Stenosis</strong></td><td><span class="badge badge-dia">Diastolic</span> rumble + opening snap</td><td>Apex (bell)</td><td>None</td><td>OS closer to S2 = more severe; no LVH; LA dilates</td></tr>
+          <tr><td><strong>MVP</strong></td><td><span class="badge badge-other">Mid-systolic click</span> + late systolic</td><td>Apex</td><td>None</td><td>Myxomatous degen; click EARLIER with Valsalva</td></tr>
+          <tr><td><strong>Tricuspid Regurgitation</strong></td><td><span class="badge badge-sys">Holosystolic</span></td><td>LLSB</td><td>None</td><td>↑ with inspiration (Carvallo sign)</td></tr>
+          <tr><td><strong>HCM</strong></td><td><span class="badge badge-sys">Systolic</span> (ejection)</td><td>LUSB / LLSB</td><td>None</td><td>LOUDER with Valsalva/standing (dynamic obstruction)</td></tr>
+          <tr><td><strong>ASD</strong></td><td><span class="badge badge-sys">Systolic</span> ejection</td><td>LUSB</td><td>None</td><td>Wide <strong>fixed</strong> split S2 (pathognomonic)</td></tr>
+          <tr><td><strong>VSD</strong></td><td><span class="badge badge-sys">Holosystolic</span></td><td>LLSB</td><td>None</td><td>Harsh; thrill; small defect can be louder</td></tr>
+          <tr><td><strong>PDA</strong></td><td><span class="badge badge-cont">Continuous</span> "machine-like"</td><td>L infraclavicular</td><td>None</td><td>Bounding pulses; wide pulse pressure</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ref-section">
+      <div class="ref-title">Clinical Clue → Diagnosis</div>
+      <table class="ref-table">
+        <thead><tr><th>If You See / Hear</th><th>Think</th></tr></thead>
+        <tbody>
+          <tr><td>Mid-systolic click</td><td><strong>MVP</strong> until proven otherwise</td></tr>
+          <tr><td>Opening snap + diastolic rumble</td><td><strong>Mitral Stenosis</strong></td></tr>
+          <tr><td>Wide fixed split S2</td><td><strong>ASD</strong></td></tr>
+          <tr><td>Continuous machine murmur</td><td><strong>PDA</strong></td></tr>
+          <tr><td>Systolic → carotids</td><td><strong>Aortic Stenosis</strong></td></tr>
+          <tr><td>Holosystolic → axilla</td><td><strong>Mitral Regurgitation</strong></td></tr>
+          <tr><td>Early diastolic + wide pulse pressure</td><td><strong>Aortic Regurgitation</strong></td></tr>
+          <tr><td>Murmur louder with Valsalva</td><td><strong>HCM</strong> (or MVP click earlier)</td></tr>
+          <tr><td>Murmur louder with inspiration</td><td><strong>Right-sided murmur</strong> (TR, PS)</td></tr>
+          <tr><td>New holosystolic murmur LLSB 3–5d post-MI</td><td><strong>Septal rupture → VSD</strong></td></tr>
+          <tr><td>New murmur at apex → axilla 3–7d post-MI</td><td><strong>Papillary muscle rupture → acute MR</strong></td></tr>
+          <tr><td>Systolic murmur softer with squatting</td><td><strong>HCM</strong> (↑ preload → less obstruction)</td></tr>
+          <tr><td>OS–S2 interval gets shorter</td><td><strong>MS getting more severe</strong></td></tr>
+          <tr><td>Water-hammer pulse</td><td><strong>Aortic Regurgitation</strong></td></tr>
+          <tr><td>Pulsus parvus et tardus</td><td><strong>Aortic Stenosis</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ref-section">
+      <div class="ref-title">LV Response to Valve Disease</div>
+      <table class="ref-table">
+        <thead><tr><th>Condition</th><th>Hemodynamic Effect</th><th>LV Response</th></tr></thead>
+        <tbody>
+          <tr><td>Aortic stenosis</td><td>Pressure overload (↑ afterload)</td><td><strong>Concentric LVH</strong> (thick wall, small cavity)</td></tr>
+          <tr><td>Systemic HTN</td><td>Pressure overload (↑ afterload)</td><td><strong>Concentric LVH</strong></td></tr>
+          <tr><td>Aortic regurgitation</td><td>Volume overload (regurgitant volume)</td><td><strong>Eccentric LVH</strong> (dilated)</td></tr>
+          <tr><td>Mitral regurgitation</td><td>Volume overload (backflow into LA)</td><td><strong>Eccentric LVH</strong> (dilated)</td></tr>
+          <tr><td>Mitral stenosis</td><td>LV underfilled (obstruction at MV)</td><td><strong>NO LVH</strong> — LA dilates instead</td></tr>
+          <tr><td>Pulmonary HTN</td><td>RV pressure overload</td><td><strong>RV hypertrophy</strong> (not LV)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MANEUVERS MODE -->
+  <div id="mode-maneuvers" style="display:none">
+    <p style="color:var(--muted);margin-bottom:24px;font-size:14px">Click each maneuver to see how it affects each murmur. Understanding the mechanism is key.</p>
+    <div class="maneuver-grid">
+      <div class="maneuver-card" onclick="toggleManeuver(this)">
+        <h3>Valsalva (Strain Phase)</h3>
+        <div class="effect">↓ Preload → ↓ LV volume → ↓ venous return</div>
+        <div class="maneuver-results">
+          <div class="maneuver-row"><span class="valve">HCM</span><span class="change-up">↑ LOUDER</span></div>
+          <div class="maneuver-row"><span class="valve">MVP click</span><span class="change-up">Earlier (murmur longer)</span></div>
+          <div class="maneuver-row"><span class="valve">Aortic Stenosis</span><span class="change-down">↓ Softer</span></div>
+          <div class="maneuver-row"><span class="valve">Mitral Regurgitation</span><span class="change-down">↓ Softer</span></div>
+          <div class="maneuver-row"><span class="valve">VSD</span><span class="change-down">↓ Softer</span></div>
+          <div style="margin-top:10px;font-size:12px;color:var(--muted)">HCM: ↓ LV volume → more LVOTO. MVP: ↓ LV → prolapse occurs sooner.</div>
+        </div>
+      </div>
+
+      <div class="maneuver-card" onclick="toggleManeuver(this)">
+        <h3>Standing Up</h3>
+        <div class="effect">↓ Preload → ↓ venous return (blood pools in legs)</div>
+        <div class="maneuver-results">
+          <div class="maneuver-row"><span class="valve">HCM</span><span class="change-up">↑ LOUDER</span></div>
+          <div class="maneuver-row"><span class="valve">MVP click</span><span class="change-up">Earlier</span></div>
+          <div class="maneuver-row"><span class="valve">Aortic Stenosis</span><span class="change-down">↓ Softer</span></div>
+          <div class="maneuver-row"><span class="valve">Mitral Regurgitation</span><span class="change-down">↓ Softer</span></div>
+          <div style="margin-top:10px;font-size:12px;color:var(--muted)">Same mechanism as Valsalva — ↓ preload.</div>
+        </div>
+      </div>
+
+      <div class="maneuver-card" onclick="toggleManeuver(this)">
+        <h3>Squatting</h3>
+        <div class="effect">↑ Preload + ↑ Afterload → ↑ LV volume</div>
+        <div class="maneuver-results">
+          <div class="maneuver-row"><span class="valve">HCM</span><span class="change-down">↓ Softer (less obstruction)</span></div>
+          <div class="maneuver-row"><span class="valve">MVP click</span><span class="change-down">Later (murmur shorter)</span></div>
+          <div class="maneuver-row"><span class="valve">Aortic Stenosis</span><span class="change-up">↑ Louder</span></div>
+          <div class="maneuver-row"><span class="valve">Mitral Regurgitation</span><span class="change-up">↑ Louder</span></div>
+          <div class="maneuver-row"><span class="valve">VSD</span><span class="change-up">↑ Louder</span></div>
+          <div style="margin-top:10px;font-size:12px;color:var(--muted)">↑ LV volume → less LVOTO in HCM. ↑ SVR → ↑ MR gradient. MVP: fuller LV → prolapse delayed.</div>
+        </div>
+      </div>
+
+      <div class="maneuver-card" onclick="toggleManeuver(this)">
+        <h3>Handgrip</h3>
+        <div class="effect">↑ Afterload (↑ SVR) → ↑ LV afterload</div>
+        <div class="maneuver-results">
+          <div class="maneuver-row"><span class="valve">Mitral Regurgitation</span><span class="change-up">↑ Louder (↑ L→A gradient)</span></div>
+          <div class="maneuver-row"><span class="valve">VSD</span><span class="change-up">↑ Louder</span></div>
+          <div class="maneuver-row"><span class="valve">Aortic Regurgitation</span><span class="change-up">↑ Louder</span></div>
+          <div class="maneuver-row"><span class="valve">HCM</span><span class="change-down">↓ Softer</span></div>
+          <div class="maneuver-row"><span class="valve">Aortic Stenosis</span><span class="change-down">↓ Softer (less gradient across valve)</span></div>
+          <div style="margin-top:10px;font-size:12px;color:var(--muted)">↑ SVR → regurgitant murmurs get louder; obstructive murmurs get softer.</div>
+        </div>
+      </div>
+
+      <div class="maneuver-card" onclick="toggleManeuver(this)">
+        <h3>Inspiration</h3>
+        <div class="effect">↑ Venous return to RIGHT heart</div>
+        <div class="maneuver-results">
+          <div class="maneuver-row"><span class="valve">Tricuspid Regurgitation</span><span class="change-up">↑ LOUDER (Carvallo sign)</span></div>
+          <div class="maneuver-row"><span class="valve">Pulmonary Stenosis</span><span class="change-up">↑ Louder</span></div>
+          <div class="maneuver-row"><span class="valve">Tricuspid Stenosis</span><span class="change-up">↑ Louder</span></div>
+          <div class="maneuver-row"><span class="valve">Left-sided murmurs</span><span style="color:var(--muted)">No significant change</span></div>
+          <div style="margin-top:10px;font-size:12px;color:var(--muted)">Inspiration → ↑ right heart filling → all right-sided murmurs louder. Key for TR (Carvallo sign).</div>
+        </div>
+      </div>
+
+      <div class="maneuver-card" onclick="toggleManeuver(this)">
+        <h3>Amyl Nitrite (Vasodilator)</h3>
+        <div class="effect">↓ Afterload + ↓ Preload (venous vasodilation)</div>
+        <div class="maneuver-results">
+          <div class="maneuver-row"><span class="valve">HCM</span><span class="change-up">↑ Louder (↓ preload + afterload)</span></div>
+          <div class="maneuver-row"><span class="valve">Aortic Stenosis</span><span class="change-up">↑ Louder (more gradient)</span></div>
+          <div class="maneuver-row"><span class="valve">Aortic Regurgitation</span><span class="change-down">↓ Softer (↓ diastolic gradient)</span></div>
+          <div class="maneuver-row"><span class="valve">Mitral Regurgitation</span><span class="change-down">↓ Softer (↓ L→A gradient)</span></div>
+          <div style="margin-top:10px;font-size:12px;color:var(--muted)">Vasodilation → forward murmurs louder; regurgitant murmurs softer.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// QUIZ DATA
+const QUESTIONS = [
+  {q:"A 72-year-old man has exertional dyspnea and syncope. Exam: harsh systolic murmur at right upper sternal border radiating to the neck, weak and delayed carotid pulse.", clues:["Systolic murmur","RUSB → carotids","Pulsus parvus et tardus","Syncope with exertion"],
+   opts:["Aortic Stenosis","Hypertrophic Cardiomyopathy","Aortic Regurgitation","Pulmonic Stenosis"],ans:0,
+   exp:"Classic AS: crescendo-decrescendo systolic at RUSB → carotids + SAD triad. Pulsus parvus et tardus = weak and delayed. HCM also has systolic murmur but LUSB, no radiation to carotids, gets LOUDER with Valsalva."},
+
+  {q:"A 28-year-old woman has palpitations. Exam: mid-systolic click followed by a brief late systolic murmur at the apex. With standing, the click moves earlier.",
+   clues:["Mid-systolic click","Click moves EARLIER with standing","Young female","Myxomatous degeneration"],
+   opts:["Mitral Stenosis","Mitral Valve Prolapse","Aortic Stenosis","Tricuspid Regurgitation"],ans:1,
+   exp:"MVP hallmark = mid-systolic click. Valsalva/standing → ↓ LV volume → click moves EARLIER. Myxomatous degen → spongiosa expands → fibrosa thins → floppy leaflets."},
+
+  {q:"An 18-year-old man has a heart murmur. Exam: harsh holosystolic murmur loudest at the left lower sternal border with a thrill. No radiation to axilla.",
+   clues:["Holosystolic murmur","Left lower sternal border","No axillary radiation","Thrill present"],
+   opts:["Mitral Regurgitation","Aortic Stenosis","Ventricular Septal Defect","Tricuspid Regurgitation"],ans:2,
+   exp:"VSD = holosystolic at LLSB. MR = apex → axilla. Key distinction: VSD is at LLSB without axillary radiation. Small VSDs can be louder (more turbulent flow through small opening)."},
+
+  {q:"A 65-year-old woman has progressively worsening dyspnea. Exam: opening snap heard shortly after S2, followed by a low-pitched diastolic rumble at the apex. Left atrial enlargement on CXR.",
+   clues:["Opening snap","Diastolic rumble at apex","LA enlargement","Rheumatic fever history"],
+   opts:["Mitral Regurgitation","Aortic Regurgitation","Mitral Stenosis","Mitral Valve Prolapse"],ans:2,
+   exp:"MS hallmarks: opening snap + diastolic rumble at apex. NO LVH (LV is underfilled). OS closer to S2 = more severe. Causes LA dilation → AFib → pulmonary HTN."},
+
+  {q:"A 24-year-old man collapses during basketball practice. He has a family history of sudden death. Exam: systolic murmur at LUSB that gets LOUDER when he stands up.",
+   clues:["Young athlete","Systolic murmur louder with standing","Family history SCD","Asymmetric septal hypertrophy"],
+   opts:["Aortic Stenosis","Pulmonary Stenosis","Hypertrophic Cardiomyopathy","Mitral Regurgitation"],ans:2,
+   exp:"HCM = young athlete + SCD + murmur LOUDER with Valsalva/standing (↓ preload → more LVOTO). Sarcomere gene mutation (β-myosin heavy chain). Myofiber disarray on histology."},
+
+  {q:"A 45-year-old man has a bounding 'water-hammer' pulse. Exam: early diastolic blowing murmur along the left sternal border. Wide pulse pressure (BP 160/50 mmHg).",
+   clues:["Early diastolic murmur","Left sternal border","Wide pulse pressure","Water-hammer pulse"],
+   opts:["Mitral Stenosis","Aortic Regurgitation","Pericarditis","Patent Ductus Arteriosus"],ans:1,
+   exp:"AR: early diastolic decrescendo at LSB. Wide pulse pressure from ↑ SBP (↑ SV) + ↓ DBP (regurgitation). Eccentric LVH. Peripheral signs: water-hammer, de Musset, Quincke."},
+
+  {q:"A 40-year-old woman has dyspnea. Exam: holosystolic blowing murmur loudest at the apex, clearly radiating to the left axilla.",
+   clues:["Holosystolic murmur","Apex location","Radiation to axilla","Left atrial enlargement on echo"],
+   opts:["Aortic Stenosis","VSD","Mitral Regurgitation","Tricuspid Regurgitation"],ans:2,
+   exp:"MR = holosystolic at apex → axilla. Axillary radiation is pathognomonic for MR (vs VSD = LLSB, no axilla). Volume overload → eccentric LVH."},
+
+  {q:"A 3-year-old child has a heart murmur. On exam, there is a wide, FIXED split S2 that does not change with breathing, plus a soft ejection murmur at the left upper sternal border.",
+   clues:["Fixed split S2","SEM at LUSB","Does not change with respiration","Left-to-right shunt"],
+   opts:["VSD","ASD","PDA","TOF"],ans:1,
+   exp:"ASD hallmark = wide FIXED split S2 (P2 delayed from ↑ RV stroke volume; delay is constant regardless of respiration). The SEM is from increased pulmonary valve flow — NOT from the defect itself."},
+
+  {q:"A premature infant has a continuous murmur heard best below the left clavicle, with bounding pulses and a wide pulse pressure.",
+   clues:["Continuous 'machine-like' murmur","Bounding pulses","Wide pulse pressure","Prematurity"],
+   opts:["VSD","ASD","PDA","Aortic Regurgitation"],ans:2,
+   exp:"PDA = continuous 'machine-like' murmur (heard in both systole and diastole). Bounding pulses from aorta→PA shunt. Close with indomethacin. PGE1 keeps it open."},
+
+  {q:"A 55-year-old man has a new harsh holosystolic murmur at the left lower sternal border 4 days after a large anterior MI. He has acute heart failure.",
+   clues:["4 days post-MI","New harsh murmur at LLSB","Acute heart failure","Holosystolic"],
+   opts:["Mitral Regurgitation from papillary rupture","Ventricular Septal Rupture","Tricuspid Regurgitation","Aortic Stenosis"],ans:1,
+   exp:"New LLSB holosystolic murmur post-MI = septal rupture → VSD. Papillary rupture → MR = apex → axilla. Location is the key differentiator. Both occur 3–7 days post-MI."},
+
+  {q:"A patient has a systolic murmur. With the Valsalva maneuver, the murmur INCREASES in intensity. With squatting, the murmur DECREASES.",
+   clues:["Murmur louder with Valsalva","Murmur softer with squatting","Systolic murmur","Dynamic changes"],
+   opts:["Aortic Stenosis","Mitral Regurgitation","Hypertrophic Cardiomyopathy","VSD"],ans:2,
+   exp:"HCM is THE ONLY common murmur that INCREASES with Valsalva/standing (↓ preload → smaller LV → more LVOTO). All others get softer. This is a classic Step 1 distinguisher."},
+
+  {q:"On auscultation of a patient with rheumatic heart disease, you hear a low-pitched rumbling sound at the apex during diastole preceded by a sharp high-pitched sound just after S2.",
+   clues:["High-pitched sound after S2 (opening snap)","Low-pitched diastolic rumble","Apex location","Rheumatic fever history"],
+   opts:["Mitral Valve Prolapse","Mitral Stenosis","Tricuspid Stenosis","Aortic Regurgitation"],ans:1,
+   exp:"The opening snap (high-pitched, just after S2) + low-pitched diastolic rumble at apex = classic MS. Rheumatic fever → commissural fusion → 'fish mouth' stenosis. No LVH."},
+];
+
+let currentQ = 0;
+let score = 0;
+let answered = false;
+
+function renderQuiz() {
+  if (currentQ >= QUESTIONS.length) {
+    document.getElementById('quiz-container').innerHTML = `
+      <div style="text-align:center;padding:60px 20px">
+        <div style="font-family:'Syne',sans-serif;font-size:48px;font-weight:800;color:var(--accent)">${score}/${QUESTIONS.length}</div>
+        <div style="font-size:18px;margin:12px 0;font-family:'Syne',sans-serif">${score >= 9 ? '🎉 Excellent!' : score >= 7 ? '💪 Good job!' : '📖 Keep reviewing!'}</div>
+        <p style="color:var(--muted);margin-bottom:24px">You scored ${Math.round(score/QUESTIONS.length*100)}%</p>
+        <button onclick="restartQuiz()" style="padding:14px 32px;background:var(--accent);color:white;border:none;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;font-size:15px">Try Again</button>
+      </div>`;
+    return;
+  }
+
+  const q = QUESTIONS[currentQ];
+  answered = false;
+  document.getElementById('quiz-container').innerHTML = `
+    <div class="quiz-card">
+      <div class="quiz-num">Question ${currentQ + 1} of ${QUESTIONS.length}</div>
+      <div class="quiz-q">${q.q}</div>
+      <div class="quiz-clues">${q.clues.map((c,i) => `<span class="clue-tag${i===0?' key':''}">${c}</span>`).join('')}</div>
+      <div class="options" id="options">
+        ${q.opts.map((o,i) => `<button class="opt" onclick="answer(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <button class="next-btn" id="next-btn" onclick="nextQ()">Next Question →</button>
+    </div>`;
+  updateScore();
+}
+
+function answer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = QUESTIONS[currentQ];
+  const opts = document.querySelectorAll('.opt');
+  opts.forEach(o => o.disabled = true);
+  opts[q.ans].classList.add('reveal-correct');
+
+  const fb = document.getElementById('feedback');
+  if (idx === q.ans) {
+    score++;
+    opts[idx].classList.add('correct');
+    fb.className = 'feedback good show';
+    fb.innerHTML = `<strong>✓ Correct!</strong> ${q.exp}`;
+  } else {
+    opts[idx].classList.add('wrong');
+    fb.className = 'feedback bad show';
+    fb.innerHTML = `<strong>✗ Not quite.</strong> The answer is <strong>${q.opts[q.ans]}</strong>. ${q.exp}`;
+  }
+  document.getElementById('next-btn').classList.add('show');
+  updateScore();
+}
+
+function nextQ() { currentQ++; renderQuiz(); }
+function restartQuiz() { currentQ = 0; score = 0; renderQuiz(); }
+function updateScore() {
+  document.getElementById('score-text').textContent = `${score} / ${currentQ}`;
+  const pct = currentQ ? Math.round(score/currentQ*100) : 0;
+  document.getElementById('score-pct').textContent = currentQ ? `(${pct}%)` : '';
+}
+
+function setMode(m) {
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  ['quiz','reference','maneuvers'].forEach(id => {
+    document.getElementById('mode-'+id).style.display = id === m ? 'block' : 'none';
+  });
+}
+
+function toggleManeuver(card) {
+  const r = card.querySelector('.maneuver-results');
+  r.classList.toggle('open');
+}
+
+renderQuiz();
+</script>
+</body>
+</html>
