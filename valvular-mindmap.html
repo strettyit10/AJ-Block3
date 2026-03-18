@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valvular Heart Disease Mind Map</title>
+<style>
+:root{--ink:#172033;--muted:#667085;--brand:#3C3489;--line:#e7eaf3;--soft:#eeedfe;--tree:#d9def0;--shadow:0 10px 30px rgba(23,32,51,.08)}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--ink);background:radial-gradient(circle at top left, rgba(124,58,237,.08), transparent 28%),radial-gradient(circle at top right, rgba(59,130,246,.08), transparent 24%),linear-gradient(180deg,#f8f9fd 0%,#f4f6fb 100%)}
+.wrap{max-width:1180px;margin:0 auto;padding:24px} .hero{background:linear-gradient(135deg,#3C3489 0%,#5d55c9 55%,#7a73df 100%);color:#fff;border-radius:28px;padding:30px 32px;box-shadow:0 18px 45px rgba(60,52,137,.22)}
+.kicker{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:800;margin-bottom:12px} h1{margin:0 0 10px;font-size:40px;line-height:1.02;letter-spacing:-.03em} .hero p{margin:0;max-width:860px;line-height:1.65;color:rgba(255,255,255,.92)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px} .btn{display:inline-flex;align-items:center;justify-content:center;background:#fff;color:var(--brand);border-radius:999px;padding:10px 16px;font-weight:800;font-size:14px;border:1px solid rgba(255,255,255,.2);box-shadow:0 6px 18px rgba(0,0,0,.08);cursor:pointer;text-decoration:none} .btn.secondary{background:rgba(255,255,255,.12);color:#fff;box-shadow:none}
+.utility{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:20px 0 8px} .search{flex:1;min-width:300px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px;font-size:14px;box-shadow:var(--shadow)}
+.layout{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;margin-top:14px} .panel{background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:24px;padding:20px;box-shadow:var(--shadow)} .panel h2{margin:0 0 8px;font-size:24px;letter-spacing:-.02em} .panel p.lead{margin:0 0 12px;color:var(--muted);line-height:1.65}
+.tree-node{border:1px solid var(--line);background:#fff;border-radius:16px;margin-bottom:10px;overflow:hidden} .tree-node>summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;font-weight:800} .tree-node>summary::-webkit-details-marker{display:none} .tree-node>summary::before{content:"▸";color:var(--brand);margin-right:8px;transition:transform .15s ease} .tree-node[open]>summary::before{transform:rotate(90deg)}
+.node-title{flex:1} .node-count{font-size:12px;color:var(--muted);font-weight:700} .node-body{padding:0 16px 14px 24px} .node-body p{margin:0 0 8px;line-height:1.65;color:#334155;font-size:14px} .orig-list,.hy-list{margin:0 0 10px 18px;color:#334155} .orig-list li,.hy-list li{margin-bottom:6px;line-height:1.55} .node-children{margin-top:8px;padding-left:16px;border-left:2px solid var(--tree)}
+.level-0>summary{background:#f8f7ff} .level-1>summary{background:#fafbff} .hy-box{background:#f8f7ff;border:1px solid #dfdafd;border-radius:12px;padding:10px 12px;margin:8px 0 10px} .hy-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--brand);margin-bottom:6px}
+.svg-box{display:none} .svg-box.show{display:block} .svg-frame{width:100%;height:720px;border:1px solid var(--line);border-radius:16px;background:#fff} .tip{background:var(--soft);color:var(--brand);border:1px solid #d8d2ff;padding:12px 14px;border-radius:14px;font-size:14px;line-height:1.6;margin-top:12px} .small{font-size:12px;color:var(--muted)} mark{background:#fff2a8;padding:0 2px;border-radius:3px} .hidden{display:none!important}
+@media (max-width:980px){.layout{grid-template-columns:1fr} .svg-frame{height:480px} h1{font-size:32px}}
+</style></head>
+<body><div class="wrap">
+<section class="hero"><div class="kicker">Interactive Mind Map • Exact Node Structure</div>
+<h1>Valvular Heart Disease</h1>
+<p>This version preserves the original node hierarchy and node count from your markdown. The only change is a small HY box under matching existing nodes.</p>
+<div class="toolbar"><button class="btn" onclick="expandAll()">Expand all</button><button class="btn" onclick="collapseAll()">Collapse all</button><button class="btn secondary" onclick="toggleSvg()">Toggle SVG overview</button><a class="btn secondary" href="index.html">Back to AJ-Block3</a></div></section>
+<div class="utility"><input id="searchBox" class="search" type="text" placeholder="Search topics like fish-mouth stenosis, Aschoff bodies, NBTE..." oninput="filterNodes()"></div>
+<div class="layout">
+<section class="panel"><h2>Collapsible study tree</h2><p class="lead">Original nodes are preserved 1:1. HY facts are only layered underneath existing nodes that had a direct lecture match.</p><div id="treeRoot">
+<details class="tree-node level-0" open>
+  <summary><span class="node-title">Valvular Anatomy &amp; Histology</span><span class='node-count'>3 subtopics</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Valve dysfunction can come from leaflet/cusp disease or failure of supporting structures such as annulus, chordae, papillary muscles, or the aortic root.</li></ul></div>
+    <div class='node-children'>
+<details class="tree-node level-1" open>
+  <summary><span class="node-title">Atrioventricular Valves</span><span class='node-count'>2 subtopics</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>AV valve competence depends on papillary muscles and chordae as well as the valve leaflets.</li></ul></div>
+    <div class='node-children'>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Mitral (Bicuspid)</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Mitral valve is the dominant valve in rheumatic heart disease.</li><li>Mitral regurgitation is also classically seen with myxomatous degeneration / MVP.</li></ul></div>
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Tricuspid</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Think tricuspid infective endocarditis in IV drug use.</li></ul></div>
+    
+  </div>
+</details></div>
+  </div>
+</details>
+<details class="tree-node level-1" open>
+  <summary><span class="node-title">Semilunar Valves</span><span class='node-count'>2 subtopics</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Aortic root dilation is a classic cause of aortic regurgitation.</li></ul></div>
+    <div class='node-children'>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Aortic</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Most important lesion here is calcific aortic stenosis.</li></ul></div>
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Pulmonic</span></summary>
+  <div class="node-body">
+    
+    
+    
+  </div>
+</details></div>
+  </div>
+</details>
+<details class="tree-node level-1" open>
+  <summary><span class="node-title">Trilayered Histology</span><span class='node-count'>3 subtopics</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>The three layers help explain why calcific disease and myxomatous degeneration affect different parts of the valve.</li></ul></div>
+    <div class='node-children'>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Fibrosa (Collagen)</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Calcific aortic stenosis begins in the fibrosa.</li></ul></div>
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Spongiosa (Connective Tissue)</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Myxomatous degeneration expands the spongiosa with proteoglycan deposition.</li></ul></div>
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Ventricularis (Elastin)</span></summary>
+  <div class="node-body">
+    
+    
+    
+  </div>
+</details></div>
+  </div>
+</details></div>
+  </div>
+</details>
+<details class="tree-node level-0" open>
+  <summary><span class="node-title">Functional Abnormalities</span><span class='node-count'>2 subtopics</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Main bucket split: stenosis vs regurgitation.</li></ul></div>
+    <div class='node-children'>
+<details class="tree-node level-1" open>
+  <summary><span class="node-title">Stenosis</span><span class='node-count'>3 subtopics</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Failure to open completely; creates a pressure gradient across the valve.</li></ul></div>
+    <div class='node-children'>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Failure to open completely</span></summary>
+  <div class="node-body">
+    
+    
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Impedes forward flow</span></summary>
+  <div class="node-body">
+    
+    
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Pressure overload &amp; hypertrophy</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Pressure overload classically causes concentric hypertrophy.</li></ul></div>
+    
+  </div>
+</details></div>
+  </div>
+</details>
+<details class="tree-node level-1" open>
+  <summary><span class="node-title">Regurgitation</span><span class='node-count'>3 subtopics</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Failure to close completely; can arise from leaflet disease or support apparatus failure.</li></ul></div>
+    <div class='node-children'>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Failure to close completely</span></summary>
+  <div class="node-body">
+    
+    
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Reverse flow (Insufficiency)</span></summary>
+  <div class="node-body">
+    
+    
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Volume overload &amp; dilation</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Regurgitant lesions classically cause chamber dilation.</li></ul></div>
+    
+  </div>
+</details></div>
+  </div>
+</details></div>
+  </div>
+</details>
+<details class="tree-node level-0" open>
+  <summary><span class="node-title">Specific Valvular Diseases</span><span class='node-count'>3 subtopics</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Main themes: degenerative/calcific, rheumatic/post-inflammatory, myxomatous, infectious, and sterile vegetations.</li></ul></div>
+    <div class='node-children'>
+<details class="tree-node level-1" open>
+  <summary><span class="node-title">Calcific Aortic Stenosis</span><span class='node-count'>4 subtopics</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Dystrophic calcification from chronic wear-and-tear injury.</li><li>Free edges are typically spared.</li><li>Classic severe symptom triad: angina, syncope, heart failure.</li></ul></div>
+    <div class='node-children'>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Degenerative (Age-associated)</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Usually presents in older adults with tricuspid aortic valves.</li></ul></div>
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Congenitally Bicuspid Valve</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Common congenital lesion; becomes symptomatic earlier than degenerative AS.</li><li>Also increases infective endocarditis risk.</li></ul></div>
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Dystrophic Calcification</span></summary>
+  <div class="node-body">
+    
+    
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Concentric LV Hypertrophy</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Severe AS creates chronic pressure overload and concentric LV hypertrophy.</li></ul></div>
+    
+  </div>
+</details></div>
+  </div>
+</details>
+<details class="tree-node level-1" open>
+  <summary><span class="node-title">Rheumatic Heart Disease</span><span class='node-count'>4 subtopics</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Immune-mediated sequela of group A strep pharyngitis.</li><li>Mitral valve is always involved in this lecture framing.</li></ul></div>
+    <div class='node-children'>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Post-Group A Strep Pharyngitis</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Acute rheumatic fever classically follows untreated GAS pharyngitis after 2–3 weeks.</li></ul></div>
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Aschoff Bodies</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Signature lesion of acute rheumatic carditis.</li><li>Associated with Anitschkow cells.</li></ul></div>
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Mitral Leaflet Thickening</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Chronic rheumatic disease causes leaflet thickening, commissural fusion, and thickened/fused chordae.</li></ul></div>
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Fish-mouth Stenosis</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Classic gross morphology of chronic rheumatic mitral stenosis.</li><li>Can lead to pulmonary hypertension and RV hypertrophy.</li></ul></div>
+    
+  </div>
+</details></div>
+  </div>
+</details>
+<details class="tree-node level-1" open>
+  <summary><span class="node-title">Myxomatous Degeneration</span><span class='node-count'>4 subtopics</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Structural basis of mitral valve prolapse.</li><li>Leaflets become enlarged, redundant, and floppy.</li></ul></div>
+    <div class='node-children'>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Mitral Valve Prolapse</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Classic auscultation clue: mid-systolic click.</li></ul></div>
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Floppy/Redundant Leaflets</span></summary>
+  <div class="node-body">
+    
+    
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Mid-systolic Click</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Caused by sudden tensing of leaflet/chordal structures.</li></ul></div>
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Spongiosa Expansion</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Proteoglycan accumulation in the spongiosa plus fibrosa thinning/disorganization is classic.</li></ul></div>
+    
+  </div>
+</details></div>
+  </div>
+</details></div>
+  </div>
+</details>
+<details class="tree-node level-0" open>
+  <summary><span class="node-title">Endocarditis</span><span class='node-count'>3 subtopics</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Vegetations may be infectious or noninfectious; embolization is a major complication.</li></ul></div>
+    <div class='node-children'>
+<details class="tree-node level-1" open>
+  <summary><span class="node-title">Infectious (IE)</span><span class='node-count'>4 subtopics</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Vegetations contain organisms plus thrombotic/necrotic debris.</li><li>Can cause valve destruction, abscesses, and septic emboli.</li></ul></div>
+    <div class='node-children'>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Acute (S. aureus, Virulent)</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Often affects previously normal valves and is rapidly destructive.</li><li>Tricuspid valve is classic in IV drug use.</li></ul></div>
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Subacute (S. viridans, Damaged valves)</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>More indolent course, often on previously abnormal valves, commonly linked to oral flora.</li></ul></div>
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Bulky/Destructive Vegetations</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Favours acute infective endocarditis rather than NBTE or Libman-Sacks.</li></ul></div>
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Duke Criteria Diagnosis</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Think positive blood cultures, echo evidence of vegetation/abscess, and new regurgitation.</li></ul></div>
+    
+  </div>
+</details></div>
+  </div>
+</details>
+<details class="tree-node level-1" open>
+  <summary><span class="node-title">Non-Bacterial (NBTE)</span><span class='node-count'>3 subtopics</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Sterile bland vegetations made of platelets and fibrin.</li><li>Usually along lines of closure and loosely attached.</li></ul></div>
+    <div class='node-children'>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Marantic Endocarditis</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Synonym for NBTE.</li></ul></div>
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Sterile/Reddish Vegetations</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Main danger is embolization rather than valve destruction.</li></ul></div>
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Hypercoagulable states (Cancer)</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Classically associated with mucinous adenocarcinoma and other hypercoagulable states.</li></ul></div>
+    
+  </div>
+</details></div>
+  </div>
+</details>
+<details class="tree-node level-1" open>
+  <summary><span class="node-title">Libman-Sacks (LSE)</span><span class='node-count'>3 subtopics</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Sterile endocarditis associated with SLE.</li><li>Immune complex deposition and complement activation are key.</li></ul></div>
+    <div class='node-children'>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Systemic Lupus Erythematosus</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Autoimmune setting should push you toward Libman-Sacks rather than infectious IE.</li></ul></div>
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Both sides of leaflets involved</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Libman-Sacks vegetations can occur on either side of the valve and even on chordae/endocardium.</li></ul></div>
+    
+  </div>
+</details>
+<details class="tree-node level-2" open>
+  <summary><span class="node-title">Immune complex deposition</span></summary>
+  <div class="node-body">
+    
+    <div class='hy-box'><div class='hy-label'>HY</div><ul class='hy-list'><li>Inflammation and fibrinoid necrosis help distinguish Libman-Sacks from bland NBTE.</li></ul></div>
+    
+  </div>
+</details></div>
+  </div>
+</details></div>
+  </div>
+</details></div><div class="tip">Use this for active recall: collapse the tree, predict the pathology points, then expand each branch and read the HY box only after you commit to an answer.</div></section>
+<section class="panel"><h2>SVG overview</h2><p class="lead">Your original visual mind map stays available as a companion view.</p><div id="svgBox" class="svg-box"><object class="svg-frame" type="image/svg+xml" data="valvular-heart-disease.svg"></object></div><div id="svgHint" class="small">Click “Toggle SVG overview” above to show or hide the uploaded SVG.</div><div class="tip">This keeps the structure from your original map while making the nodes more useful for board review.</div></section>
+</div></div>
+<script>
+function expandAll(){document.querySelectorAll('.tree-node').forEach(n=>n.open=true);}
+function collapseAll(){document.querySelectorAll('.tree-node').forEach(n=>n.open=false);}
+function toggleSvg(){const box=document.getElementById('svgBox');const hint=document.getElementById('svgHint');box.classList.toggle('show');hint.style.display=box.classList.contains('show')?'none':'block';}
+function clearMarks(el){el.querySelectorAll('mark').forEach(m=>{const p=m.parentNode;p.replaceChild(document.createTextNode(m.textContent),m);p.normalize();});}
+function highlightTerm(root,term){if(!term)return;const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);nodes.forEach(node=>{const val=node.nodeValue;const idx=val.toLowerCase().indexOf(term);if(idx>=0){const span=document.createElement('span');span.innerHTML=val.substring(0,idx)+'<mark>'+val.substring(idx,idx+term.length)+'</mark>'+val.substring(idx+term.length);node.parentNode.replaceChild(span,node);}});}
+function filterNodes(){const q=document.getElementById('searchBox').value.toLowerCase().trim();const nodes=Array.from(document.querySelectorAll('.tree-node'));nodes.forEach(n=>clearMarks(n));if(!q){nodes.forEach(n=>n.classList.remove('hidden'));return;}nodes.forEach(n=>{const txt=n.innerText.toLowerCase();const match=txt.includes(q);n.classList.toggle('hidden',!match);if(match){n.open=true;let p=n.parentElement;while(p){if(p.tagName==='DETAILS')p.open=true;p=p.parentElement;}highlightTerm(n,q);}});}
+</script></body></html>
