@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clinical Vignette Identifier</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f9f7f4;--white:#ffffff;--border:#e4dfd7;--text:#1c1a17;--muted:#8a8070;
+  --accent:#b5451b;--accent2:#1b4a8a;--green:#1a7040;--green-bg:#eaf5ef;
+  --red-bg:#fdf0ed;--amber:#9a5c00;--amber-bg:#fdf6e8;
+  --tag-chd:#1b4a8a;--tag-mi:#b5451b;--tag-valve:#5a2d9a;--tag-cm:#1a7040;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+
+header{background:var(--accent2);color:white;padding:24px 40px 20px}
+header h1{font-family:'Source Serif 4',serif;font-size:24px;font-weight:600}
+header p{font-size:13px;opacity:.75;margin-top:4px}
+
+.controls{background:var(--white);border-bottom:2px solid var(--border);padding:14px 40px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.filter-btn{padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;
+  color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;transition:.15s;font-family:'DM Sans',sans-serif}
+.filter-btn.on{background:var(--accent2);border-color:var(--accent2);color:white}
+.filter-btn:hover:not(.on){border-color:var(--accent2);color:var(--accent2)}
+.score-disp{margin-left:auto;font-size:13px;color:var(--muted)}
+.score-disp strong{color:var(--text);font-size:16px}
+
+.main{max-width:820px;margin:0 auto;padding:32px 40px}
+
+/* VIGNETTE CARD */
+.vig-card{background:var(--white);border:1px solid var(--border);border-radius:14px;
+  padding:32px;margin-bottom:20px;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+.vig-meta{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.vig-num{font-size:12px;font-weight:600;color:var(--muted)}
+.vig-tag{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  padding:3px 10px;border-radius:4px}
+.diff-badge{font-size:11px;padding:3px 8px;border-radius:4px;font-weight:600}
+.diff-med{background:#fdf6e8;color:var(--amber)}
+.diff-hard{background:var(--red-bg);color:var(--accent)}
+.diff-easy{background:var(--green-bg);color:var(--green)}
+
+.vignette{font-family:'Source Serif 4',serif;font-size:16px;line-height:1.75;
+  background:#faf8f5;border-left:3px solid var(--border);padding:20px 22px;
+  border-radius:0 8px 8px 0;margin-bottom:20px}
+.vig-key{font-weight:600;color:var(--accent2)}
+
+.vig-q{font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px}
+
+.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:4px}
+.opt{padding:13px 16px;background:var(--bg);border:1.5px solid var(--border);
+  border-radius:8px;font-size:14px;cursor:pointer;text-align:left;transition:.15s;
+  font-family:'DM Sans',sans-serif;color:var(--text);line-height:1.4}
+.opt:hover{border-color:var(--accent2);background:#f0f4fb}
+.opt.correct{border-color:var(--green);background:var(--green-bg);color:var(--green)}
+.opt.wrong{border-color:var(--accent);background:var(--red-bg);color:var(--accent)}
+.opt.reveal{border-color:var(--green);background:var(--green-bg);color:var(--green)}
+.opt:disabled{cursor:default}
+
+.explanation{display:none;margin-top:14px;padding:16px 18px;background:var(--bg);
+  border-radius:8px;font-size:13px;line-height:1.75;border:1px solid var(--border)}
+.explanation.show{display:block}
+.explanation strong{color:var(--accent2)}
+.exp-trap{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);
+  font-size:12px;color:var(--amber);font-style:italic}
+
+.next-btn{margin-top:14px;padding:11px 24px;background:var(--accent2);color:white;border:none;
+  border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;
+  cursor:pointer;display:none}
+.next-btn.show{display:block}
+.next-btn:hover{background:#153f7a}
+
+/* DONE */
+.done{text-align:center;padding:60px 20px}
+.done h2{font-family:'Source Serif 4',serif;font-size:40px;font-weight:600;margin-bottom:8px}
+.done-pct{font-size:64px;font-weight:700;font-family:'DM Sans',sans-serif;margin-bottom:4px}
+.done-sub{color:var(--muted);margin-bottom:32px}
+.done-grid{display:flex;gap:16px;justify-content:center;margin-bottom:32px;flex-wrap:wrap}
+.done-box{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:18px 24px;text-align:center}
+.done-box-n{font-size:32px;font-weight:700}
+.done-box-l{font-size:12px;color:var(--muted);margin-top:2px}
+.btn-again{padding:13px 32px;background:var(--accent2);color:white;border:none;border-radius:8px;
+  font-family:'DM Sans',sans-serif;font-weight:600;font-size:15px;cursor:pointer;margin:0 6px}
+.btn-again:hover{background:#153f7a}
+.btn-again.outline{background:transparent;color:var(--muted);border:1px solid var(--border)}
+.btn-again.outline:hover{border-color:var(--accent2);color:var(--accent2)}
+
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.vig-card{animation:slideUp .25s ease}
+
+.prog{height:3px;background:var(--border);margin:0 40px 0;border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--tag-valve));transition:width .35s}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Clinical Vignette Identifier</h1>
+  <p>NBME-style clinical scenarios — read the case, identify the diagnosis or next best step</p>
+</header>
+
+<div class="controls">
+  <span style="font-size:12px;color:var(--muted)">Topic:</span>
+  <button class="filter-btn on" data-t="all" onclick="setFilter(this)">All</button>
+  <button class="filter-btn" data-t="chd" onclick="setFilter(this)">Congenital HD</button>
+  <button class="filter-btn" data-t="mi" onclick="setFilter(this)">MI & Ischemia</button>
+  <button class="filter-btn" data-t="valve" onclick="setFilter(this)">Valvular Disease</button>
+  <button class="filter-btn" data-t="cm" onclick="setFilter(this)">Cardiomyopathy/HF</button>
+  <div class="score-disp">Score: <strong id="sc">0/0</strong></div>
+</div>
+<div class="prog" style="margin-top:2px"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="main" id="main"></div>
+
+<script>
+const VIGNETTES=[
+/* CHD */
+{t:'chd',diff:'medium',
+vignette:`A <span class="vig-key">3-week-old infant</span> presents with increasing cyanosis, poor feeding, and tachypnea. The mother had <span class="vig-key">poorly controlled gestational diabetes</span>. On exam, the infant is deeply cyanotic. <span class="vig-key">Oxygen administration does not significantly improve saturation.</span> Echocardiogram shows the aorta arising from the right ventricle and the pulmonary artery from the left ventricle. There is a small patent foramen ovale.`,
+q:"What is the most appropriate immediate management?",
+opts:["Surgical repair in the operating room today","Indomethacin to close the PDA","Administer prostaglandin E1 (PGE1) to maintain ductal patency","Balloon atrial septostomy tomorrow after stabilization"],
+ans:2,
+exp:`<strong>PGE1</strong> keeps the PDA open, allowing oxygenated and deoxygenated blood to mix — essential for survival in TGA. The aorta from RV + PA from LV creates parallel circuits. Without mixing, the infant dies. PGE1 is the immediate bridge to surgical repair (arterial switch operation). <strong>Indomethacin closes PDA</strong> — the opposite of what's needed here.`,
+trap:`TRAP: The question tests whether you know PGE1 OPENS (not closes) the PDA. Indomethacin is a classic distractor here.`},
+
+{t:'chd',diff:'medium',
+vignette:`A <span class="vig-key">5-year-old boy</span> is brought for evaluation of a heart murmur. He has been <span class="vig-key">active and asymptomatic</span>. On examination, there is a <span class="vig-key">wide, fixed split S2</span> that does not vary with respiration, and a soft <span class="vig-key">systolic ejection murmur at the left upper sternal border</span>. Echocardiogram reveals a defect in the atrial septum with left-to-right shunting. Right atrium and right ventricle are mildly enlarged.`,
+q:"What is the source of the systolic murmur in this patient?",
+opts:["Blood flowing through the atrial septal defect","Turbulent flow across the pulmonary valve from increased volume","Aortic valve stenosis","Mitral regurgitation from annular dilation"],
+ans:1,
+exp:`The ASD itself is <strong>silent</strong>. The SEM at LUSB is from <strong>increased flow across the pulmonary valve</strong> — the L→R shunt recirculates blood through the lungs, increasing pulmonary valve flow and creating a flow murmur. The wide, FIXED split S2 (P2 delayed from ↑ RV stroke volume, fixed because ASD prevents differential filling) is the hallmark.`,
+trap:`TRAP: Students often think the murmur IS from blood crossing the defect. The ASD is silent — the murmur is from downstream pulmonary valve flow.`},
+
+{t:'chd',diff:'hard',
+vignette:`A <span class="vig-key">24-year-old woman</span> is seen for progressive dyspnea and decreasing exercise tolerance over the past 2 years. She was told she had a "small hole in her heart" as a child that was not repaired. She is now noted to have <span class="vig-key">cyanosis and clubbing</span>. Echo shows a <span class="vig-key">large VSD with right-to-left shunting</span> and severe pulmonary hypertension. RV pressure equals systemic pressure.`,
+q:"Which of the following is the most appropriate management?",
+opts:["Urgent surgical VSD closure to restore left-to-right flow","Medical management only; surgical closure is now contraindicated","Indomethacin to reduce pulmonary vascular resistance","Diuretics alone to reduce preload"],
+ans:1,
+exp:`<strong>Eisenmenger syndrome</strong>: long-standing L→R shunt → pulmonary HTN → RV pressure = systemic → shunt reverses to R→L → cyanosis + clubbing. At this stage, surgical closure is <strong>CONTRAINDICATED</strong> — the VSD is now acting as a "pop-off valve." Closing it would leave the RV facing full systemic pressure with no escape, causing acute RV failure and death. Medical management + lung/heart-lung transplant are the options.`,
+trap:`TRAP: The instinct is to "fix the hole," but once Eisenmenger is established, closing the defect is dangerous.`},
+
+{t:'chd',diff:'easy',
+vignette:`A <span class="vig-key">2-year-old boy</span> undergoes echocardiography for a murmur. At birth, a small muscular ventricular septal defect was identified. <span class="vig-key">Today, the murmur is absent</span>. Echocardiogram shows <span class="vig-key">no flow defect between the ventricles</span>. Parents ask what caused the defect to disappear.`,
+q:"Which cell type is primarily responsible for closure of this defect?",
+opts:["Endothelial cells","Cardiomyocytes","Fibroblasts","Smooth muscle cells"],
+ans:2,
+exp:`<strong>Fibroblasts</strong> proliferate into the muscular VSD → scar tissue fills the defect → spontaneous closure. This is most common with small muscular VSDs and often occurs in the first few years of life. Membranous VSDs are less likely to close spontaneously.`,
+trap:`TRAP: "Endothelial cells" is the tempting wrong answer because they line the heart. Fibroblasts are the scar-forming cells responsible for closure.`},
+
+/* MI */
+{t:'mi',diff:'easy',
+vignette:`A <span class="vig-key">58-year-old man</span> with hypertension and a 30-pack-year smoking history presents with <span class="vig-key">crushing substernal chest pain radiating to the left arm</span> for 45 minutes. He is diaphoretic and nauseated. ECG shows <span class="vig-key">ST elevations in leads V1–V4</span>. Troponin is elevated.`,
+q:"Which coronary artery is most likely occluded?",
+opts:["Right coronary artery","Left circumflex artery","Left anterior descending artery","Left main coronary artery"],
+ans:2,
+exp:`V1–V4 ST elevations = <strong>anterior STEMI → LAD occlusion</strong>. LAD supplies the anterior wall and anterior septum. RCA → II/III/aVF (inferior). LCx → I/aVL (lateral). LAD is often called the "widow-maker" because anterior MIs involve the largest muscle mass.`,
+trap:`TRAP: LCx goes to lateral leads (I, aVL). RCA goes to inferior leads (II, III, aVF). V1–V4 = anterior = LAD.`},
+
+{t:'mi',diff:'hard',
+vignette:`A <span class="vig-key">65-year-old man</span> had a transmural anterior MI 5 days ago and was discharged after PCI. He now presents with <span class="vig-key">sudden severe hypotension and elevated jugular venous pressure</span>. Heart sounds are muffled. ECG shows <span class="vig-key">low voltage and electrical alternans</span>. His troponin is not re-elevated.`,
+q:"What is the most likely cause of his current presentation?",
+opts:["Reinfarction with new ST elevation","Left ventricular free wall rupture causing cardiac tamponade","Dressler syndrome","Acute mitral regurgitation from papillary muscle rupture"],
+ans:1,
+exp:`<strong>Beck's triad</strong> (hypotension + JVD + muffled heart sounds) + <strong>electrical alternans + low voltage</strong> = cardiac tamponade. The timing (5 days post-MI) and absence of new troponin elevation point to <strong>free wall rupture</strong> → hemopericardium → tamponade. Treatment: urgent pericardiocentesis. Electrical alternans = swinging heart in fluid.`,
+trap:`TRAP: New troponin elevation would suggest reinfarction. Muffled sounds + JVD + hypotension without crackles = tamponade (not HF).`},
+
+{t:'mi',diff:'medium',
+vignette:`A <span class="vig-key">70-year-old woman</span> had a large inferior MI 4 days ago. Today she develops <span class="vig-key">acute severe dyspnea and pulmonary edema</span>. On exam, a new <span class="vig-key">harsh holosystolic murmur is heard at the left lower sternal border</span> with a thrill. She has no previous murmur.`,
+q:"Which of the following complications has most likely occurred?",
+opts:["Papillary muscle rupture causing acute mitral regurgitation","Ventricular septal rupture causing acute VSD","Ventricular aneurysm","Dressler syndrome"],
+ans:1,
+exp:`<strong>Left lower sternal border holosystolic murmur + thrill</strong> = septal rupture → <strong>acute VSD</strong>. This creates a new L→R shunt → right heart overload → pulmonary edema. Key distinction: Papillary muscle rupture → <strong>apex + axilla radiation</strong> (acute MR). Septal rupture → <strong>LLSB</strong> (acute VSD). Both occur at 3–7 days.`,
+trap:`TRAP: Both papillary rupture (MR) and septal rupture (VSD) are holosystolic murmurs post-MI. LOCATION is the differentiator: LLSB = VSD; apex/axilla = MR.`},
+
+{t:'mi',diff:'medium',
+vignette:`A <span class="vig-key">55-year-old man</span> presents with <span class="vig-key">chest pain that began 6 hours ago</span> during a meeting at work. The pain is 8/10 in severity, squeezing, radiating to the jaw. He describes similar but milder pain episodes over the past 3 weeks that always resolved with rest. Today's pain has not resolved. ECG shows <span class="vig-key">ST depressions in V4–V6</span>. Troponin is <span class="vig-key">positive (elevated)</span>.`,
+q:"What is the most accurate diagnosis?",
+opts:["Stable angina","Unstable angina","NSTEMI","STEMI"],
+ans:2,
+exp:`<strong>NSTEMI</strong>: rest pain + <strong>positive troponin</strong> + ST depressions (not elevation) = subendocardial infarct from partial/non-occlusive thrombosis. If troponin were negative, this would be unstable angina. STEMI requires ST elevation. The 3-week history of exertional pain suggests a vulnerable plaque that finally ruptured.`,
+trap:`TRAP: Positive troponin = infarction (not just unstable angina). ST depression = NSTEMI (subendocardial). ST elevation = STEMI (transmural).`},
+
+/* VALVE */
+{t:'valve',diff:'medium',
+vignette:`A <span class="vig-key">68-year-old man</span> has had progressive exertional dyspnea for 1 year. He denies chest pain. On exam, pulse is <span class="vig-key">weak and delayed</span>. There is a <span class="vig-key">harsh crescendo-decrescendo systolic murmur best heard at the right upper sternal border, radiating to both carotids</span>. Echo shows a <span class="vig-key">heavily calcified tricuspid aortic valve</span> with a peak gradient of 65 mmHg.`,
+q:"What is the expected finding on LV pathology in this patient?",
+opts:["LV dilation with thin walls (eccentric hypertrophy)","Normal LV wall thickness and cavity size","LV hypertrophy with thick walls and reduced cavity size (concentric hypertrophy)","Left atrial enlargement without LV changes"],
+ans:2,
+exp:`Aortic stenosis → <strong>LV outflow obstruction</strong> → <strong>pressure overload</strong> → <strong>concentric LVH</strong> (thick walls + reduced cavity). Compare to volume overload (AR, MR) → eccentric hypertrophy (dilated LV, thin walls). The murmur characteristics (RUSB, radiating to carotids, crescendo-decrescendo) + pulsus parvus et tardus confirm AS.`,
+trap:`TRAP: "Dilation" is the wrong pattern — that's volume overload (AR/MR). Stenosis = pressure overload = concentric = thick walls.`},
+
+{t:'valve',diff:'hard',
+vignette:`A <span class="vig-key">35-year-old woman</span> presents with progressive dyspnea and palpitations. History is significant for <span class="vig-key">rheumatic fever at age 12</span>. On exam, S1 is accentuated. A <span class="vig-key">high-pitched sound is heard shortly after S2</span>, followed by a <span class="vig-key">low-pitched rumbling sound at the cardiac apex</span>. ECG shows <span class="vig-key">atrial fibrillation</span>. CXR shows <span class="vig-key">left atrial enlargement</span> with straightening of the left heart border.`,
+q:"The opening snap in this patient is best explained by which mechanism?",
+opts:["Tensing of elongated chordae tendineae during systole","Abrupt tensing of fused, domed mitral leaflets as LA pressure opens them in early diastole","Calcification of the aortic valve leaflets causing an ejection click","Ventricular filling sound from volume overload"],
+ans:1,
+exp:`The <strong>opening snap</strong> is caused by abrupt tensing of the fused, domed (stenotic) mitral leaflets as the elevated LA pressure suddenly opens them in early diastole. This is specific to <strong>mitral stenosis</strong>. The OS + diastolic rumble + rheumatic history + LA dilation + AFib = classic MS. <strong>Key rule</strong>: OS closer to S2 = higher LA pressure = more severe stenosis.`,
+trap:`TRAP: Elongated chordae = MVP. That causes the mid-systolic click, NOT the opening snap. The opening snap is unique to mitral stenosis.`},
+
+{t:'valve',diff:'easy',
+vignette:`A <span class="vig-key">22-year-old woman</span> is found to have a heart murmur on routine exam. She is <span class="vig-key">asymptomatic</span>. On auscultation, a <span class="vig-key">mid-systolic click</span> is followed by a brief late systolic murmur at the apex. When she stands up from a squatting position, <span class="vig-key">the click moves earlier in systole</span>.`,
+q:"What is the underlying pathological process in this patient's valve?",
+opts:["Commissural fusion from prior rheumatic fever","Calcification of the aortic valve fibrosa layer","Myxomatous degeneration causing spongiosa expansion and fibrosa thinning","Immune complex deposition from SLE"],
+ans:2,
+exp:`<strong>Myxomatous degeneration</strong>: the spongiosa layer accumulates proteoglycans → expands → mechanically thins the fibrosa → redundant, floppy leaflets → mitral valve prolapse. The mid-systolic click (chordae tension at prolapse limit) + late systolic murmur = classic MVP. Standing ↓ LV volume → leaflets prolapse sooner → click EARLIER.`,
+trap:`TRAP: "Commissural fusion" = rheumatic MS (opening snap + diastolic rumble). "Calcification of fibrosa" = calcific AS. The click is MVP until proven otherwise.`},
+
+{t:'valve',diff:'hard',
+vignette:`A <span class="vig-key">45-year-old man with IV drug use</span> presents with a <span class="vig-key">2-day history of high fever and rigors</span>. On exam, he has <span class="vig-key">painless erythematous macules on his palms</span> and <span class="vig-key">painful nodules on his finger pads</span>. Echocardiogram shows <span class="vig-key">large, bulky, mobile vegetations on the tricuspid valve</span> with evidence of leaflet destruction. CT chest shows <span class="vig-key">multiple cavitary pulmonary nodules</span>.`,
+q:"Which test result is most likely to confirm the diagnosis?",
+opts:["Elevated anti-streptolysin O (ASO) titer","Positive ANCA serology","Positive blood cultures for Staphylococcus aureus","Elevated anti-dsDNA antibodies"],
+ans:2,
+exp:`IV drug use + tricuspid valve + large destructive vegetations + <strong>septic pulmonary emboli</strong> (cavitary lung nodules) = <strong>right-sided acute IE from Staph aureus</strong>. Positive blood cultures confirm. Janeway lesions (painless macules = septic emboli). Osler nodes (painful finger nodules = immune complexes). ASO = rheumatic fever. ANCA = vasculitis. dsDNA = SLE.`,
+trap:`TRAP: ASO titer is the classic distractor for cardiac disease. It indicates prior GAS infection → rheumatic fever, NOT infective endocarditis.`},
+
+/* CARDIOMYOPATHY/HF */
+{t:'cm',diff:'medium',
+vignette:`A <span class="vig-key">19-year-old male basketball player</span> collapses on the court during practice and is resuscitated from ventricular fibrillation. His father died suddenly at age 35. On exam after recovery, he has a <span class="vig-key">harsh systolic murmur at the left sternal border</span> that <span class="vig-key">increases in intensity when he stands up</span>. Echo shows <span class="vig-key">asymmetric septal hypertrophy</span> with a septum-to-wall ratio of 4:1.`,
+q:"What is the most likely genetic mutation responsible for this condition?",
+opts:["TTN (titin) gene mutation causing sarcomere structural failure","β-myosin heavy chain gene mutation causing myofiber disarray","Desmosomal protein mutation causing fat/fibrosis replacement of RV","FBN1 (fibrillin-1) mutation causing connective tissue fragility"],
+ans:1,
+exp:`<strong>HCM</strong>: young athlete + SCD + asymmetric septal hypertrophy + murmur LOUDER with Valsalva/standing = classic. Most common genetic cause is <strong>β-myosin heavy chain (MYH7) or MYBPC3</strong> mutation → sarcomere dysfunction → myofiber disarray + interstitial fibrosis. TTN = DCM (dilated, low EF). Desmosomal = ARVC (RV disease). FBN1 = Marfan.`,
+trap:`TRAP: TTN (titin) mutation causes DCM — dilated, low EF. HCM is β-myosin heavy chain. Don't mix them up.`},
+
+{t:'cm',diff:'hard',
+vignette:`A <span class="vig-key">55-year-old man</span> with a history of <span class="vig-key">multiple myeloma</span> presents with progressive dyspnea and bilateral lower extremity edema. Echo shows <span class="vig-key">thickened myocardium with a "granular sparkling" appearance</span>, mildly reduced EF, and <span class="vig-key">biatrial dilation</span>. BNP is markedly elevated. Cardiac MRI shows diffuse subendocardial late gadolinium enhancement.`,
+q:"Which stain would confirm the underlying diagnosis on endomyocardial biopsy?",
+opts:["Prussian blue (for iron)","PAS stain (for glycogen)","Congo red (for amyloid)","Hematoxylin and eosin only"],
+ans:2,
+exp:`Multiple myeloma → AL amyloidosis → <strong>cardiac amyloidosis</strong> → restrictive cardiomyopathy. Echocardiographic "sparkling" (granular) myocardium + biatrial dilation + elevated BNP + MRI late gadolinium = classic. <strong>Congo red stain → apple-green birefringence under polarized light</strong> = gold standard for amyloid. Prussian blue = hemochromatosis (iron). PAS = glycogen storage diseases.`,
+trap:`TRAP: "Apple-green birefringence" is the classic pathology buzzword for amyloid. Prussian blue is for hemochromatosis.`},
+
+{t:'cm',diff:'medium',
+vignette:`A <span class="vig-key">62-year-old man</span> with a history of <span class="vig-key">well-controlled hypertension</span> presents with dyspnea on exertion. On exam, he has crackles at both lung bases and a <span class="vig-key">prominent S4 gallop</span>. Echo shows <span class="vig-key">concentric LV hypertrophy with an EF of 60%</span> and impaired diastolic filling on tissue Doppler.`,
+q:"What is the underlying hemodynamic abnormality?",
+opts:["Impaired LV contractility causing reduced ejection fraction","Stiff, noncompliant LV causing impaired diastolic filling at normal EF","Mitral stenosis reducing LV filling","RV failure causing pulmonary edema"],
+ans:1,
+exp:`<strong>HFpEF</strong> (heart failure with preserved EF): hypertensive concentric LVH → stiff ventricle → impaired relaxation → diastolic dysfunction. EF is NORMAL (60%) but the ventricle is stiff. S4 gallop = blood hitting stiff ventricle at end-diastole (atrial kick). Crackles = pulmonary edema from elevated LV filling pressures.`,
+trap:`TRAP: Normal EF does NOT mean normal heart function. HFpEF is defined by preserved EF + diastolic dysfunction. Students miss this.`},
+
+{t:'cm',diff:'medium',
+vignette:`A <span class="vig-key">38-year-old woman</span> presents 3 months after delivering her first child with worsening dyspnea, orthopnea, and bilateral leg swelling. Prior to delivery she had been entirely healthy with no cardiac history. Echo shows a <span class="vig-key">dilated LV with EF of 25%</span> and global hypokinesis. No coronary artery disease on cath.`,
+q:"What is the most likely diagnosis?",
+opts:["Hypertrophic cardiomyopathy","Peripartum cardiomyopathy","Dilated cardiomyopathy from viral myocarditis","Restrictive cardiomyopathy from amyloidosis"],
+ans:1,
+exp:`<strong>Peripartum cardiomyopathy</strong>: dilated CMP presenting in the <strong>last month of pregnancy to 5 months postpartum</strong>. Low EF + clean coronaries + no prior cardiac history + recent delivery = classic. Multifactorial (volume overload, autoimmune, hormonal). Treated as HFrEF with GDMT.`,
+trap:`TRAP: Timing is key — 3 months postpartum still falls within the peripartum CMP window (up to 5 months postpartum). Don't assume it must be idiopathic viral DCM.`},
+];
+
+let deck=[], idx=0, score=0, answered=false, activeFilter='all';
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function setFilter(btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  activeFilter=btn.dataset.t;
+  restart();
+}
+
+function buildDeck(){
+  const d=activeFilter==='all'?[...VIGNETTES]:VIGNETTES.filter(v=>v.t===activeFilter);
+  return shuffle(d);
+}
+
+function restart(){deck=buildDeck();idx=0;score=0;render();}
+
+const TAG_STYLES={
+  chd:'background:#e8eef8;color:#1b4a8a',mi:'background:#fdf0ed;color:#b5451b',
+  valve:'background:#f3eef9;color:#5a2d9a',cm:'background:#eaf5ef;color:#1a7040'};
+const TAG_NAMES={chd:'Congenital HD',mi:'MI & Ischemia',valve:'Valvular',cm:'Cardiomyopathy/HF'};
+
+function render(){
+  const m=document.getElementById('main');
+  if(idx>=deck.length){showDone();return}
+  const v=deck[idx]; answered=false;
+  const pct=Math.round(idx/deck.length*100);
+  document.getElementById('pf').style.width=pct+'%';
+  document.getElementById('sc').textContent=`${score}/${idx}`;
+
+  const diffMap={easy:'diff-easy',medium:'diff-med',hard:'diff-hard'};
+  m.innerHTML=`
+  <div class="vig-card">
+    <div class="vig-meta">
+      <span class="vig-num">Case ${idx+1} of ${deck.length}</span>
+      <span class="vig-tag" style="${TAG_STYLES[v.t]||''}">${TAG_NAMES[v.t]||v.t}</span>
+      <span class="diff-badge ${diffMap[v.diff]||'diff-med'}">${v.diff.charAt(0).toUpperCase()+v.diff.slice(1)}</span>
+    </div>
+    <div class="vignette">${v.vignette}</div>
+    <div class="vig-q">${v.q}</div>
+    <div class="opts" id="opts">
+      ${v.opts.map((o,i)=>`<button class="opt" onclick="answer(this,${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}
+    </div>
+    <div class="explanation" id="exp"></div>
+    <button class="next-btn" id="nb" onclick="next()">${idx+1<deck.length?'Next Case →':'See Results'}</button>
+  </div>`;
+}
+
+function answer(btn,chosen){
+  if(answered) return; answered=true;
+  const v=deck[idx];
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.opt')[v.ans].classList.add('reveal');
+  const exp=document.getElementById('exp');
+  if(chosen===v.ans){
+    btn.classList.add('correct'); score++;
+    exp.className='explanation show';
+    exp.style.borderLeft='3px solid var(--green)';
+    exp.innerHTML=`<strong style="color:var(--green)">✓ Correct!</strong><br>${v.exp}${v.trap?`<div class="exp-trap">⚠️ ${v.trap}</div>`:''}`;
+  } else {
+    btn.classList.add('wrong');
+    exp.className='explanation show';
+    exp.style.borderLeft='3px solid var(--accent)';
+    const correct=String.fromCharCode(65+v.ans);
+    exp.innerHTML=`<strong style="color:var(--accent)">✗ The answer is ${correct}.</strong><br>${v.exp}${v.trap?`<div class="exp-trap">⚠️ ${v.trap}</div>`:''}`;
+  }
+  document.getElementById('nb').classList.add('show');
+  document.getElementById('sc').textContent=`${score}/${idx+1}`;
+}
+
+function next(){idx++;render();}
+
+function showDone(){
+  const pct=Math.round(score/deck.length*100);
+  const msg=pct>=85?'🎉 Excellent clinical reasoning!':pct>=70?'💪 Strong performance!':pct>=55?'📖 Keep drilling!':'📚 Review these topics carefully';
+  document.getElementById('pf').style.width='100%';
+  document.getElementById('main').innerHTML=`
+  <div class="done">
+    <h2>Cases Complete</h2>
+    <div class="done-pct" style="color:${pct>=70?'var(--green)':pct>=55?'var(--amber)':'var(--accent)'}">${pct}%</div>
+    <div class="done-sub">${score} of ${deck.length} correct</div>
+    <div style="font-size:18px;font-weight:600;margin-bottom:24px">${msg}</div>
+    <div class="done-grid">
+      <div class="done-box"><div class="done-box-n" style="color:var(--green)">${score}</div><div class="done-box-l">Correct</div></div>
+      <div class="done-box"><div class="done-box-n" style="color:var(--accent)">${deck.length-score}</div><div class="done-box-l">Incorrect</div></div>
+      <div class="done-box"><div class="done-box-n" style="color:var(--accent2)">${deck.length}</div><div class="done-box-l">Total Cases</div></div>
+    </div>
+    <button class="btn-again" onclick="restart()">Restart Cases</button>
+    <button class="btn-again outline" onclick="setFilter(document.querySelector('[data-t=\\'all\\']'))">All Topics</button>
+  </div>`;
+}
+
+restart();
+</script>
+</body>
+</html>

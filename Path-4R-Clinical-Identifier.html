@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rapid-Fire Association Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0e12;
+  --card: #16161c;
+  --card2: #1e1e26;
+  --border: #2a2a38;
+  --text: #f0f0f8;
+  --muted: #7070a0;
+  --accent: #7c6af5;
+  --green: #3ddc84;
+  --red: #ff5b5b;
+  --amber: #ffb347;
+  --blue: #4db8ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+
+/* HEADER */
+.hdr{padding:20px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.06em;color:var(--accent)}
+.hdr-sub{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* TOPIC SELECTOR */
+.topic-sel{padding:16px 28px;border-bottom:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap}
+.t-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;
+  color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:.15s}
+.t-btn.on{color:#fff;border-color:var(--accent);background:rgba(124,106,245,.18)}
+.t-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* MAIN GAME AREA */
+.game{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px}
+
+/* START SCREEN */
+.start-screen{text-align:center;max-width:520px}
+.start-screen h2{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:.06em;line-height:1;margin-bottom:12px}
+.start-screen h2 span{color:var(--accent)}
+.start-screen p{color:var(--muted);font-size:15px;line-height:1.6;margin-bottom:32px}
+.how-to{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:left;margin-bottom:28px}
+.how-to h3{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.how-to li{font-size:13px;color:var(--muted);margin-bottom:6px;padding-left:4px;list-style:none}
+.how-to li::before{content:"→ ";color:var(--accent)}
+
+/* PLAY AREA */
+.play{width:100%;max-width:640px}
+.score-row{display:flex;align-items:center;gap:16px;margin-bottom:28px;flex-wrap:wrap}
+.score-chip{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:13px;font-weight:500}
+.score-chip span{font-family:'Bebas Neue',sans-serif;font-size:22px;margin-right:4px}
+.score-chip.green span{color:var(--green)}
+.score-chip.red span{color:var(--red)}
+.score-chip.blue span{color:var(--blue)}
+.streak{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--amber)}
+.streak span{font-family:'Bebas Neue',sans-serif;font-size:22px}
+
+.q-tag{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:4px;margin-bottom:16px;display:inline-block}
+.q-stem{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:.03em;line-height:1.25;margin-bottom:8px;color:var(--text)}
+.q-hint{font-size:13px;color:var(--muted);margin-bottom:24px;font-style:italic}
+
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.choice{background:var(--card);border:2px solid var(--border);border-radius:10px;padding:14px 16px;
+  font-size:14px;font-weight:500;cursor:pointer;text-align:left;transition:.15s;color:var(--text);
+  font-family:'DM Sans',sans-serif;line-height:1.4}
+.choice:hover{border-color:var(--accent);background:rgba(124,106,245,.08)}
+.choice.correct{border-color:var(--green)!important;background:rgba(61,220,132,.12)!important;color:var(--green)}
+.choice.wrong{border-color:var(--red)!important;background:rgba(255,91,91,.12)!important;color:var(--red)}
+.choice.reveal{border-color:var(--green)!important;background:rgba(61,220,132,.08)!important;color:var(--green)}
+.choice:disabled{cursor:default}
+
+.feedback-box{background:var(--card2);border-radius:10px;padding:16px;font-size:13px;line-height:1.7;margin-top:4px;display:none}
+.feedback-box.show{display:block}
+.feedback-box.ok{border-left:3px solid var(--green)}
+.feedback-box.no{border-left:3px solid var(--red)}
+.feedback-box strong{color:var(--accent)}
+
+.next-btn{margin-top:14px;padding:13px;width:100%;background:var(--accent);color:#fff;border:none;
+  border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.06em;
+  cursor:pointer;display:none;transition:.15s}
+.next-btn.show{display:block}
+.next-btn:hover{background:#9080ff}
+
+/* DONE SCREEN */
+.done-screen{text-align:center;max-width:500px}
+.done-score{font-family:'Bebas Neue',sans-serif;font-size:100px;letter-spacing:.04em;line-height:1;margin-bottom:8px}
+.done-label{font-size:15px;color:var(--muted);margin-bottom:28px}
+.done-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:28px}
+.done-box{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
+.done-box-num{font-family:'Bebas Neue',sans-serif;font-size:36px}
+.done-box-lbl{font-size:11px;color:var(--muted);margin-top:2px}
+.done-msg{font-size:18px;font-weight:600;margin-bottom:6px}
+
+/* BTN */
+.btn-start{padding:14px 40px;background:var(--accent);color:#fff;border:none;border-radius:10px;
+  font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.06em;cursor:pointer;transition:.15s}
+.btn-start:hover{background:#9080ff}
+.btn-outline{padding:12px 28px;background:transparent;color:var(--muted);border:1px solid var(--border);
+  border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;transition:.15s;margin:0 6px}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+
+@keyframes pop{0%{transform:scale(.95);opacity:0}100%{transform:scale(1);opacity:1}}
+.play{animation:pop .2s ease}
+
+/* progress bar */
+.prog-wrap{height:3px;background:var(--border);border-radius:2px;margin-bottom:24px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--blue));transition:width .3s ease}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div><div class="hdr-title">Rapid-Fire X → Y</div><div class="hdr-sub">Self-paced association drill</div></div>
+  <div style="display:flex;gap:8px">
+    <button class="btn-outline" id="restart-btn" onclick="showStart()" style="display:none">↩ Restart</button>
+  </div>
+</div>
+
+<div class="topic-sel" id="topic-sel">
+  <span style="font-size:12px;color:var(--muted);align-self:center;margin-right:4px">Filter:</span>
+  <button class="t-btn on" data-t="all" onclick="toggleTopic(this)">All Topics</button>
+  <button class="t-btn" data-t="chd" onclick="toggleTopic(this)">Congenital HD</button>
+  <button class="t-btn" data-t="mi" onclick="toggleTopic(this)">MI & Ischemia</button>
+  <button class="t-btn" data-t="valve" onclick="toggleTopic(this)">Valvular</button>
+  <button class="t-btn" data-t="cm" onclick="toggleTopic(this)">Cardiomyopathy/HF</button>
+</div>
+
+<div class="game" id="game">
+  <!-- populated by JS -->
+</div>
+
+<script>
+const ALL = [
+/* CHD */
+{s:"Fixed split S2",a:"ASD",t:"chd",e:"P2 closure delayed from ↑ RV stroke volume — fixed regardless of respiration. SEM at LUSB = from ↑ pulmonary valve flow, NOT the defect."},
+{s:"Continuous machine-like murmur + bounding pulses",a:"PDA",t:"chd",e:"Aorta → PA shunt. Wide pulse pressure. Close with indomethacin. Keep open with PGE1."},
+{s:"Cyanotic child who squats to relieve symptoms",a:"Tetralogy of Fallot",t:"chd",e:"Squatting ↑ SVR → more blood to lungs → less cyanosis. Severity = degree of pulmonic stenosis. PROVe mnemonic."},
+{s:"Immediate cyanosis at birth, no murmur",a:"Transposition of Great Arteries (TGA)",t:"chd",e:"Parallel circuits. PGE1 to keep PDA open for mixing. Maternal diabetes association."},
+{s:"Upper extremity HTN + weak femoral pulses + rib notching",a:"Coarctation of the Aorta",t:"chd",e:"Turner syndrome + bicuspid AV + Berry aneurysms associated. LV pressure overload → LVH → LHF."},
+{s:"Down syndrome + cardiac defect",a:"Endocardial cushion defect (AV canal)",t:"chd",e:"Inlet VSD + ASD + valve abnormality. Caused by autosomal trisomy 21. Not gestational DM."},
+{s:"DiGeorge (22q11 deletion) + cardiac defect",a:"Conotruncal defects (ToF, truncus arteriosus)",t:"chd",e:"CATCH-22: Cardiac + Abnormal face + Thymic aplasia + Cleft palate + Hypocalcemia."},
+{s:"L→R shunt that develops pulmonary HTN and reverses",a:"Eisenmenger Syndrome",t:"chd",e:"RV pressure eventually exceeds LV → R→L shunt → late cyanosis. IRREVERSIBLE — surgical closure contraindicated."},
+{s:"PGE1 drug effect on PDA",a:"OPENS / keeps PDA patent",t:"chd",e:"Prostaglandin E1 maintains ductal patency for ductus-dependent lesions. Indomethacin CLOSES PDA."},
+{s:"R→L shunt → unique infection complication",a:"Brain abscess",t:"chd",e:"Blood bypasses pulmonary filter → bacteria reach brain directly."},
+{s:"Williams-Beuren (7q11) + cardiac defect",a:"Supravalvular aortic + pulmonary stenosis",t:"chd",e:"Elastin gene deletion. 'Elfin facies,' hypercalcemia, intellectual disability."},
+{s:"TAPVR — core hemodynamic defect",a:"All pulmonary veins drain to RA → small LA → cyanosis at birth",t:"chd",e:"CXR: 'snowman' appearance. Patent foramen ovale necessary for survival."},
+{s:"ASD — why does the murmur occur?",a:"Increased pulmonary valve flow (NOT from the defect itself)",t:"chd",e:"ASD itself is silent. The SEM at LUSB comes from blood flowing across the pulmonary valve."},
+{s:"ToF severity is determined by",a:"Degree of pulmonary stenosis",t:"chd",e:"More PS = more R→L shunting = more cyanosis. 'Tet spells' worsen with crying/exertion."},
+/* MI */
+{s:"Most common early cause of death post-MI (<24h)",a:"Ventricular fibrillation (arrhythmia)",t:"mi",e:"EARLY = ELECTRICAL. Ischemia → electrical instability → V-fib. Structural ruptures occur 3–7 days later."},
+{s:"Dominant cell 1–3 days post-MI",a:"Neutrophils",t:"mi",e:"N for Neutrophils (1–3 days). M for Macrophages (3–7 days). Macrophages = max rupture risk."},
+{s:"Dominant cell 3–7 days post-MI + complication risk",a:"Macrophages → HIGHEST rupture risk",t:"mi",e:"Macrophages digest necrotic tissue before scar forms → wall weakest. Free wall rupture, papillary rupture, septal rupture all peak at 3–7 days."},
+{s:"MI gross appearance at 3–7 days",a:"Soft yellow-tan center + bright red hyperemic border",t:"mi",e:"Most tested gross appearance question. Macrophages creating the yellow softening."},
+{s:"New holosystolic murmur at LLSB 3–5d post-MI",a:"Septal rupture → acute VSD",t:"mi",e:"vs papillary muscle rupture = murmur at apex → axilla. Location is the key differentiator."},
+{s:"New murmur at apex → axilla 3–7d post-MI",a:"Papillary muscle rupture → acute MR",t:"mi",e:"Flash pulmonary edema. Soft murmur despite severe regurgitation (rapid pressure equalization)."},
+{s:"Free wall rupture post-MI → consequence",a:"Cardiac tamponade → sudden death",t:"mi",e:"Hemopericardium → ↑ pericardial pressure → ↓ CO → Beck's triad → sudden death."},
+{s:"Best test for acute MI",a:"Troponin I or T",t:"mi",e:"Rises 3–4h, peaks 24–48h. Most specific cardiac marker."},
+{s:"Best test for detecting reinfarction",a:"CK-MB",t:"mi",e:"CK-MB returns to baseline in ~2 days — allows detection of a new event. Troponin stays elevated too long."},
+{s:"Dressler syndrome — timing and mechanism",a:"2–10 weeks post-MI → autoimmune pericarditis (anti-heart antibodies)",t:"mi",e:"Fever + pericarditis + friction rub. Treat with NSAIDs + colchicine."},
+{s:"LAD occlusion → ECG leads",a:"V1–V4 (anterior STEMI)",t:"mi",e:"LAD supplies anterior wall + anterior septum. 'Widow-maker.'"},
+{s:"RCA occlusion → ECG leads + unique complication",a:"II, III, aVF (inferior STEMI) + risk of AV block",t:"mi",e:"RCA supplies AV node in ~85% of people. Inferior MI → watch for AV block."},
+{s:"Persistent ST elevation weeks after MI",a:"Ventricular aneurysm",t:"mi",e:"Scarred wall bulges outward. Persistent ST elevation ≠ re-infarction. Mural thrombus → embolic stroke risk."},
+{s:"Pericarditis vs STEMI ECG — key difference",a:"Pericarditis = diffuse ST elevation + NO reciprocal changes + PR depression",t:"mi",e:"STEMI = localized + reciprocal depressions. Absence of reciprocal changes = pericarditis."},
+{s:"Stable angina — what is it NOT?",a:"Not an infarction — NO necrosis, NO troponin elevation",t:"mi",e:"Fixed stenosis >70% → demand mismatch. Relieved by rest/nitro. Once troponin rises = NSTEMI."},
+{s:"Prinzmetal angina — mechanism + ECG",a:"Coronary vasospasm → transient ST elevation (not infarction)",t:"mi",e:"Rest pain, often nocturnal. Normal coronaries on cath. More common in Japan. Treat with CCB + nitrates."},
+/* VALVE */
+{s:"Mid-systolic click + late systolic murmur",a:"Mitral Valve Prolapse (MVP)",t:"valve",e:"Myxomatous degen → spongiosa expands → fibrosa thins → floppy leaflets. Valsalva → click EARLIER."},
+{s:"Opening snap + diastolic rumble, no LVH",a:"Mitral Stenosis",t:"valve",e:"LV underfilled → no LVH. LA dilates → AFib → pulmonary HTN → RHF. OS closer to S2 = more severe."},
+{s:"Holosystolic murmur at apex → axilla",a:"Mitral Regurgitation",t:"valve",e:"Volume overload → eccentric LVH. Increases with handgrip/squatting. Axillary radiation = pathognomonic."},
+{s:"Crescendo-decrescendo systolic murmur → carotids",a:"Aortic Stenosis",t:"valve",e:"SAD triad: Syncope → Angina → Dyspnea. Concentric LVH. Pulsus parvus et tardus. RUSB location."},
+{s:"Early diastolic decrescendo at LSB + wide pulse pressure",a:"Aortic Regurgitation",t:"valve",e:"Eccentric LVH. Water-hammer pulse. Wide PP (↑ SBP + ↓ DBP). Acute AR = surgical emergency."},
+{s:"Valsalva → murmur gets LOUDER",a:"HCM (only common murmur that does this)",t:"valve",e:"↓ preload → smaller LV → more dynamic LVOTO → louder. Also MVP click moves EARLIER. All other murmurs soften."},
+{s:"MVP click timing with Valsalva/standing",a:"Click moves EARLIER (prolapse occurs sooner with smaller LV)",t:"valve",e:"↓ LV volume → leaflets prolapse earlier in systole → click earlier. Squatting/handgrip → click moves later."},
+{s:"Valve lesion that does NOT cause LVH",a:"Mitral Stenosis (LV is underfilled)",t:"valve",e:"LA enlarges from backup pressure. LV stays normal because it's not filling properly."},
+{s:"OS–S2 interval in mitral stenosis — shorter means?",a:"More severe stenosis",t:"valve",e:"Higher LA pressure → MV opens earlier in diastole → OS closer to S2."},
+{s:"SAD triad in aortic stenosis",a:"Syncope (~3yr survival), Angina (~5yr), Dyspnea/HF (~1–2yr)",t:"valve",e:"Each symptom marks progressive decompensation from pressure overload."},
+{s:"Inspiration → right-sided murmurs get louder. This is called?",a:"Carvallo sign (for tricuspid regurgitation)",t:"valve",e:"Inspiration ↑ venous return to right heart → right-sided murmurs louder. Specific to TR."},
+{s:"Calcific AS — which valve layer does calcification start in?",a:"Fibrosa layer (dense collagen, outflow side)",t:"valve",e:"Repetitive mechanical stress → dystrophic calcification in Fibrosa. Shares risk factors with atherosclerosis."},
+{s:"Pulsus parvus et tardus",a:"Aortic Stenosis",t:"valve",e:"Weak (parvus) and delayed (tardus) carotid upstroke from fixed LV outflow obstruction."},
+{s:"Libman-Sacks endocarditis — unique feature",a:"Vegetations on BOTH sides of valve (only endocarditis to do this)",t:"valve",e:"SLE → immune complex → fibrinoid necrosis. Sterile, afebrile, negative cultures. Flat vegetations."},
+{s:"NBTE — key embolic feature",a:"Loosely adherent vegetations → highest systemic embolic risk",t:"valve",e:"Small sterile thrombi along lines of closure. Associated with malignancy (especially pancreatic adenocarcinoma)."},
+/* CARDIOMYOPATHY/HF */
+{s:"Most common cardiomyopathy",a:"Dilated CMP (90% of all cardiomyopathies)",t:"cm",e:"Low EF. Systolic dysfunction. 4-chamber dilation. Alcohol, Coxsackie B, doxorubicin, peripartum."},
+{s:"Alcohol + enlarged heart + low EF",a:"Dilated Cardiomyopathy (DCM)",t:"cm",e:"Acetaldehyde direct myocyte toxicity. Reversible if alcohol stopped early."},
+{s:"Young athlete + exertional syncope or SCD",a:"Hypertrophic Cardiomyopathy (HCM)",t:"cm",e:"β-myosin heavy chain or MYBPC3 mutation. Asymmetric septal hypertrophy. Myofiber disarray. Valsalva → louder."},
+{s:"HCM — what NOT to give?",a:"Nitrates, diuretics, vasodilators (↓ preload → worsen LVOTO)",t:"cm",e:"HCM obstruction worsens when LV volume decreases. Treat with beta-blockers or non-DHP CCBs."},
+{s:"Normal EF + diastolic dysfunction + Congo red → apple-green birefringence",a:"Cardiac amyloidosis → restrictive CMP",t:"cm",e:"Stiff non-compliant myocardium impairs filling. Normal wall thickness. Biatrial dilation."},
+{s:"S3 gallop vs S4 gallop",a:"S3 = dilated LV (HFrEF/volume overload). S4 = stiff LV (HFpEF/hypertrophy).",t:"cm",e:"S3 = 'sloshing' into dilated ventricle (early diastole). S4 = blood hitting stiff ventricle (atrial kick)."},
+{s:"BNP — what triggers release and clinical use",a:"Ventricular stretch → released → HF biomarker + monitors severity",t:"cm",e:"Antagonizes RAAS + SNS. Elevated = high filling pressure. Used for diagnosis and monitoring HF."},
+{s:"GDMT 4 pillars for HFrEF",a:"Beta-blocker + ARNI/ACEi/ARB + MRA (spironolactone) + SGLT2i",t:"cm",e:"All four provide survival benefit. Diuretics = symptom relief ONLY (no survival benefit)."},
+{s:"Diuretics in heart failure",a:"Symptom relief ONLY — NO survival benefit",t:"cm",e:"Don't confuse diuretics with GDMT. Loop diuretics (furosemide) reduce congestion but don't change mortality."},
+{s:"Spironolactone contraindication in HF",a:"K+ > 5.0 or eGFR < 30",t:"cm",e:"Risk of hyperkalemia and renal failure. Switch to eplerenone if gynecomastia develops."},
+{s:"Takotsubo syndrome mechanism and reversal",a:"Catecholamine surge → apical LV ballooning → reversible systolic dysfunction",t:"cm",e:"'Broken heart syndrome.' Emotional or physical stress trigger. Fully reversible."},
+{s:"ARVC — gene defect and RV finding",a:"Desmosomal protein mutations → RV wall replaced by fat and fibrosis",t:"cm",e:"Autosomal dominant. Epsilon wave on ECG. RV failure + ventricular arrhythmias + SCD risk."},
+{s:"Peripartum CMP timing",a:"Last month of pregnancy to 5 months postpartum",t:"cm",e:"Not just during pregnancy. Multifactorial. Presents as dilated CMP with low EF."},
+{s:"HFpEF vs HFrEF — EF cutoffs",a:"HFrEF ≤ 40% (systolic). HFpEF ≥ 50% (diastolic). HFmrEF 41–49%.",t:"cm",e:"HFrEF = contractility failure. HFpEF = compliance failure (stiff ventricle — normal EF)."},
+{s:"Most common cause of right-sided heart failure",a:"Left-sided heart failure (back pressure through pulmonary circulation)",t:"cm",e:"Left HF → pulmonary HTN → RV pressure overload → RVH → RHF. Cor pulmonale = lung disease causing RHF."},
+];
+
+let deck=[], idx=0, correct=0, wrong=0, streak=0, maxStreak=0, activeTopics=['all'], answered=false;
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function toggleTopic(btn){
+  const t=btn.dataset.t;
+  if(t==='all'){
+    activeTopics=['all'];
+    document.querySelectorAll('.t-btn').forEach(b=>{b.classList.toggle('on',b.dataset.t==='all')});
+  } else {
+    const allBtn=document.querySelector('[data-t="all"]');
+    allBtn.classList.remove('on');
+    if(btn.classList.contains('on')){
+      btn.classList.remove('on');
+      activeTopics=activeTopics.filter(x=>x!==t);
+      if(!activeTopics.length){activeTopics=['all'];allBtn.classList.add('on')}
+    } else {
+      btn.classList.add('on');
+      activeTopics.push(t);
+    }
+  }
+}
+
+function buildDeck(){
+  let d;
+  if(activeTopics.includes('all')) d=[...ALL];
+  else d=ALL.filter(c=>activeTopics.includes(c.t));
+  return shuffle(d);
+}
+
+function showStart(){
+  document.getElementById('restart-btn').style.display='none';
+  const g=document.getElementById('game');
+  g.innerHTML=`
+  <div class="start-screen">
+    <h2>IF YOU SEE X<br><span>→ THINK Y</span></h2>
+    <p>Self-paced association drill. Read the clue, pick the answer, reveal the explanation at your own speed.</p>
+    <div class="how-to">
+      <h3>How it works</h3>
+      <ul>
+        <li>Read the stem → choose the best answer</li>
+        <li>Get instant feedback with full explanation</li>
+        <li>Move to next when you're ready</li>
+        <li>Filter by topic above before starting</li>
+      </ul>
+    </div>
+    <button class="btn-start" onclick="startGame()">START DRILL</button>
+  </div>`;
+}
+
+function startGame(){
+  deck=buildDeck(); idx=0; correct=0; wrong=0; streak=0; maxStreak=0;
+  document.getElementById('restart-btn').style.display='block';
+  renderQ();
+}
+
+function getTagStyle(t){
+  const map={chd:'background:rgba(77,184,255,.15);color:#4db8ff',mi:'background:rgba(255,91,91,.15);color:#ff5b5b',
+    valve:'background:rgba(124,106,245,.15);color:#7c6af5',cm:'background:rgba(61,220,132,.15);color:#3ddc84'};
+  const name={chd:'Congenital HD',mi:'MI & Ischemia',valve:'Valvular',cm:'Cardiomyopathy/HF'};
+  return {style:map[t]||'',name:name[t]||t};
+}
+
+function renderQ(){
+  if(idx>=deck.length){showDone();return}
+  const q=deck[idx]; answered=false;
+  const pct=Math.round(idx/deck.length*100);
+
+  // Generate 3 wrong answers from same topic or all
+  const wrongs=shuffle(deck.filter(x=>x!==q&&x.a!==q.a)).slice(0,3).map(x=>x.a);
+  const opts=shuffle([q.a,...wrongs]);
+  const tag=getTagStyle(q.t);
+
+  document.getElementById('game').innerHTML=`
+  <div class="play">
+    <div class="prog-wrap"><div class="prog-fill" style="width:${pct}%"></div></div>
+    <div class="score-row">
+      <div class="score-chip green"><span>${correct}</span> Correct</div>
+      <div class="score-chip red"><span>${wrong}</span> Wrong</div>
+      <div class="score-chip blue"><span>${deck.length-idx}</span> Left</div>
+      ${streak>=3?`<div class="streak"><span>${streak}</span>🔥 streak</div>`:''}
+    </div>
+    <div class="q-tag" style="${tag.style}">${tag.name}</div>
+    <div class="q-stem">"${q.s}"</div>
+    <div class="q-hint">What does this indicate?</div>
+    <div class="choices" id="choices">
+      ${opts.map((o,i)=>`<button class="choice" onclick="answer(this,'${escQ(o)}','${escQ(q.a)}')">${o}</button>`).join('')}
+    </div>
+    <div class="feedback-box" id="fb"></div>
+    <button class="next-btn" id="nb" onclick="nextQ()">${idx+1<deck.length?'NEXT →':'FINISH'}</button>
+  </div>`;
+}
+
+function escQ(s){return s.replace(/'/g,"\\'").replace(/"/g,'&quot;')}
+
+function answer(btn,chosen,correct_ans){
+  if(answered) return; answered=true;
+  const q=deck[idx];
+  document.querySelectorAll('.choice').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.choice').forEach(b=>{
+    if(b.textContent.trim()===correct_ans) b.classList.add('reveal');
+  });
+  const fb=document.getElementById('fb');
+  if(chosen===correct_ans){
+    btn.classList.add('correct'); correct++; streak++; maxStreak=Math.max(maxStreak,streak);
+    fb.className='feedback-box ok show';
+    fb.innerHTML=`<strong>✓ Correct!</strong> ${q.e}`;
+  } else {
+    btn.classList.add('wrong'); wrong++; streak=0;
+    fb.className='feedback-box no show';
+    fb.innerHTML=`<strong>✗</strong> The answer is <strong>${correct_ans}</strong>. ${q.e}`;
+  }
+  document.getElementById('nb').classList.add('show');
+}
+
+function nextQ(){idx++;renderQ()}
+
+function showDone(){
+  const pct=Math.round(correct/deck.length*100);
+  const msg=pct>=90?'🔥 Exceptional!':pct>=75?'💪 Strong work!':pct>=60?'📖 Getting there!':'📚 More review needed';
+  document.getElementById('game').innerHTML=`
+  <div class="done-screen">
+    <div class="done-score" style="color:${pct>=75?'var(--green)':pct>=60?'var(--amber)':'var(--red)'}">${pct}%</div>
+    <div class="done-label">${correct} of ${deck.length} correct</div>
+    <div class="done-msg">${msg}</div>
+    <div class="done-grid">
+      <div class="done-box"><div class="done-box-num" style="color:var(--green)">${correct}</div><div class="done-box-lbl">Correct</div></div>
+      <div class="done-box"><div class="done-box-num" style="color:var(--red)">${wrong}</div><div class="done-box-lbl">Wrong</div></div>
+      <div class="done-box"><div class="done-box-num" style="color:var(--amber)">${maxStreak}</div><div class="done-box-lbl">Best Streak</div></div>
+    </div>
+    <button class="btn-start" onclick="startGame()">DRILL AGAIN</button>
+  </div>`;
+}
+
+showStart();
+</script>
+</body>
+</html>
