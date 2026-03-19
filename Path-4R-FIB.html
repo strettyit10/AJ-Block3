@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HF · Pericardial · Vascular · Vasculitis — Fill in the Blanks</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#111318;--surface:#191c23;--surface2:#20242e;
+  --border:#282d3a;--text:#dde3f0;--muted:#5a6380;
+  --hf:#3498db;--peri:#9b59b6;--vasc:#e74c3c;--vas:#2ecc71;--amber:#f39c12;
+  --blank-bg:#0d1117;--blank-border:#3d4460;--blank-fill:#1a2035;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;min-height:100vh}
+
+header{padding:22px 32px 18px;border-bottom:1px solid var(--border)}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.logo{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;color:var(--hf)}
+.logo span{color:var(--muted);font-weight:400;font-size:14px;margin-left:8px}
+
+.tab-bar{display:flex;padding:0 32px;border-bottom:1px solid var(--border);gap:4px;overflow-x:auto}
+.tab{padding:12px 18px;font-size:13px;font-weight:500;color:var(--muted);background:none;
+  border:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;
+  font-family:'IBM Plex Sans',sans-serif;transition:.15s}
+.tab.on-hf{color:var(--hf);border-bottom-color:var(--hf)}
+.tab.on-peri{color:var(--peri);border-bottom-color:var(--peri)}
+.tab.on-vasc{color:var(--vasc);border-bottom-color:var(--vasc)}
+.tab.on-vas{color:var(--vas);border-bottom-color:var(--vas)}
+.tab:hover:not([class*="on-"]){color:var(--text)}
+
+.content{padding:28px 32px;max-width:1000px;margin:0 auto}
+.section-title{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;
+  letter-spacing:.06em;color:var(--muted);margin-bottom:16px;text-transform:uppercase}
+
+.score-bar{display:flex;align-items:center;gap:16px;margin-bottom:24px;padding:12px 18px;
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;flex-wrap:wrap}
+.score-bar .lbl{font-size:13px;color:var(--muted)}
+.score-bar .num{font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:700}
+.btn-check{padding:8px 20px;color:white;border:none;border-radius:6px;
+  font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;cursor:pointer;transition:.15s}
+.btn-reset{padding:8px 20px;background:transparent;color:var(--muted);border:1px solid var(--border);
+  border-radius:6px;font-family:'IBM Plex Mono',monospace;font-size:13px;cursor:pointer;transition:.15s}
+.btn-reset:hover{border-color:var(--hf);color:var(--hf)}
+
+.fill-table{width:100%;border-collapse:collapse;margin-bottom:28px;font-size:13px}
+.fill-table th{background:var(--surface2);padding:10px 14px;text-align:left;
+  font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;
+  letter-spacing:.06em;color:var(--muted);border-bottom:2px solid var(--border)}
+.fill-table td{padding:9px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+.fill-table tr:last-child td{border-bottom:none}
+.fill-table tr:hover td{background:rgba(52,152,219,.03)}
+.highlight-row td{background:rgba(231,76,60,.06)!important}
+.highlight-row td:first-child{border-left:3px solid var(--vasc)}
+.highlight-row-hf td{background:rgba(52,152,219,.06)!important}
+.highlight-row-hf td:first-child{border-left:3px solid var(--hf)}
+
+.blank{display:inline-block;position:relative}
+.blank input{background:var(--blank-bg);border:1px solid var(--blank-border);
+  border-radius:4px;color:var(--text);font-family:'IBM Plex Mono',monospace;
+  font-size:12px;padding:5px 10px;width:100%;transition:.15s;outline:none}
+.blank input:focus{border-color:var(--hf);background:var(--blank-fill)}
+.blank input.correct{border-color:var(--vas)!important;background:rgba(46,204,113,.1)!important;color:var(--vas)}
+.blank input.wrong{border-color:var(--vasc)!important;background:rgba(231,76,60,.1)!important;color:var(--vasc)}
+.blank input.revealed{border-color:var(--amber)!important;background:rgba(243,156,18,.1)!important;color:var(--amber)}
+
+.cell-fixed{color:var(--text);font-weight:500}
+.instruction{background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  padding:14px 18px;margin-bottom:20px;font-size:13px;color:var(--muted);line-height:1.6}
+.instruction strong{color:var(--text)}
+
+.sub-title{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;
+  letter-spacing:.05em;color:var(--muted);margin:24px 0 12px;text-transform:uppercase;
+  padding-top:16px;border-top:1px solid var(--border)}
+
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.content>*{animation:fade .2s ease}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-top">
+    <div><div class="logo">fill_in_blanks<span>// HF · Pericardial · Vascular · Vasculitis</span></div></div>
+  </div>
+</header>
+
+<div class="tab-bar">
+  <button class="tab on-hf" id="tab-hf" onclick="setTab('hf',this)">Heart Failure</button>
+  <button class="tab" id="tab-peri" onclick="setTab('peri',this)">Pericardial Disease</button>
+  <button class="tab" id="tab-vasc" onclick="setTab('vasc',this)">Aortic/Vascular</button>
+  <button class="tab" id="tab-vas" onclick="setTab('vas',this)">Vasculitis</button>
+</div>
+
+<div class="content" id="content"></div>
+
+<script>
+const TABLES={
+
+hf:{
+  accentVar:'var(--hf)',
+  title:'Heart Failure — HFrEF vs HFpEF, Gallops & GDMT',
+  instructions:'Complete all blank cells. Pay special attention to EF cutoffs, gallop sounds, and the GDMT pillars.',
+  main:{
+    cols:['Feature','HFrEF (Systolic Failure)','HFpEF (Diastolic Failure)'],
+    highlight:[],
+    highlightType:'',
+    rows:[
+      ['EF cutoff',{b:'≤ 40% — contractility failure',w:200},{b:'≥ 50% — compliance failure',w:200}],
+      ['Main problem',{b:'LV cannot squeeze → ↓ stroke volume',w:200},{b:'LV too stiff to fill → ↑ filling pressures',w:200}],
+      ['Classic cause',{b:'DCM, post-MI, MR, AR, alcohol, viral myocarditis',w:200},{b:'Hypertension, HCM, amyloid (concentric LVH)',w:200}],
+      ['Gallop',{b:'S3 — blood into dilated LV in early diastole',w:200},{b:'S4 — atrial kick into stiff LV in late diastole',w:200}],
+      ['Treatment',{b:'GDMT: BB + ARNI + MRA + SGLT2i',w:200},{b:'BP/HR control; diuretics for congestion',w:200}],
+      ['Diuretics — mortality benefit?',{b:'NO — symptom relief only',w:200},{b:'NO — symptom relief only',w:200}],
+    ]
+  },
+  extras:[
+    {
+      title:'GDMT — 4 Pillars for HFrEF',
+      cols:['Drug Class','Example Agents','Key Caveat'],
+      rows:[
+        [{b:'Beta-blocker',w:170},{b:'Carvedilol, metoprolol succinate, bisoprolol',w:260},{b:'Only start when EUVOLEMIC — never in acute decompensation',w:280}],
+        [{b:'ARNI / ACEi / ARB',w:170},{b:'Sacubitril-valsartan, lisinopril, losartan',w:260},{b:'Sacubitril-valsartan preferred; blocks RAAS remodeling',w:280}],
+        [{b:'MRA (spironolactone)',w:170},{b:'Spironolactone, eplerenone',w:260},{b:'Hold if K+ >5.0 or eGFR <30',w:280}],
+        [{b:'SGLT2 inhibitor',w:170},{b:'Dapagliflozin, empagliflozin',w:260},{b:'Requires eGFR >20–30; also benefits CKD and T2DM',w:280}],
+      ]
+    },
+    {
+      title:'Left vs Right Heart Failure',
+      cols:['Feature','Left HF','Right HF'],
+      rows:[
+        ['Mnemonic',{b:'Left = Lungs',w:180},{b:'Right = Rest of body',w:180}],
+        ['Key symptoms',{b:'Dyspnea, orthopnea, PND, crackles',w:180},{b:'JVD, hepatomegaly, peripheral edema',w:180}],
+        ['Most common cause of RHF',{b:'Left-sided HF → pulmonary HTN → RV overload',w:400},''],
+      ]
+    }
+  ]
+},
+
+peri:{
+  accentVar:'var(--peri)',
+  title:'Pericardial Disease — Four Conditions Side by Side',
+  instructions:'Fill in the blank cells for each pericardial condition. ECG findings and distinguishing clues are most tested.',
+  main:{
+    cols:['Feature','Acute Pericarditis','Cardiac Tamponade','Constrictive Pericarditis','Dressler Syndrome'],
+    highlight:[1,2],
+    highlightType:'vasc',
+    rows:[
+      ['Timing/Onset',{b:'Acute, often post-viral',w:160},{b:'Acute — shock picture',w:160},{b:'Chronic — weeks to months',w:160},{b:'2–10 weeks post-MI',w:160}],
+      ['Classic presentation',{b:'Sharp pain worse lying flat, better leaning forward; friction rub',w:160},{b:'Beck\'s triad: Hypotension + JVD + Muffled heart sounds',w:160},{b:'Kussmaul sign; hepatomegaly; edema; distant sounds',w:160},{b:'Fever + pleuritic pain + friction rub; negative troponin',w:160}],
+      ['ECG finding',{b:'Diffuse ST elevation + PR depression + NO reciprocal changes',w:160},{b:'Electrical alternans; low voltage',w:160},{b:'Non-specific; may show AF',w:160},{b:'Diffuse ST elevation (pericarditis pattern)',w:160}],
+      ['Key distinguishing clue',{b:'PR depression is pathognomonic',w:160},{b:'Electrical alternans + pulsus paradoxus >10 mmHg',w:160},{b:'Pericardial thickening/calcification on CT/MRI',w:160},{b:'Negative troponin distinguishes from reinfarction',w:160}],
+      ['Treatment',{b:'NSAIDs + colchicine',w:160},{b:'Urgent pericardiocentesis',w:160},{b:'Pericardiectomy (surgically curable)',w:160},{b:'NSAIDs',w:160}],
+      ['Most common cause',{b:'Viral (Coxsackie B)',w:160},{b:'Post-MI free wall rupture; malignancy; TB',w:160},{b:'TB, radiation, post-cardiac surgery',w:160},{b:'Autoimmune — anti-heart antibodies post-MI',w:160}],
+    ]
+  },
+  extras:[
+    {
+      title:'Constrictive Pericarditis vs Restrictive Cardiomyopathy',
+      cols:['Feature','Constrictive Pericarditis','Restrictive CMP'],
+      rows:[
+        ['Pericardium on CT/MRI',{b:'Thickened / calcified',w:200},{b:'Normal',w:200}],
+        ['Kussmaul sign',{b:'Present — JVP rises with inspiration',w:200},{b:'Variable / less reliable',w:200}],
+        ['Cath finding',{b:'"Square root sign" — equalization of all diastolic pressures',w:200},{b:'Similar dip and plateau pattern',w:200}],
+        ['Treatment',{b:'Pericardiectomy — surgically curable',w:200},{b:'Treat underlying cause — not surgically curable',w:200}],
+      ]
+    }
+  ]
+},
+
+vasc:{
+  accentVar:'var(--vasc)',
+  title:'Aortic Aneurysms & Dissection',
+  instructions:'Fill in the blank cells. Aneurysm locations and dissection management are the most tested elements.',
+  main:{
+    cols:['Condition','Location','Classic Presentation / Clue','Key Cause','Management'],
+    highlight:[0],
+    highlightType:'vasc',
+    rows:[
+      [{b:'Type A Aortic Dissection',w:180},{b:'Ascending aorta (proximal to L subclavian)',w:180},{b:'Tearing pain to back; arm BP differential; widened mediastinum',w:200},{b:'Chronic HTN (most common); Marfan (young)',w:180},{b:'SURGICAL EMERGENCY',w:160}],
+      [{b:'Type B Aortic Dissection',w:180},{b:'Descending aorta (distal to L subclavian)',w:180},{b:'Same pain; often less dramatic; may have limb/mesenteric ischemia',w:200},{b:'Chronic HTN; atherosclerosis',w:180},{b:'Medical: labetalol (↓ BP + ↓ HR)',w:160}],
+      [{b:'AAA (Abdominal Aortic Aneurysm)',w:180},{b:'Infrarenal abdominal aorta',w:180},{b:'Pulsatile abdominal mass; often asymptomatic until rupture',w:200},{b:'Atherosclerosis; male sex; smoking; HTN',w:180},{b:'Repair if >5 cm',w:160}],
+      [{b:'Syphilitic Aortitis',w:180},{b:'Ascending aorta (ALWAYS)',w:180},{b:'"Tree-bark" intima; AR from aortic root dilation',w:200},{b:'Tertiary syphilis → vasa vasorum endarteritis',w:180},{b:'Treat syphilis; surgical repair if large',w:160}],
+      [{b:'Berry (Saccular) Aneurysm',w:180},{b:'Circle of Willis bifurcations',w:180},{b:'"Worst headache of life" + meningismus → SAH',w:200},{b:'Congenital media defect; ADPKD; coarctation',w:180},{b:'Clipping or endovascular coiling',w:160}],
+      [{b:'Charcot-Bouchard Microaneurysm',w:180},{b:'Deep brain arterioles (basal ganglia, thalamus)',w:180},{b:'Deep intracerebral hemorrhage; cocaine trigger',w:200},{b:'Chronic HTN → lipohyalinosis → microaneurysm',w:180},{b:'BP control; supportive',w:160}],
+    ]
+  },
+  extras:[
+    {
+      title:'Aortic Dissection — Classic vs Atypical Presentations',
+      cols:['Clue','Significance'],
+      rows:[
+        [{b:'Tearing/ripping chest pain radiating to back',w:280},'Classic dissection presentation — not crushing like MI'],
+        [{b:'Arm BP differential >20 mmHg',w:280},'Suggests involvement of great vessels (Type A)'],
+        [{b:'New aortic regurgitation murmur during dissection',w:280},'Type A extending to aortic annulus → acute AR'],
+        [{b:'Widened mediastinum on CXR',w:280},'Suggests ascending aortic involvement'],
+      ]
+    }
+  ]
+},
+
+vas:{
+  accentVar:'var(--vas)',
+  title:'Vasculitis Differentials — By Vessel Size',
+  instructions:'Fill in the disease name, ANCA status, classic patient, and key distinguishing feature.',
+  main:{
+    cols:['Vessel Size','Disease','ANCA Status','Classic Patient / Scenario','Key Distinguisher'],
+    highlight:[3,4,5],
+    highlightType:'hf',
+    rows:[
+      ['Large',{b:'Giant Cell (Temporal) Arteritis',w:180},{b:'ANCA negative',w:140},{b:'Elderly woman >50; jaw claudication; temporal tenderness; vision loss risk',w:220},{b:'Start steroids BEFORE biopsy — treat now to prevent blindness',w:220}],
+      ['Large',{b:'Takayasu Arteritis',w:180},{b:'ANCA negative',w:140},{b:'Young Asian woman <40; pulseless upper extremities; arm-leg BP differential',w:220},{b:'"Pulseless disease" — aortic branches; granulomatous inflammation',w:220}],
+      ['Medium',{b:'Polyarteritis Nodosa (PAN)',w:180},{b:'ANCA negative ★',w:140},{b:'Middle-aged man; HTN + renal failure + GI pain; Hep B association',w:220},{b:'Spares pulmonary arteries AND glomeruli; "string of beads" angiography',w:220}],
+      ['Medium',{b:'Kawasaki Disease',w:180},{b:'ANCA negative',w:140},{b:'Child <5; fever >5 days; CRASH criteria',w:220},{b:'Coronary aneurysm risk; IVIG + aspirin; leading acquired cardiac disease in children',w:220}],
+      ['Medium',{b:'Buerger Disease',w:180},{b:'ANCA negative',w:140},{b:'Young male smoker; distal ulcers; superficial thrombophlebitis; Raynaud',w:220},{b:'STOP SMOKING is the only treatment; non-atherosclerotic non-autoimmune',w:220}],
+      ['Small (ANCA)',{b:'GPA (Wegener)',w:180},{b:'c-ANCA (PR3)',w:140},{b:'Sinusitis + hemoptysis + hematuria + saddle-nose deformity',w:220},{b:'Triad: upper resp + lower resp + GN; necrotizing granulomatous',w:220}],
+      ['Small (ANCA)',{b:'MPA (Microscopic Polyangiitis)',w:180},{b:'p-ANCA (MPO)',w:140},{b:'Pulmonary-renal syndrome; no upper respiratory involvement',w:220},{b:'No upper resp, no granulomas — distinguishes from GPA',w:220}],
+      ['Small (ANCA)',{b:'EGPA (Churg-Strauss)',w:180},{b:'p-ANCA (MPO)',w:140},{b:'Adult-onset asthma + eosinophilia + vasculitis',w:220},{b:'Asthma is the sentinel feature; steroid-dependent asthma = warning',w:220}],
+      ['Small (IC)',{b:'HSP (IgA Vasculitis)',w:180},{b:'ANCA negative',w:140},{b:'Child; purpura on buttocks; arthritis; GI pain; hematuria; post-URI',w:220},{b:'IgA mesangial deposits; normal platelets; most common vasculitis in children',w:220}],
+    ]
+  },
+  extras:[
+    {
+      title:'ANCA Quick Reference',
+      cols:['ANCA Pattern','Target Antigen','Disease(s)','Memory Hook'],
+      rows:[
+        [{b:'c-ANCA (cytoplasmic)',w:180},{b:'PR3 (proteinase 3)',w:160},{b:'GPA (Wegener)',w:180},'c-ANCA = Cytoplasm = GPA/Wegener'],
+        [{b:'p-ANCA (perinuclear)',w:180},{b:'MPO (myeloperoxidase)',w:160},{b:'MPA + EGPA (Churg-Strauss)',w:180},'p-ANCA = Perinuclear = MPA + EGPA'],
+        [{b:'ANCA negative',w:180},{b:'N/A',w:160},{b:'PAN, Kawasaki, Buerger, HSP, GCA, Takayasu',w:180},'If Hep B + no ANCA → PAN'],
+      ]
+    }
+  ]
+},
+};
+
+let currentTab='hf';
+const inputs=()=>document.querySelectorAll('.blank input');
+
+function setTab(name,btn){
+  document.querySelectorAll('.tab').forEach(b=>{b.className='tab'});
+  const classMap={hf:'on-hf',peri:'on-peri',vasc:'on-vasc',vas:'on-vas'};
+  btn.className='tab '+classMap[name];
+  currentTab=name;
+  render();
+}
+
+function render(){
+  const t=TABLES[currentTab];
+  const accentColor=t.accentVar;
+  let h=`<div class="section-title" style="color:${accentColor}">${t.title}</div>
+  <div class="instruction"><strong>Instructions:</strong> ${t.instructions} Press <kbd style="background:var(--border);padding:1px 6px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:11px">Check Answers</kbd> when ready. Amber = revealed answer.</div>
+  <div class="score-bar">
+    <span class="lbl">Score:</span><span class="num" id="sc" style="color:${accentColor}">—</span><span class="lbl">/ <span id="tot">—</span></span>
+    <div style="margin-left:auto;display:flex;gap:8px">
+      <button class="btn-reset" onclick="resetAll()">Reset</button>
+      <button class="btn-check" style="background:${accentColor}" onclick="checkAll()">Check Answers</button>
+    </div>
+  </div>`;
+
+  // MAIN TABLE
+  h+=buildTable(t.main);
+
+  // EXTRAS
+  if(t.extras){
+    t.extras.forEach(ex=>{
+      h+=`<div class="sub-title">${ex.title}</div>`;
+      h+=buildTable(ex);
+    });
+  }
+
+  document.getElementById('content').innerHTML=h;
+}
+
+function buildTable(tbl){
+  let h=`<table class="fill-table"><thead><tr>${tbl.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`;
+  tbl.rows.forEach((row,ri)=>{
+    const isHL=tbl.highlight&&tbl.highlight.includes(ri);
+    const hlClass=isHL?(tbl.highlightType==='vasc'?'highlight-row':'highlight-row-hf'):'';
+    h+=`<tr class="${hlClass}">`;
+    row.forEach((cell,ci)=>{
+      if(typeof cell==='string'){
+        if(cell==='') h+=`<td></td>`;
+        else h+=`<td class="cell-fixed">${cell}</td>`;
+      } else {
+        h+=`<td><div class="blank"><input type="text" style="width:${cell.w||180}px" data-ans="${escA(cell.b)}" placeholder="________"></div></td>`;
+      }
+    });
+    h+=`</tr>`;
+  });
+  h+=`</tbody></table>`;
+  return h;
+}
+
+function escA(s){return s.replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+
+function normalize(s){
+  return s.toLowerCase().replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();
+}
+
+function isCorrect(userVal,answer){
+  const u=normalize(userVal),a=normalize(answer);
+  if(u===a)return true;
+  const aWords=a.split(' ').filter(w=>w.length>3);
+  if(!aWords.length)return u.includes(a.slice(0,6).trim());
+  const hits=aWords.filter(w=>u.includes(w));
+  return hits.length>=Math.ceil(aWords.length*0.5);
+}
+
+function checkAll(){
+  let total=0,correct=0;
+  inputs().forEach(inp=>{
+    const ans=inp.getAttribute('data-ans');
+    inp.classList.remove('correct','wrong','revealed');
+    if(!inp.value.trim()){inp.value=ans;inp.classList.add('revealed');}
+    else if(isCorrect(inp.value,ans)){inp.classList.add('correct');correct++;}
+    else{inp.classList.add('wrong');inp.title=`✓ Expected: ${ans}`;}
+    total++;
+  });
+  const pct=Math.round(correct/total*100);
+  document.getElementById('sc').textContent=correct;
+  document.getElementById('tot').textContent=total;
+  const sc=document.getElementById('sc');
+  sc.style.color=pct>=80?'var(--vas)':pct>=60?'var(--amber)':'var(--vasc)';
+}
+
+function resetAll(){
+  inputs().forEach(inp=>{inp.value='';inp.classList.remove('correct','wrong','revealed');inp.title='';});
+  document.getElementById('sc').textContent='—';
+  document.getElementById('sc').style.color=TABLES[currentTab].accentVar;
+  document.getElementById('tot').textContent='—';
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.ctrlKey)checkAll();});
+
+render();
+</script>
+</body>
+</html>

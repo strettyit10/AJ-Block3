@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HF · Pericardial · Vascular · Vasculitis — MCQ Q-Bank</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f9f7f4;--white:#fff;--border:#e4dfd7;--text:#1c1a17;--muted:#8a8070;
+  --accent:#b5451b;--accent2:#1b4a8a;--green:#1a7040;--green-bg:#eaf5ef;
+  --red-bg:#fdf0ed;--amber:#9a5c00;--amber-bg:#fdf6e8;
+  --hf:#1b4a8a;--peri:#5a2d9a;--vasc:#b5451b;--vas:#1a7040;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+
+header{background:var(--accent2);color:white;padding:24px 40px 20px}
+header h1{font-family:'Source Serif 4',serif;font-size:24px;font-weight:600}
+header p{font-size:13px;opacity:.75;margin-top:4px}
+
+.controls{background:var(--white);border-bottom:2px solid var(--border);padding:14px 40px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.filter-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;
+  color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;transition:.15s;font-family:'DM Sans',sans-serif}
+.filter-btn.on{color:white}
+.filter-btn:hover:not(.on){opacity:.8}
+.filter-btn[data-t="all"].on{background:var(--accent2);border-color:var(--accent2)}
+.filter-btn[data-t="hf"].on{background:var(--hf);border-color:var(--hf)}
+.filter-btn[data-t="peri"].on{background:var(--peri);border-color:var(--peri)}
+.filter-btn[data-t="vasc"].on{background:var(--vasc);border-color:var(--vasc)}
+.filter-btn[data-t="vas"].on{background:var(--vas);border-color:var(--vas)}
+.score-disp{margin-left:auto;font-size:13px;color:var(--muted)}
+.score-disp strong{color:var(--text);font-size:16px}
+
+.prog{height:3px;background:var(--border);overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--peri));transition:width .35s}
+
+.main{max-width:820px;margin:0 auto;padding:32px 40px}
+
+.vig-card{background:var(--white);border:1px solid var(--border);border-radius:14px;
+  padding:32px;margin-bottom:20px;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+.vig-meta{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.vig-num{font-size:12px;font-weight:600;color:var(--muted)}
+.vig-tag{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:4px}
+.diff-badge{font-size:11px;padding:3px 8px;border-radius:4px;font-weight:600}
+.diff-med{background:var(--amber-bg);color:var(--amber)}
+.diff-hard{background:var(--red-bg);color:var(--accent)}
+.diff-easy{background:var(--green-bg);color:var(--green)}
+
+.vignette{font-family:'Source Serif 4',serif;font-size:16px;line-height:1.75;
+  background:#faf8f5;border-left:3px solid var(--border);padding:20px 22px;
+  border-radius:0 8px 8px 0;margin-bottom:20px}
+.vig-key{font-weight:600;color:var(--accent2)}
+
+.vig-q{font-size:15px;font-weight:600;margin-bottom:16px}
+.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:4px}
+.opt{padding:13px 16px;background:var(--bg);border:1.5px solid var(--border);
+  border-radius:8px;font-size:14px;cursor:pointer;text-align:left;transition:.15s;
+  font-family:'DM Sans',sans-serif;color:var(--text);line-height:1.4}
+.opt:hover{border-color:var(--accent2);background:#f0f4fb}
+.opt.correct{border-color:var(--green);background:var(--green-bg);color:var(--green)}
+.opt.wrong{border-color:var(--accent);background:var(--red-bg);color:var(--accent)}
+.opt.reveal{border-color:var(--green);background:var(--green-bg);color:var(--green)}
+.opt:disabled{cursor:default}
+
+.explanation{display:none;margin-top:14px;padding:16px 18px;background:var(--bg);
+  border-radius:8px;font-size:13px;line-height:1.75;border:1px solid var(--border)}
+.explanation.show{display:block}
+.explanation strong{color:var(--accent2)}
+.exp-trap{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);
+  font-size:12px;color:var(--amber);font-style:italic}
+
+.next-btn{margin-top:14px;padding:11px 24px;background:var(--accent2);color:white;border:none;
+  border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;
+  cursor:pointer;display:none}
+.next-btn.show{display:block}
+.next-btn:hover{background:#153f7a}
+
+.done{text-align:center;padding:60px 20px}
+.done h2{font-family:'Source Serif 4',serif;font-size:36px;font-weight:600;margin-bottom:8px}
+.done-pct{font-size:64px;font-weight:700;font-family:'DM Sans',sans-serif;margin-bottom:4px}
+.done-sub{color:var(--muted);margin-bottom:28px}
+.done-grid{display:flex;gap:16px;justify-content:center;margin-bottom:28px;flex-wrap:wrap}
+.done-box{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:18px 24px;text-align:center}
+.done-box-n{font-size:32px;font-weight:700}
+.done-box-l{font-size:12px;color:var(--muted);margin-top:2px}
+.btn-again{padding:13px 32px;background:var(--accent2);color:white;border:none;border-radius:8px;
+  font-family:'DM Sans',sans-serif;font-weight:600;font-size:15px;cursor:pointer;margin:0 6px}
+.btn-again:hover{background:#153f7a}
+.btn-again.outline{background:transparent;color:var(--muted);border:1px solid var(--border)}
+.btn-again.outline:hover{border-color:var(--accent2);color:var(--accent2)}
+
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.vig-card{animation:slideUp .25s ease}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>HF · Pericardial · Vascular · Vasculitis — MCQ Q-Bank</h1>
+  <p>NBME-style clinical questions covering the four new pathology sections</p>
+</header>
+
+<div class="controls">
+  <span style="font-size:12px;color:var(--muted)">Topic:</span>
+  <button class="filter-btn on" data-t="all" onclick="setFilter(this)">All Topics</button>
+  <button class="filter-btn" data-t="hf" onclick="setFilter(this)">Heart Failure</button>
+  <button class="filter-btn" data-t="peri" onclick="setFilter(this)">Pericardial</button>
+  <button class="filter-btn" data-t="vasc" onclick="setFilter(this)">Aortic/Vascular</button>
+  <button class="filter-btn" data-t="vas" onclick="setFilter(this)">Vasculitis</button>
+  <div class="score-disp">Score: <strong id="sc">0/0</strong></div>
+</div>
+<div class="prog"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="main" id="main"></div>
+
+<script>
+const TAG_STYLES={
+  hf:`background:#e8eef8;color:#1b4a8a`,
+  peri:`background:#f3eef9;color:#5a2d9a`,
+  vasc:`background:#fdf0ed;color:#b5451b`,
+  vas:`background:#eaf5ef;color:#1a7040`
+};
+const TAG_NAMES={hf:'Heart Failure',peri:'Pericardial',vasc:'Aortic/Vascular',vas:'Vasculitis'};
+
+const VIGNETTES=[
+// ── HEART FAILURE ──────────────────────────────────────────────────────
+{t:'hf',diff:'easy',
+vignette:`A <span class="vig-key">72-year-old man with hypertension</span> presents with exertional dyspnea and bilateral leg edema. He denies orthopnea. On exam, JVD is present and he has <span class="vig-key">pitting edema to the knees</span>. His lungs are <span class="vig-key">clear to auscultation</span>. Echo shows EF 55% with concentric LVH and impaired diastolic relaxation.`,
+q:"Which of the following best describes his hemodynamic dysfunction?",
+opts:["Reduced LV contractility causing low stroke volume","Stiff, non-compliant LV causing elevated filling pressures at normal EF","Mitral stenosis restricting LV filling","RV systolic failure from pulmonary embolism"],
+ans:1,
+exp:`<strong>HFpEF</strong>: preserved EF (55%) + diastolic dysfunction + hypertensive concentric LVH = classic. The stiff ventricle impairs relaxation → ↑ filling pressures → congestion despite normal contractility. Clear lungs + leg edema = predominantly right-sided congestion from elevated LA pressure backpropagating.`,
+trap:`TRAP: Normal EF does NOT mean normal heart function. HFpEF is defined by preserved EF + diastolic dysfunction. Patients can be in florid heart failure with EF 60%.`},
+
+{t:'hf',diff:'medium',
+vignette:`A <span class="vig-key">58-year-old man with ischemic cardiomyopathy</span> (EF 28%) is being optimized on medical therapy. He is currently on lisinopril and furosemide. His potassium is <span class="vig-key">4.2 mEq/L</span> and eGFR is <span class="vig-key">52 mL/min</span>. He is euvolemic on exam with no JVD or edema.`,
+q:"Which additional agent has the strongest evidence for reducing mortality in this patient?",
+opts:["Increase furosemide dose to reduce further fluid retention","Add carvedilol (beta-blocker)","Add amlodipine (calcium channel blocker)","Add digoxin for rate control"],
+ans:1,
+exp:`<strong>Beta-blockers</strong> (carvedilol, metoprolol succinate, bisoprolol) are one of the 4 GDMT pillars with proven mortality benefit in HFrEF. The key is that he is <strong>euvolemic</strong> — beta-blockers must never be started in acute decompensation. Furosemide provides symptom relief but no mortality benefit. Amlodipine has no survival benefit in HFrEF. Digoxin reduces hospitalizations but not mortality.`,
+trap:`TRAP: Never start beta-blockers in acute decompensated HF. Only initiate when the patient is euvolemic. The question specifically states he has no JVD or edema.`},
+
+{t:'hf',diff:'medium',
+vignette:`A <span class="vig-key">65-year-old woman</span> presents with dyspnea. Exam reveals <span class="vig-key">bilateral crackles at the bases</span>, an S3 gallop, and displaced PMI. Her BNP is markedly elevated. Echo shows <span class="vig-key">EF of 22%</span> with 4-chamber dilation. She has no significant valvular disease.`,
+q:"What does the S3 gallop in this patient indicate?",
+opts:["Stiff, non-compliant ventricle from pressure overload","Rapid deceleration of blood into a dilated, volume-overloaded ventricle","Atrial kick against a hypertrophied ventricle","Turbulent flow across the mitral valve"],
+ans:1,
+exp:`<strong>S3 gallop</strong> = blood rushing into a dilated, volume-overloaded ventricle in early diastole and suddenly decelerating against a floppy wall. It is the hallmark of <strong>HFrEF / systolic dysfunction</strong>. Contrast with S4 = atrial kick against a stiff, hypertrophied ventricle (diastolic dysfunction / HFpEF). BNP is released by ventricular wall stretch → confirms elevated filling pressures.`,
+trap:`TRAP: S3 = dilated/volume overloaded LV (HFrEF). S4 = stiff/hypertrophied LV (HFpEF). Don't mix these up.`},
+
+{t:'hf',diff:'hard',
+vignette:`A <span class="vig-key">50-year-old man</span> with HFrEF (EF 30%) on carvedilol, sacubitril-valsartan, and spironolactone presents for follow-up. His potassium is <span class="vig-key">5.3 mEq/L</span> and creatinine has risen from 1.1 to 1.6 mg/dL over the past 3 months. He is asymptomatic and euvolemic.`,
+q:"Which component of his GDMT should be held or dose-reduced first?",
+opts:["Carvedilol — beta-blockers worsen renal perfusion","Sacubitril-valsartan — ARNIs cause hyperkalemia and renal dysfunction","Spironolactone — MRAs are contraindicated when K+ >5.0","Furosemide — diuretic overuse causes prerenal azotemia"],
+ans:2,
+exp:`<strong>Spironolactone (MRA)</strong> should be held when K+ >5.0 or eGFR is significantly declining, as it causes hyperkalemia and can worsen renal function. K+ 5.3 = above threshold. Beta-blockers do not typically cause hyperkalemia. Sacubitril-valsartan can affect renal function but the immediate concern here is hyperkalemia from the MRA.`,
+trap:`TRAP: MRA contraindication threshold = K+ >5.0 or eGFR <30. Memorize these cutoffs — they are directly tested.`},
+
+{t:'hf',diff:'easy',
+vignette:`A <span class="vig-key">45-year-old woman</span> presents with dyspnea and bilateral leg swelling 2 months after delivering her first child. She had no cardiac history prior to pregnancy. Echo shows <span class="vig-key">EF of 25%</span> with global hypokinesis. Coronary angiography shows clean coronaries.`,
+q:"What is the most likely diagnosis and its defining time window?",
+opts:["Dilated cardiomyopathy from viral myocarditis; any time","Peripartum cardiomyopathy; last month of pregnancy to 5 months postpartum","Hypertrophic cardiomyopathy unmasked by pregnancy","Takotsubo syndrome from labor stress; fully reversible"],
+ans:1,
+exp:`<strong>Peripartum cardiomyopathy</strong>: dilated CMP presenting in the last month of pregnancy to <strong>5 months postpartum</strong>. Low EF + clean coronaries + no prior cardiac history + recent delivery = classic. Multifactorial (volume overload, autoimmune, hormonal). Treated as HFrEF with GDMT. 2 months postpartum falls within this window.`,
+trap:`TRAP: The window extends to 5 months postpartum — not just immediately after delivery. Don't assume it must be idiopathic viral DCM.`},
+
+// ── PERICARDIAL ─────────────────────────────────────────────────────────
+{t:'peri',diff:'easy',
+vignette:`A <span class="vig-key">24-year-old man</span> presents with sharp chest pain that started 2 days ago. The pain is <span class="vig-key">worse when lying flat and better when leaning forward</span>. He had an upper respiratory illness 1 week ago. On exam, a <span class="vig-key">three-component friction rub</span> is audible. ECG shows diffuse ST elevation in nearly all leads with <span class="vig-key">PR depression</span>.`,
+q:"What ECG feature most distinguishes this diagnosis from STEMI?",
+opts:["ST elevation in leads II, III, and aVF","Diffuse ST elevation with PR depression and NO reciprocal ST depressions","ST elevation only in the anterior leads V1–V4","Sinus bradycardia with prolonged QT interval"],
+ans:1,
+exp:`<strong>Pericarditis ECG pattern</strong>: diffuse ST elevation (nearly all leads) + <strong>PR depression</strong> (pathognomonic) + <strong>NO reciprocal ST depressions</strong>. STEMI has localized ST elevation in a coronary territory + reciprocal depressions in opposing leads. PR depression is unique to pericarditis — reflecting atrial involvement in inflammation.`,
+trap:`TRAP: STEMI has reciprocal changes (e.g., ST elevation in II/III/aVF = ST depression in I/aVL). Pericarditis has diffuse elevation without reciprocal changes. PR depression is pathognomonic for pericarditis.`},
+
+{t:'peri',diff:'medium',
+vignette:`A <span class="vig-key">60-year-old man</span> who had a large anterior STEMI 5 days ago is now in shock. His blood pressure is 70/40, heart rate 118. Examination reveals <span class="vig-key">markedly elevated JVP</span> and <span class="vig-key">muffled heart sounds</span>. His lungs are clear. ECG shows <span class="vig-key">electrical alternans</span>. Troponin is not re-elevated from baseline.`,
+q:"What is the most appropriate immediate intervention?",
+opts:["IV fluid bolus and dopamine for cardiogenic shock","Urgent repeat coronary angiography for reinfarction","Pericardiocentesis for cardiac tamponade","IV furosemide for acute decompensated heart failure"],
+ans:2,
+exp:`<strong>Beck's Triad</strong> (hypotension + JVD + muffled heart sounds) + <strong>electrical alternans</strong> = cardiac tamponade from <strong>LV free wall rupture</strong> at 5 days post-MI. The clear lungs rule against pulmonary edema/HF. Negative repeat troponin rules against reinfarction. Pericardiocentesis is the immediate intervention to decompress the pericardium. Fluids may temporarily help but are not definitive.`,
+trap:`TRAP: JVD + hypotension after MI = tamponade, NOT heart failure. In HF, JVD occurs with pulmonary edema and crackles. Clear lungs + JVD + hypotension = tamponade every time.`},
+
+{t:'peri',diff:'hard',
+vignette:`A <span class="vig-key">55-year-old woman</span> presents with progressive dyspnea and lower extremity edema over 6 months. She had tuberculosis treated 10 years ago. On exam, JVP is elevated and <span class="vig-key">rises with inspiration</span>. Heart sounds are distant. Hepatomegaly is present. Echo shows normal EF with biatrial dilation. CT chest shows <span class="vig-key">pericardial calcification</span>.`,
+q:"Which finding on cardiac catheterization would confirm this diagnosis?",
+opts:["Elevated LVEDP with normal RVEDP","'Dip and plateau' (square root sign) equalization of diastolic pressures in all chambers","Pulmonary capillary wedge pressure >30 mmHg with low cardiac output","Coronary artery stenosis causing diastolic dysfunction"],
+ans:1,
+exp:`<strong>Constrictive pericarditis</strong>: TB history + pericardial calcification on CT + Kussmaul sign (JVP rises with inspiration) + impaired filling with normal EF. Cardiac cath shows the <strong>"square root sign"</strong> — rapid early diastolic filling followed by abrupt plateau — with equalization of diastolic pressures in all 4 chambers. This distinguishes constrictive from restrictive CMP (where pericardium is normal on CT).`,
+trap:`TRAP: Kussmaul sign = JVP RISES with inspiration. Normally JVP falls. In constrictive pericarditis, rigid pericardium prevents RV expansion → RA pressure rises with inspiratory venous return.`},
+
+{t:'peri',diff:'medium',
+vignette:`A <span class="vig-key">48-year-old man</span> presents with fever, pleuritic chest pain, and a friction rub <span class="vig-key">3 weeks after a large inferior MI</span>. His repeat troponin is negative. ECG shows diffuse ST elevation. He denies new chest tightness or radiation to the arm.`,
+q:"What is the pathophysiologic mechanism of his current presentation?",
+opts:["Re-occlusion of the RCA causing recurrent infarction","Autoimmune pericarditis from anti-heart antibody formation against exposed myocardial antigens","Septic pericarditis from bacteremia during hospitalization","Constrictive pericarditis from early fibrosis around the infarct"],
+ans:1,
+exp:`<strong>Dressler syndrome</strong>: autoimmune pericarditis occurring <strong>2–10 weeks post-MI</strong>. Necrotic myocardium exposes antigens → anti-heart antibody formation → pericardial inflammation. Key features: timing (weeks post-MI), fever, pleuritic chest pain, friction rub, <strong>negative troponin</strong> (distinguishes from reinfarction), diffuse ST elevation. Treat with NSAIDs.`,
+trap:`TRAP: Negative troponin is the critical finding that rules out reinfarction. If troponin were rising, think recurrent MI not Dressler.`},
+
+// ── AORTIC / VASCULAR ───────────────────────────────────────────────────
+{t:'vasc',diff:'easy',
+vignette:`A <span class="vig-key">68-year-old man with longstanding hypertension</span> presents with sudden onset <span class="vig-key">tearing chest pain radiating to the back</span>. BP is 190/110 in the right arm and <span class="vig-key">150/90 in the left arm</span>. CXR shows a widened mediastinum. CT angiography confirms a dissection involving the ascending aorta.`,
+q:"What is the most appropriate management?",
+opts:["IV labetalol for blood pressure control and close monitoring","Emergent thrombolytics to dissolve the intimal flap","Emergent surgical repair","Coronary angiography to rule out concurrent ACS"],
+ans:2,
+exp:`<strong>Type A aortic dissection</strong> (involving ascending aorta) is a <strong>surgical emergency</strong>. It can extend proximally → aortic regurgitation, coronary ostia occlusion (MI), or rupture into pericardium → tamponade. Labetalol is used for Type B (descending only). The arm BP differential (>20 mmHg) confirms involvement of the great vessels. Thrombolytics are contraindicated — would catastrophically worsen the dissection.`,
+trap:`TRAP: Type A = ascending = surgery. Type B = descending = medical (labetalol). The BP differential between arms is a classic clue to vessel involvement in Type A.`},
+
+{t:'vasc',diff:'medium',
+vignette:`A <span class="vig-key">75-year-old male smoker</span> is seen in clinic. He is asymptomatic. Abdominal ultrasound obtained for another reason reveals a <span class="vig-key">5.2 cm infrarenal aortic aneurysm</span>. His BP is well controlled and he has no abdominal pain.`,
+q:"What is the most appropriate next step?",
+opts:["Repeat ultrasound in 6 months — threshold for repair is 6 cm","Emergent surgical repair — any aneurysm in a symptomatic patient requires repair","Elective surgical repair — threshold is >5 cm in most guidelines","Anticoagulation with warfarin to prevent thrombus formation in the aneurysm"],
+ans:2,
+exp:`<strong>AAA surgical repair threshold is >5 cm</strong>. At 5–6 cm the annual rupture risk is ~11%/yr; at >6 cm it exceeds 25%/yr. Surgical mortality (~5%) becomes favorable compared to rupture mortality (>50–80%). This patient at 5.2 cm meets the threshold for elective repair. Anticoagulation is not indicated for AAA. Watchful waiting is appropriate only for aneurysms <4.5–5 cm.`,
+trap:`TRAP: The threshold is >5 cm, not 6 cm. At 5.2 cm, this patient meets criteria for elective repair. Repair before rupture is crucial — ruptured AAA mortality exceeds 80%.`},
+
+{t:'vasc',diff:'medium',
+vignette:`A <span class="vig-key">35-year-old man with Marfan syndrome</span> presents to the ED with sudden severe chest pain radiating to the jaw. On exam, a new <span class="vig-key">early diastolic murmur</span> is audible at the left sternal border. CXR shows mild mediastinal widening. CT confirms ascending aortic dissection.`,
+q:"Which complication explains the new murmur?",
+opts:["Mitral regurgitation from papillary muscle ischemia","Aortic regurgitation from dissection extending to and distorting the aortic valve annulus","Tricuspid regurgitation from right heart dilation","Pulmonary regurgitation from pulmonary hypertension"],
+ans:1,
+exp:`Type A dissection extending proximally can distort the <strong>aortic valve annulus</strong> → acute <strong>aortic regurgitation</strong> (early diastolic murmur at LSB). This is a recognized complication that also adds urgency to surgical repair. Marfan syndrome causes cystic medial degeneration of the aorta + FBN1 mutation → aortic root dilation → dissection. AR + dissection = emergent surgery.`,
+trap:`TRAP: New diastolic murmur after chest tearing pain in a young Marfan patient = AR from aortic root involvement in dissection, not a primary valve problem.`},
+
+{t:'vasc',diff:'hard',
+vignette:`A <span class="vig-key">62-year-old man</span> presents with "the worst headache of my life" that began suddenly 2 hours ago. He is photophobic with neck stiffness. CT head is negative for hemorrhage. Lumbar puncture shows <span class="vig-key">xanthochromia</span> and elevated RBCs that do <strong>not</strong> decrease from tube 1 to tube 4.`,
+q:"What is the underlying vascular pathology?",
+opts:["Charcot-Bouchard microaneurysm rupture in the basal ganglia","Hypertensive encephalopathy from malignant HTN","Saccular (berry) aneurysm rupture at a Circle of Willis bifurcation","Carotid artery dissection from neck trauma"],
+ans:2,
+exp:`<strong>Berry (saccular) aneurysm rupture → subarachnoid hemorrhage</strong>. Classic presentation: thunderclap "worst headache of life" + meningismus. CT negative in ~5% early SAH → LP confirms with xanthochromia (bilirubin from RBC lysis) + non-clearing RBCs. Berry aneurysms form at <strong>Circle of Willis bifurcations</strong> due to congenital media defect. Associated with ADPKD and coarctation. Charcot-Bouchard = deep brain (basal ganglia), HTN-related — different location and mechanism.`,
+trap:`TRAP: Charcot-Bouchard (HTN) = basal ganglia deep hemorrhage. Berry = subarachnoid space from bifurcation rupture. The thunderclap headache + LP findings = SAH from berry, not deep brain hemorrhage.`},
+
+{t:'vasc',diff:'medium',
+vignette:`A <span class="vig-key">70-year-old man</span> is found at autopsy to have a thickened, calcified aortic arch with wrinkling of the intima described as a <span class="vig-key">"tree-bark" appearance</span>. Histology shows obliterative endarteritis of the <span class="vig-key">vasa vasorum</span> with medial necrosis and loss of elastic fibers. There is significant dilation of the ascending aorta.`,
+q:"What is the most likely underlying etiology?",
+opts:["Atherosclerosis from hyperlipidemia","Cystic medial degeneration from Marfan syndrome","Tertiary syphilis with syphilitic aortitis","Takayasu arteritis with granulomatous inflammation"],
+ans:2,
+exp:`<strong>Syphilitic aortitis</strong>: tertiary syphilis → Treponema pallidum infects vasa vasorum → obliterative endarteritis → medial ischemia → elastic fiber destruction → "tree-bark" wrinkled intima → aneurysm. <strong>Always involves the ascending aorta</strong>. Can dilate the aortic root → AR. Chlamydial/atherosclerotic disease affects the abdominal aorta. Marfan = cystic medial degeneration without vasa vasorum endarteritis.`,
+trap:`TRAP: Syphilitic aortitis = ascending aorta (always). Atherosclerotic AAA = infrarenal abdominal aorta (always). Location is the key discriminator.`},
+
+// ── VASCULITIS ──────────────────────────────────────────────────────────
+{t:'vas',diff:'easy',
+vignette:`A <span class="vig-key">68-year-old woman</span> presents with a 3-week history of severe headache, <span class="vig-key">jaw pain when chewing</span>, and tenderness over her right temple. She also reports bilateral shoulder and hip aching for 2 months. Visual acuity is normal. ESR is 95 mm/hr.`,
+q:"What is the most important immediate next step?",
+opts:["MRI brain to rule out intracranial pathology","Begin high-dose corticosteroids before biopsy confirmation","Temporal artery biopsy first, then steroids only if positive","NSAIDs for presumed tension headache"],
+ans:1,
+exp:`<strong>Giant Cell (Temporal) Arteritis</strong>: jaw claudication + temporal tenderness + elevated ESR in an elderly woman = classic. The most important immediate step is <strong>high-dose steroids before biopsy</strong> to prevent <strong>irreversible vision loss</strong> from ophthalmic artery occlusion. Biopsy can be done within days of starting steroids (skip lesions remain identifiable). Delaying steroids to wait for biopsy risks blindness.`,
+trap:`TRAP: Start steroids FIRST, THEN biopsy. Never delay treatment waiting for biopsy confirmation when GCA is suspected — vision loss can be permanent.`},
+
+{t:'vas',diff:'medium',
+vignette:`A <span class="vig-key">28-year-old Asian woman</span> presents with left arm fatigue during exercise and a 3-month history of low-grade fever and weight loss. BP is <span class="vig-key">160/95 in the right arm</span> and <span class="vig-key">90/60 in the left arm</span>. No radial pulse is palpable on the left. Angiography shows narrowing of the aortic arch branches.`,
+q:"What is the underlying pathology?",
+opts:["Atherosclerotic occlusion of the subclavian artery","Granulomatous inflammation of the aorta and its major branches","Fibromuscular dysplasia of the subclavian artery","Thromboangiitis obliterans affecting upper extremity vessels"],
+ans:1,
+exp:`<strong>Takayasu Arteritis</strong> ("pulseless disease"): young Asian woman + unequal arm BPs + absent pulse + constitutional symptoms + aortic arch narrowing on angiography = classic. <strong>Granulomatous inflammation</strong> of the aorta and its branches causes wall thickening → stenosis → ischemia. ESR is elevated. Treat with corticosteroids. FMD affects medium-sized vessels (renal) and doesn't cause constitutional symptoms.`,
+trap:`TRAP: Takayasu = large vessel (aorta and branches), young Asian women, granulomatous. Giant Cell = large vessel but elderly women, temporal artery, jaw claudication. Age is the key discriminator.`},
+
+{t:'vas',diff:'medium',
+vignette:`A <span class="vig-key">52-year-old man</span> presents with fever, weight loss, and new hypertension. Labs show creatinine 2.8, positive hepatitis B surface antigen, and elevated ESR. Angiography of mesenteric vessels shows <span class="vig-key">multiple small aneurysms and areas of stenosis</span> in a "string of beads" pattern. Urinalysis shows no casts. Chest X-ray is normal.`,
+q:"Which finding would be most expected in this patient?",
+opts:["c-ANCA (PR3) positive serology","p-ANCA (MPO) positive serology","ANCA negative serology","Elevated anti-dsDNA antibodies"],
+ans:2,
+exp:`<strong>Polyarteritis Nodosa (PAN)</strong>: medium vessel vasculitis. Classic features: Hepatitis B association + HTN + renal failure + mesenteric ischemia + "string of beads" on angiography + <strong>ANCA negative</strong>. PAN notably <strong>spares pulmonary arteries and glomeruli</strong> (no glomerulonephritis, no pulmonary involvement). c-ANCA = GPA (Wegener). p-ANCA = MPA or EGPA. PAN = no ANCA.`,
+trap:`TRAP: PAN is ANCA negative. Students often assume any vasculitis is ANCA-positive. The Hep B association + no lung involvement + no ANCA = PAN.`},
+
+{t:'vas',diff:'hard',
+vignette:`A <span class="vig-key">45-year-old man</span> presents with 3 months of sinusitis that has not responded to antibiotics, hemoptysis, and now hematuria. On exam, he has a <span class="vig-key">saddle-nose deformity</span>. Urinalysis shows RBC casts. Chest CT reveals bilateral cavitary nodules. Serology is positive for <span class="vig-key">c-ANCA</span>.`,
+q:"What is the classic triad of this disease?",
+opts:["Fever, weight loss, and night sweats","Upper respiratory tract + lower respiratory tract + glomerulonephritis","Hepatitis + skin vasculitis + arthritis","Eosinophilia + asthma + pulmonary infiltrates"],
+ans:1,
+exp:`<strong>GPA (Granulomatosis with Polyangiitis / Wegener)</strong>: c-ANCA (anti-PR3) + saddle-nose deformity (septal destruction) + cavitary pulmonary nodules + glomerulonephritis (RBC casts) = classic. The triad is <strong>upper respiratory + lower respiratory + kidney</strong>. Saddle-nose = cartilage destruction from necrotizing granulomatous inflammation. Treat with cyclophosphamide + steroids.`,
+trap:`TRAP: EGPA (Churg-Strauss) = asthma + eosinophilia + p-ANCA. GPA (Wegener) = sinusitis + pulmonary nodules + GN + c-ANCA + saddle-nose. The c-ANCA vs p-ANCA distinction is the key differentiator.`},
+
+{t:'vas',diff:'medium',
+vignette:`A <span class="vig-key">7-year-old boy</span> presents with palpable purpura on his <span class="vig-key">buttocks and lower extremities</span>, bilateral knee and ankle pain, and crampy abdominal pain. Urinalysis shows microscopic hematuria. He had a streptococcal throat infection 2 weeks ago. Platelet count and PT/PTT are normal.`,
+q:"What would kidney biopsy most likely show?",
+opts:["Linear IgG deposits along the glomerular basement membrane","Granular IgA deposits in the mesangium","Glomerular crescent formation with no immune deposits","Thickening of the GBM with subepithelial deposits"],
+ans:1,
+exp:`<strong>IgA Vasculitis (Henoch-Schönlein Purpura / HSP)</strong>: most common vasculitis in children. Post-streptococcal + palpable purpura on buttocks/legs + arthritis + GI pain + hematuria. Biopsy shows <strong>IgA deposits in the mesangium</strong> — same as IgA nephropathy (Berger disease) but systemic. Normal platelets = not thrombocytopenic purpura. Linear IgG = Goodpasture. Crescents = RPGN.`,
+trap:`TRAP: Normal platelets rule out ITP. Purpura on the buttocks in a child after URI = HSP until proven otherwise. IgA mesangial deposits connect it to IgA nephropathy.`},
+
+{t:'vas',diff:'hard',
+vignette:`A <span class="vig-key">55-year-old male smoker</span> presents with a 6-month history of painful fingertip ulcers, Raynaud phenomenon, and recurrent superficial thrombophlebitis. He has no history of diabetes or atherosclerosis risk factors beyond smoking. Angiography shows <span class="vig-key">segmental occlusions</span> of the distal radial and ulnar arteries with corkscrew collaterals.`,
+q:"What is the only treatment that alters the course of this disease?",
+opts:["Aspirin and anticoagulation with warfarin","Immunosuppression with cyclophosphamide and prednisone","Complete tobacco cessation","Surgical bypass of the occluded segments"],
+ans:2,
+exp:`<strong>Buerger Disease (Thromboangiitis Obliterans)</strong>: young male smoker + distal limb ischemia + superficial thrombophlebitis + corkscrew collaterals on angiography = classic. Mechanism: tobacco toxins → inflammatory thrombus + microabscesses in vessel wall. Non-atherosclerotic, non-autoimmune. The <strong>only effective treatment is complete tobacco cessation</strong>. Anticoagulation and immunosuppression do not alter disease course. Surgical bypass fails because disease is diffuse and distal.`,
+trap:`TRAP: This is NOT an autoimmune vasculitis — steroids/cyclophosphamide don't work. STOP SMOKING is the answer. If the patient continues smoking, progression to amputation is inevitable.`},
+];
+
+let deck=[],idx=0,score=0,answered=false,activeFilter='all';
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function setFilter(btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  activeFilter=btn.dataset.t;
+  restart();
+}
+
+function buildDeck(){
+  const d=activeFilter==='all'?[...VIGNETTES]:VIGNETTES.filter(v=>v.t===activeFilter);
+  return shuffle(d);
+}
+
+function restart(){deck=buildDeck();idx=0;score=0;render();}
+
+const diffMap={easy:'diff-easy',medium:'diff-med',hard:'diff-hard'};
+
+function render(){
+  const m=document.getElementById('main');
+  if(idx>=deck.length){showDone();return}
+  const v=deck[idx];answered=false;
+  const pct=Math.round(idx/deck.length*100);
+  document.getElementById('pf').style.width=pct+'%';
+  document.getElementById('sc').textContent=`${score}/${idx}`;
+  m.innerHTML=`
+  <div class="vig-card">
+    <div class="vig-meta">
+      <span class="vig-num">Q${idx+1} of ${deck.length}</span>
+      <span class="vig-tag" style="${TAG_STYLES[v.t]||''}">${TAG_NAMES[v.t]||v.t}</span>
+      <span class="diff-badge ${diffMap[v.diff]||'diff-med'}">${v.diff.charAt(0).toUpperCase()+v.diff.slice(1)}</span>
+    </div>
+    <div class="vignette">${v.vignette}</div>
+    <div class="vig-q">${v.q}</div>
+    <div class="opts" id="opts">
+      ${v.opts.map((o,i)=>`<button class="opt" onclick="answer(this,${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}
+    </div>
+    <div class="explanation" id="exp"></div>
+    <button class="next-btn" id="nb" onclick="next()">${idx+1<deck.length?'Next Question →':'See Results'}</button>
+  </div>`;
+}
+
+function answer(btn,chosen){
+  if(answered)return;answered=true;
+  const v=deck[idx];
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.opt')[v.ans].classList.add('reveal');
+  const exp=document.getElementById('exp');
+  if(chosen===v.ans){
+    btn.classList.add('correct');score++;
+    exp.className='explanation show';exp.style.borderLeft='3px solid var(--green)';
+    exp.innerHTML=`<strong style="color:var(--green)">✓ Correct!</strong><br>${v.exp}${v.trap?`<div class="exp-trap">⚠️ ${v.trap}</div>`:''}`
+  }else{
+    btn.classList.add('wrong');
+    exp.className='explanation show';exp.style.borderLeft='3px solid var(--accent)';
+    const c=String.fromCharCode(65+v.ans);
+    exp.innerHTML=`<strong style="color:var(--accent)">✗ Answer is ${c}.</strong><br>${v.exp}${v.trap?`<div class="exp-trap">⚠️ ${v.trap}</div>`:''}`
+  }
+  document.getElementById('nb').classList.add('show');
+  document.getElementById('sc').textContent=`${score}/${idx+1}`;
+}
+
+function next(){idx++;render();}
+
+function showDone(){
+  const pct=Math.round(score/deck.length*100);
+  const msg=pct>=85?'🎉 Excellent!':pct>=70?'💪 Strong performance!':pct>=55?'📖 Keep drilling!':'📚 Review these sections';
+  document.getElementById('main').innerHTML=`
+  <div class="done">
+    <h2>Session Complete</h2>
+    <div class="done-pct" style="color:${pct>=70?'var(--green)':pct>=55?'var(--amber)':'var(--accent)'}">${pct}%</div>
+    <div class="done-sub">${score} of ${deck.length} correct · ${msg}</div>
+    <div class="done-grid">
+      <div class="done-box"><div class="done-box-n" style="color:var(--green)">${score}</div><div class="done-box-l">Correct</div></div>
+      <div class="done-box"><div class="done-box-n" style="color:var(--accent)">${deck.length-score}</div><div class="done-box-l">Incorrect</div></div>
+      <div class="done-box"><div class="done-box-n" style="color:var(--accent2)">${deck.length}</div><div class="done-box-l">Total</div></div>
+    </div>
+    <button class="btn-again" onclick="restart()">Restart</button>
+    <button class="btn-again outline" onclick="setFilter(document.querySelector('[data-t=\\'all\\']'))">All Topics</button>
+  </div>`;
+}
+
+restart();
+</script>
+</body>
+</html>
