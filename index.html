@@ -4,7 +4,478 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>AJ-Block3</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&display=swap" rel="stylesheet">
+  <style>
+    h1 { font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.01em; }
+    /* ── CSS Variables ──────────────────────────────────────── */
+    :root {
+      --bg:          #f5f3ef;
+      --bg-card:     #ffffff;
+      --bg-section:  #f5f3ef;
+      --surface:     #eceae4;
+      --border:      #e0ddd5;
+      --text:        #1a1816;
+      --text-soft:   #6b6660;
+      --text-muted:  #9e9890;
+      --accent:      #c0392b;       /* deep red — medical */
+      --accent-2:    #1a6b4a;       /* forest green */
+      --accent-3:    #1e3f7a;       /* navy */
+      --accent-warm: #d4631a;       /* amber-orange */
+      --tag-ln-bg:   #fff0ee;
+      --tag-ln-clr:  #9b2218;
+      --tag-hy-bg:   #eaf4f0;
+      --tag-hy-clr:  #145c38;
+      --tag-pq-bg:   #eef1fb;
+      --tag-pq-clr:  #1a3f82;
+      --tag-rc-bg:   #fdf6e8;
+      --tag-rc-clr:  #8a5200;
+      --tag-db-bg:   #f3eeff;
+      --tag-db-clr:  #5b2d9e;
+      --shadow-sm:   0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-md:   0 4px 16px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.05);
+      --shadow-lg:   0 12px 40px rgba(0,0,0,.12);
+      --radius:      14px;
+      --font-head:   'Syne', sans-serif;
+      --font-body:   'DM Sans', sans-serif;
+    }
+    body.dark {
+      --bg:          #141210;
+      --bg-card:     #1e1c19;
+      --bg-section:  #141210;
+      --surface:     #252320;
+      --border:      #302e2a;
+      --text:        #f0ece4;
+      --text-soft:   #a09890;
+      --text-muted:  #6b6358;
+      --tag-ln-bg:   #2e1612;
+      --tag-ln-clr:  #f08070;
+      --tag-hy-bg:   #0e2419;
+      --tag-hy-clr:  #5ecf94;
+      --tag-pq-bg:   #0e1a30;
+      --tag-pq-clr:  #7da8f5;
+      --tag-rc-bg:   #261a07;
+      --tag-rc-clr:  #f5c264;
+      --tag-db-bg:   #1a1030;
+      --tag-db-clr:  #b08eff;
+    }
+
+    /* ── Reset & Base ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.6;
+      transition: background .3s, color .3s;
+      /* subtle grain texture */
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+    }
+
+    .shell { max-width: 1180px; margin: 0 auto; padding: 0 24px 80px; }
+
+    /* ── Hero ───────────────────────────────────────────────── */
+    .hero {
+      padding: 48px 0 40px;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .hero-top-tag {
+      font-family: var(--font-head);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--tag-ln-bg);
+      padding: 5px 14px;
+      border-radius: 100px;
+      border: 1px solid rgba(192,57,43,.15);
+    }
+    .top-controls { display: flex; gap: 10px; flex-wrap: wrap; }
+    .control-btn {
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-soft);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 7px 16px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all .18s;
+    }
+    .control-btn:hover { color: var(--text); border-color: var(--text-muted); box-shadow: var(--shadow-sm); }
+
+    .hero h1 {
+      font-family: var(--font-head);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -.02em;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero > p {
+      max-width: 620px;
+      color: var(--text-soft);
+      font-size: 15px;
+      margin-bottom: 32px;
+      font-weight: 300;
+    }
+
+    /* ── Hero toolbar ───────────────────────────────────────── */
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-body);
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 9px 20px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: all .18s;
+      border: 1.5px solid transparent;
+    }
+    .btn:not(.secondary):not(.primary) {
+      background: var(--text);
+      color: var(--bg);
+    }
+    .btn:not(.secondary):not(.primary):hover {
+      background: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(192,57,43,.25);
+    }
+    .btn.secondary {
+      background: var(--bg-card);
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .btn.secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .btn.primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn.primary:hover {
+      background: #a93226;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(192,57,43,.3);
+    }
+
+    /* ── Utility bar ────────────────────────────────────────── */
+    .utility-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 0 4px;
+      flex-wrap: wrap;
+    }
+    .search-wrap { flex: 1; min-width: 220px; }
+    .search {
+      width: 100%;
+      padding: 10px 18px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      background: var(--bg-card);
+      color: var(--text);
+      border: 1.5px solid var(--border);
+      border-radius: 100px;
+      outline: none;
+      transition: border-color .18s, box-shadow .18s;
+    }
+    .search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(192,57,43,.1); }
+    .search::placeholder { color: var(--text-muted); }
+    .jump-links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pill {
+      font-family: var(--font-body);
+      font-size: 12.5px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 100px;
+      background: var(--surface);
+      color: var(--text-soft);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      transition: all .18s;
+    }
+    .pill:hover { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+    /* ── Progress bar ───────────────────────────────────────── */
+    .progress-bar-wrap {
+      margin: 16px 0 8px;
+      font-size: 13px;
+      color: var(--text-soft);
+      font-family: var(--font-body);
+    }
+    .progress-bar-track {
+      height: 6px;
+      background: var(--surface);
+      border-radius: 3px;
+      margin-top: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-2), #27ae60);
+      border-radius: 3px;
+      transition: width .5s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ── Section wrapper ────────────────────────────────────── */
+    .section-wrap { margin-top: 60px; }
+    .section-head { margin-bottom: 24px; }
+    .section-kicker {
+      font-family: var(--font-head);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .section-head h2 {
+      font-family: var(--font-head);
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -.02em;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .section-head p {
+      color: var(--text-soft);
+      max-width: 580px;
+      font-size: 14px;
+      font-weight: 300;
+    }
+    .section-line {
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
+      margin-bottom: 28px;
+      border-radius: 1px;
+      opacity: .35;
+    }
+
+    /* Section accent colors per section */
+    #hy-reviews .section-kicker,
+    #hy-reviews .section-line { color: var(--accent-2); }
+    #hy-reviews .section-line { background: linear-gradient(90deg, var(--accent-2) 0%, transparent 100%); }
+
+    #practice .section-kicker { color: var(--accent-3); }
+    #practice .section-line { background: linear-gradient(90deg, var(--accent-3) 0%, transparent 100%); }
+
+    #recall .section-kicker { color: var(--accent-warm); }
+    #recall .section-line { background: linear-gradient(90deg, var(--accent-warm) 0%, transparent 100%); }
+
+    /* ── Grid ───────────────────────────────────────────────── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    /* ── Cards ──────────────────────────────────────────────── */
+    .card {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: var(--shadow-sm);
+      transition: transform .2s, box-shadow .2s, border-color .2s, opacity .3s;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--text-muted);
+    }
+    .card h3 {
+      font-family: var(--font-head);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--text);
+      padding-right: 28px; /* room for check button */
+      transition: text-decoration .2s;
+    }
+    .card p {
+      font-size: 13.5px;
+      color: var(--text-soft);
+      font-weight: 300;
+      line-height: 1.55;
+    }
+    .list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-top: 2px;
+    }
+    .list li {
+      font-size: 13px;
+      color: var(--text-soft);
+      padding-left: 16px;
+      position: relative;
+    }
+    .list li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--text-muted);
+      font-size: 11px;
+      top: 1px;
+    }
+    .card-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      gap: 8px;
+    }
+    .card-actions .btn {
+      font-size: 12.5px;
+      padding: 7px 16px;
+    }
+    .meta {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-weight: 400;
+      font-style: italic;
+    }
+    .card.hidden { display: none; }
+
+    /* ── Tags ───────────────────────────────────────────────── */
+    .tag {
+      display: inline-block;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      border-radius: 100px;
+      padding: 3px 10px;
+      width: fit-content;
+    }
+    /* Lecture Notes */
+    #lecture-notes .tag,
+    .tag:not([class~="tag"]) { background: var(--tag-ln-bg); color: var(--tag-ln-clr); }
+    .tag { background: var(--tag-ln-bg); color: var(--tag-ln-clr); } /* default */
+
+    /* Override per section */
+    #hy-reviews .tag  { background: var(--tag-hy-bg); color: var(--tag-hy-clr); }
+    #practice .tag    { background: var(--tag-pq-bg); color: var(--tag-pq-clr); }
+    #recall .tag      { background: var(--tag-rc-bg); color: var(--tag-rc-clr); }
+
+    /* Database tag override */
+    .card[data-search*="database"] .tag { background: var(--tag-db-bg); color: var(--tag-db-clr); }
+
+    /* ── Step badges ────────────────────────────────────────── */
+    .step-badge {
+      display: inline-block;
+      font-size: 10.5px;
+      font-weight: 600;
+      border-radius: 100px;
+      padding: 3px 10px;
+      width: fit-content;
+      letter-spacing: .04em;
+    }
+    #lecture-notes .step-badge { background: var(--tag-ln-bg); color: var(--tag-ln-clr); border: 1px solid rgba(155,34,24,.12); }
+    #hy-reviews .step-badge    { background: var(--tag-hy-bg); color: var(--tag-hy-clr); border: 1px solid rgba(20,92,56,.12); }
+    #practice .step-badge      { background: var(--tag-pq-bg); color: var(--tag-pq-clr); border: 1px solid rgba(26,63,130,.12); }
+    #recall .step-badge        { background: var(--tag-rc-bg); color: var(--tag-rc-clr); border: 1px solid rgba(138,82,0,.12); }
+
+    /* ── Progress check buttons ─────────────────────────────── */
+    .progress-check {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: transparent;
+      transition: all .2s;
+      z-index: 2;
+    }
+    .progress-check:hover {
+      border-color: var(--accent-2);
+      color: var(--accent-2);
+    }
+    .progress-check.done {
+      background: var(--accent-2);
+      border-color: var(--accent-2);
+      color: #fff;
+    }
+    .card.completed { opacity: .6; }
+    .card.completed h3 {
+      text-decoration: line-through;
+      text-decoration-color: var(--accent-2);
+    }
+
+    /* ── Footer ─────────────────────────────────────────────── */
+    footer {
+      margin-top: 80px;
+      padding: 32px 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      font-family: var(--font-body);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    /* ── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .shell { padding: 0 16px 60px; }
+      .hero { padding: 32px 0 28px; }
+      .utility-bar { flex-direction: column; align-items: stretch; }
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Animations ─────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero { animation: fadeUp .5s ease both; }
+    .utility-bar { animation: fadeUp .5s .1s ease both; }
+    .section-wrap { animation: fadeUp .5s .15s ease both; }
+  </style>
 </head>
 <body>
   <div class="shell">
@@ -16,17 +487,19 @@
           <a class="control-btn" href="#practice">🎯 Jump to practice</a>
         </div>
       </div>
-      <h1>Block 3 Study Database.</h1>
+      <h1>Block 3 <span>Study</span> Database.</h1>
       <p>
-        Everything is organized into three lanes: your core lecture notes, high-yield review sheets,
-        and active practice tools. Reading → pattern recognition → recall. 
-        Please let me know if any links are broken! Thank you and good luck!!! 
+        Everything is organized into four lanes: core lecture notes, high-yield review sheets,
+        active practice tools, and recall drills. Reading → pattern recognition → practice → recall.
+        Please let me know if any links are broken! Thank you and good luck!!!
       </p>
       <div class="toolbar">
         <a class="btn" href="acute-mi.html">🫀 Acute MI</a>
         <a class="btn" href="cv-risk-chest-pain.html">📉 CV Risk + Chest Pain</a>
         <a class="btn" href="cardio-pathology.html">🧠 Cardio Pathology</a>
-        <a class="btn secondary" href="cardio_pharm_drill_blank.html">✍️ Start Pharm Drill</a>
+        <a class="btn secondary" href="cardio_qbank.html">📝 Start Q-Bank</a>
+        <a class="btn secondary" href="cardio_pharm_drill_blank.html">✍️ Pharm Drill</a>
+        <a class="btn secondary" href="Path-1R-Flashcards.html">🃏 Path Flashcards</a>
       </div>
     </section>
 
@@ -37,12 +510,24 @@
       <div class="jump-links">
         <a class="pill" href="#lecture-notes">📚 Lecture Notes</a>
         <a class="pill" href="#hy-reviews">⚡ HY Reviews</a>
-        <a class="pill" href="#practice">✅ Practice</a>
-        <a class="pill" href="#recall">✅ Recall</a>
-
+        <a class="pill" href="#practice">🧪 Practice</a>
+        <a class="pill" href="#recall">🔁 Recall</a>
       </div>
     </div>
 
+    <!-- PROGRESS BAR -->
+    <div>
+      <div class="progress-bar-wrap">
+        <span id="progress-label">Progress: 0 / 0 completed</span>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- SECTION 1 — LECTURE NOTES                                    -->
+    <!-- ============================================================ -->
     <section class="section-wrap" id="lecture-notes">
       <div class="section-head">
         <div class="section-copy">
@@ -53,8 +538,11 @@
       </div>
       <div class="section-line"></div>
       <section class="grid">
-        <article class="card searchable-card" data-search="hy review cardio pathology congenital lesions ischemic heart disease cardiomyopathy valve murmurs endocarditis pericardial">
+
+        <article class="card searchable-card" data-search="hy review cardio pathology congenital lesions ischemic heart disease cardiomyopathy valve murmurs endocarditis pericardial" data-id="card-1">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">HY Review</div>
+          <div class="step-badge">Step 1 of 4 — Read First</div>
           <h3>Cardio Pathology</h3>
           <p>Broader pathology review covering congenital lesions, ischemic heart disease, cardiomyopathies, heart failure, valvular disease, endocarditis, and pericardial disease.</p>
           <ul class="list">
@@ -67,9 +555,11 @@
             <span class="meta">Big-picture</span>
           </div>
         </article>
-        
-        <article class="card searchable-card" data-search="lecture notes acute mi ecg acs stemi nstemi rv infarct case based">
+
+        <article class="card searchable-card" data-search="lecture notes acute mi ecg acs stemi nstemi rv infarct case based" data-id="card-2">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Lecture Notes</div>
+          <div class="step-badge">Step 1 of 4 — Read First</div>
           <h3>Acute MI Wrap-Up</h3>
           <p>Detailed case-based guide covering ECG-first ACS workflow, NSTEMI vs STEMI, inferior MI, RCA localization, RV infarct, PCI vs thrombolytics, and discharge planning.</p>
           <ul class="list">
@@ -82,8 +572,10 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="lecture notes cv risk chest pain ascvd statin cac algorithm ecg troponin">
+        <article class="card searchable-card" data-search="lecture notes cv risk chest pain ascvd statin cac algorithm ecg troponin" data-id="card-3">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Lecture Notes</div>
+          <div class="step-badge">Step 1 of 4 — Read First</div>
           <h3>CV Risk + Chest Pain</h3>
           <p>High-information printable guide built around common exam questions: ECG vs troponin timing, HEART/TIMI use, statin groups, CAC, and follow-up monitoring.</p>
           <ul class="list">
@@ -96,41 +588,49 @@
             <span class="meta">Case-based</span>
           </div>
         </article>
-        
-        <article class="card searchable-card" data-search="study guide pharm">
+
+        <article class="card searchable-card" data-search="study guide pharm cv pharmacology exam 2 high yield drug class" data-id="card-4">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Lecture Notes</div>
+          <div class="step-badge">Step 1 of 4 — Read First</div>
           <h3>Pharm Exam 2 Study Guide</h3>
-          <p>HY info across all of CV Pharm. See Drug Reference for detailed information about specific drugs</p>
+          <p>High-yield overview of all CV Pharm drug classes — mechanisms, indications, and key testing angles. Read this before diving into individual drug details. Pair with the Drug Reference for specifics.</p>
           <div class="card-actions">
             <a class="btn" href="Exam2-Highyield.pdf">Read Guide</a>
             <span class="meta">Big-Picture</span>
           </div>
         </article>
-        
-        <article class="card searchable-card" data-search="study guide pharm drugs">
+
+        <article class="card searchable-card" data-search="study guide pharm drugs cv drug reference individual agents side effects contraindications" data-id="card-5">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Lecture Notes</div>
-          <h3>Drug Reference Exam 2 Study Guide</h3>
-          <p>HY info for each CV drug See Pharm Exam 2 Study Guide for more general drug class information</p>
+          <div class="step-badge">Step 1 of 4 — Read First</div>
+          <h3>Drug Reference — Exam 2</h3>
+          <p>Per-drug HY reference covering mechanisms, indications, side effects, and contraindications for every major CV agent. Companion to the Pharm Exam 2 Study Guide — use that first for the big picture.</p>
           <div class="card-actions">
             <a class="btn" href="cardio_drug_reference.pdf">Read Guide</a>
-            <span class="meta">Big-Picture</span>
+            <span class="meta">Drug-by-drug</span>
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="database pharm">
+        <article class="card searchable-card" data-search="database cardio algorithms pathways comprehensive reference cardio database" data-id="card-6">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Database</div>
+          <div class="step-badge">Step 1 of 4 — Read First</div>
           <h3>Cardio Database</h3>
-          <p>Database - upload info</p>
+          <p>Comprehensive reference database of cardiology topics, algorithms, and pathways. A go-to resource for looking up specific conditions, drug interactions, and diagnostic criteria across the block.</p>
           <div class="card-actions">
             <a class="btn" href="1cardio_database.html">Open Database</a>
             <span class="meta">Algorithm-heavy</span>
           </div>
         </article>
-          
 
       </section>
     </section>
 
+    <!-- ============================================================ -->
+    <!-- SECTION 2 — HY REVIEWS                                       -->
+    <!-- ============================================================ -->
     <section class="section-wrap" id="hy-reviews">
       <div class="section-head">
         <div class="section-copy">
@@ -141,8 +641,11 @@
       </div>
       <div class="section-line"></div>
       <section class="grid">
-        <article class="card searchable-card" data-search="HY pharm anticoagulants antiplatelets aspirin heparin warfarin doac tpa">
-          <div class="tag">HY Reviews</div>
+
+        <article class="card searchable-card" data-search="HY review pharm anticoagulants antiplatelets aspirin heparin warfarin doac tpa reversal hit" data-id="card-7">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
+          <div class="tag">HY Review</div>
+          <div class="step-badge">Step 2 of 4 — Review</div>
           <h3>Anticoagulants & Antiplatelets Review</h3>
           <p>Comprehensive interactive review covering heparin, warfarin, DOACs, tPA, aspirin, and P2Y12 inhibitors with vignettes, diagrams, and practice questions.</p>
           <ul class="list">
@@ -156,14 +659,16 @@
             <span class="meta">Deep dive</span>
           </div>
         </article>
-        
-        <article class="card searchable-card" data-search="practice questions pharm antiarrhythmic">
-          <div class="tag">HY Reviews</div>
+
+        <article class="card searchable-card" data-search="HY review pharm antiarrhythmic class I II III IV vaughan williams sodium channel beta blocker" data-id="card-8">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
+          <div class="tag">HY Review</div>
+          <div class="step-badge">Step 2 of 4 — Review</div>
           <h3>Antiarrhythmics Review</h3>
-          <p>Comprehensive interactive review covering antiarrhythmic pharm with vignettes, diagrams, and practice questions.</p>
+          <p>Comprehensive interactive review covering the Vaughan-Williams classes, key drugs per class, indications, and classic exam traps for antiarrhythmic pharm.</p>
           <ul class="list">
-            <li>Mechanisms + pathways</li>
-            <li>HIT, reversal agents, drug selection</li>
+            <li>Class I–IV mechanisms + action potentials</li>
+            <li>Drug selection by arrhythmia type</li>
             <li>Step 1 testing angles + traps</li>
             <li>Interactive questions + diagrams</li>
           </ul>
@@ -173,13 +678,15 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="practice questions pharm heart failure">
+        <article class="card searchable-card" data-search="HY review pharm heart failure hf neurohormonal ACE ARB beta blocker spironolactone diuretic" data-id="card-9">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">HY Review</div>
+          <div class="step-badge">Step 2 of 4 — Review</div>
           <h3>Heart Failure Pharm Review</h3>
-          <p>Comprehensive interactive review covering heart failure pharm with vignettes, diagrams, and practice questions.</p>
+          <p>Interactive review of HF pharmacotherapy — neurohormonal blockade, diuretics, and newer agents — with vignettes, mechanism diagrams, and practice questions.</p>
           <ul class="list">
-            <li>Mechanisms + pathways</li>
-            <li>HIT, reversal agents, drug selection</li>
+            <li>Neurohormonal pathway targets</li>
+            <li>Drug selection by HFrEF vs HFpEF</li>
             <li>Step 1 testing angles + traps</li>
             <li>Interactive questions + diagrams</li>
           </ul>
@@ -188,14 +695,16 @@
             <span class="meta">Deep dive</span>
           </div>
         </article>
-        
-        <article class="card searchable-card" data-search="practice questions pharm hypertension antihypertensives antihypertension">
-          <div class="tag">HY Reviews</div>
+
+        <article class="card searchable-card" data-search="HY review pharm hypertension antihypertensives CCB ACE ARB thiazide beta blocker resistant" data-id="card-10">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
+          <div class="tag">HY Review</div>
+          <div class="step-badge">Step 2 of 4 — Review</div>
           <h3>Hypertension Pharm Review</h3>
-          <p>Comprehensive interactive review covering hypertension pharm with vignettes, diagrams, and practice questions.</p>
+          <p>Comprehensive interactive review of antihypertensive drug classes, step therapy, and special populations with vignettes and practice questions.</p>
           <ul class="list">
-            <li>Mechanisms + pathways</li>
-            <li>HIT, reversal agents, drug selection</li>
+            <li>Step therapy and combination strategies</li>
+            <li>Drug selection by comorbidity</li>
             <li>Step 1 testing angles + traps</li>
             <li>Interactive questions + diagrams</li>
           </ul>
@@ -204,14 +713,16 @@
             <span class="meta">Deep dive</span>
           </div>
         </article>
-        
-        <article class="card searchable-card" data-search="practice questions pharm lipid lowering">
-          <div class="tag">HY Reviews</div>
+
+        <article class="card searchable-card" data-search="HY review pharm lipid lowering statin fibrate niacin PCSK9 ezetimibe cholesterol LDL" data-id="card-11">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
+          <div class="tag">HY Review</div>
+          <div class="step-badge">Step 2 of 4 — Review</div>
           <h3>Lipid Lowering Pharm Review</h3>
-          <p>Comprehensive interactive review covering lipid lowering pharm with vignettes, diagrams, and practice questions.</p>
+          <p>Comprehensive review of lipid-lowering agents including statins, fibrates, niacin, PCSK9 inhibitors, and ezetimibe — mechanisms, monitoring, and side effects.</p>
           <ul class="list">
-            <li>Mechanisms + pathways</li>
-            <li>HIT, reversal agents, drug selection</li>
+            <li>Mechanisms + LDL/TG/HDL effects</li>
+            <li>Statin intensity tiers + monitoring</li>
             <li>Step 1 testing angles + traps</li>
             <li>Interactive questions + diagrams</li>
           </ul>
@@ -221,151 +732,64 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="recall pharm case based">
-          <div class="tag">HY Reviews</div>
-          <h3>Pharm Class Recall (Answers)</h3>
-          <p>Detailed Answers to Recall Fill In Blanks</p>
+        <article class="card searchable-card" data-search="HY review recall pharm drug class answers fill blank key concepts cardio pharm drill" data-id="card-12">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
+          <div class="tag">HY Review</div>
+          <div class="step-badge">Step 2 of 4 — Review</div>
+          <h3>Pharm Class Recall — Answer Key</h3>
+          <p>The answer key for the Pharm Drug Class Recall drill. Review this after attempting the blank version to check your knowledge of mechanisms, indications, and drug comparisons.</p>
           <div class="card-actions">
-            <a class="btn" href="cardio_pharm_drill_blank.html">Open Review</a>
-            <span class="meta">Deep Dive</span>
+            <a class="btn" href="cardio_pharm_drill_blank.html">Open Answer Key</a>
+            <span class="meta">Answer Key</span>
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="recall pharm case based">
-          <div class="tag">HY Reviews</div>
+        <article class="card searchable-card" data-search="HY review pharm comparisons similar drugs differences key distinguishing exam traps concept map" data-id="card-13">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
+          <div class="tag">HY Review</div>
+          <div class="step-badge">Step 2 of 4 — Review</div>
           <h3>Pharm HY Comparisons</h3>
-          <p>HY key drugs to be able to compare and know the difference between</p>
+          <p>Side-by-side comparisons of commonly confused CV drug pairs and classes — helps you distinguish drugs that test similarly and avoid classic exam distractors.</p>
           <div class="card-actions">
             <a class="btn" href="cardio_exam2_concept_map.html">Open Review</a>
-            <span class="meta">Deep Dive</span>
+            <span class="meta">Comparison tables</span>
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="recall path valvular disease valve case based">
-          <div class="tag">HY Review & Recall</div>
-          <h3>Summary of the MI Timeline and some practice questions</h3>
-          <p>HY Information to identify the associated pathology with MIs as time progresses</p>
+        <article class="card searchable-card" data-search="HY review recall path MI timeline myocardial infarction progression pathology changes time gross micro" data-id="card-14">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
+          <div class="tag">HY Review</div>
+          <div class="step-badge">Step 2 of 4 — Review</div>
+          <h3>MI Timeline — Pathology Review</h3>
+          <p>HY summary of the cellular, gross, and microscopic changes that occur in the myocardium from minutes to weeks after an MI. Includes practice questions on timeline identification.</p>
           <div class="card-actions">
             <a class="btn" href="Path-3R-MI_Timeline.html">Open Review</a>
-            <span class="meta">Recall mode</span>
+            <span class="meta">Timeline + questions</span>
           </div>
         </article>
 
       </section>
     </section>
 
-    <section class="section-wrap" id="recall">
-      <div class="section-head">
-        <div class="section-copy">
-          <div class="section-kicker">Section 3</div>
-          <h2>Pharm & Path Recall</h2>
-          <p>Recall of HY Pharm information. Best for first-pass review and building the framework before memorizing details. Focus is on: Mechanisms and pathways, Side effects and contraindications, Trap explanations<p>
-      </div>
-    </div>
-      <div class="section-line"></div>
-      <section class="grid">
-        <article class="card searchable-card" data-search="recall pharm case based">
-          <div class="tag">Recall</div>
-          <h3>Drug Class HY Recall (Blank)</h3>
-          <p>Detailed Recall Fill In Blanks</p>
-          <ul class="list">
-            <li>Fill in the blank style focused on drug class information- See HY Reviews for answers</li>
-          </ul>
-          <div class="card-actions">
-            <a class="btn" href="cardio_pharm_drill_blank.html">Start drill</a>
-            <span class="meta">Recall mode</span>
-          </div>
-        </article>
-        
-        <article class="card searchable-card" data-search="recall pharm case based">
-          <div class="tag">Recall</div>
-          <h3>Pharm Drug Flashcards</h3>
-          <p>Detailed HY Recall</p>
-          <ul class="list">
-            <li>Flashcards on Block 3 Cardio Drugs</li>
-          </ul>
-          <div class="card-actions">
-            <a class="btn" href="CV-Pharm-FlashCardDrill.html">Start drill</a>
-            <span class="meta">Recall mode</span>
-          </div>
-        </article>
-        
-        <article class="card searchable-card" data-search="recall pharm case based">
-          <div class="tag">Recall</div>
-          <h3>HF Pharm & Releated DRT Recall</h3>
-          <p>Detailed HY Recall guide, fill in the blank</p>
-          <div class="card-actions">
-            <a class="btn" href="hf_pharm_recall.html">Start drill</a>
-            <span class="meta">Recall mode</span>
-          </div>
-        </article>
-
-        <article class="card searchable-card" data-search="recall pharm case based">
-          <div class="tag">Recall</div>
-          <h3>HTN Pharm Recall</h3>
-          <p>Detailed HTN Recall guide, fill in the blank</p>
-          <div class="card-actions">
-            <a class="btn" href="htn_pharm_recall.html">Start drill</a>
-            <span class="meta">Recall mode</span>
-          </div>
-        </article>
-
-        <article class="card searchable-card" data-search="recall path case based">
-          <div class="tag">Recall</div>
-          <h3>Path HY Flashcards</h3>
-          <p>Flashcards on all path diseases and lectures</p>
-          <div class="card-actions">
-            <a class="btn" href="Path-1R-Flashcards.html">Start drill</a>
-            <span class="meta">Recall mode</span>
-          </div>
-        </article>
-
-        <article class="card searchable-card" data-search="recall path valvular disease valve case based">
-          <div class="tag">Recall</div>
-          <h3>Path Valve Disease Key Word Identifiers</h3>
-          <p>Identify distinguishing features across all valvular diseases</p>
-          <div class="card-actions">
-            <a class="btn" href="Path-2R-Valve-Identifier.html">Start drill</a>
-            <span class="meta">Recall mode</span>
-          </div>
-        </article>
-
-        <article class="card searchable-card" data-search="recall path valvular disease valve case based">
-          <div class="tag">Recall</div>
-          <h3>Path Disease Vignette Identifiers</h3>
-          <p>Flashcard style identifying key terms to help distinguishing cardio path diseases</p>
-          <div class="card-actions">
-            <a class="btn" href="Path-4R-Clinical-Identifier.html">Start drill</a>
-            <span class="meta">Recall mode</span>
-          </div>
-        </article>
-
-        <article class="card searchable-card" data-search="recall path valvular disease valve case based">
-          <div class="tag">Recall</div>
-          <h3>Path HY Fill in the Blanks (Hard)</h3>
-          <p>Fill in the blank style of the HY information for each disease. Note, this is hard and almost better as a cheat sheet</p>
-          <div class="card-actions">
-            <a class="btn" href="Path-2R-Valve-Identifier.html">Start drill</a>
-            <span class="meta">Recall mode</span>
-          </div>
-        </article>
-        
-      </section>
-    </section>
-
+    <!-- ============================================================ -->
+    <!-- SECTION 3 — PRACTICE QUESTIONS                               -->
+    <!-- ============================================================ -->
     <section class="section-wrap" id="practice">
       <div class="section-head">
         <div class="section-copy">
-          <div class="section-kicker">Section 4</div>
+          <div class="section-kicker">Section 3</div>
           <h2>Practice Questions</h2>
-          <p>Active recall tools for mechanisms, contraindications, and classic trap questions. Best used after you’ve read the lecture pages once.</p>
+          <p>Active recall tools for mechanisms, contraindications, and classic trap questions. Best used after you've read the lecture pages once.</p>
         </div>
       </div>
       <div class="section-line"></div>
       <section class="grid">
-        <article class="card searchable-card" data-search="practice questions q bank qbank cardio exam 2 tutor timed angina lipids heart failure htn anticoag">
+
+        <article class="card searchable-card" data-search="practice questions q bank qbank cardio exam 2 tutor timed angina lipids heart failure htn anticoag" data-id="card-15">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Practice Questions</div>
-          <h3>1. Cardio Exam 2 Q-Bank</h3>
+          <div class="step-badge">Step 3 of 4 — Practice</div>
+          <h3>Cardio 1 — Cardio Exam 2 Q-Bank</h3>
           <p>Do this 1st! Interactive 40-question bank with tutor mode, timed mode, lecture filters, flagging, review mode, and detailed explanations with trap callouts.</p>
           <div class="card-actions">
             <a class="btn" href="cardio_qbank.html">Open Q-Bank</a>
@@ -373,45 +797,173 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="pharm question bank">
+        <article class="card searchable-card" data-search="practice questions pharm question bank cv pharmacology exam 2" data-id="card-16">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Practice Questions</div>
-          <h3>2. Pharm Practice Question Qbank</h3>
-          <p>Do this 2nd! Qbank based upon practice questions</p>
+          <div class="step-badge">Step 3 of 4 — Practice</div>
+          <h3>Pharm 1 — Pharm Practice Question Q-Bank</h3>
+          <p>Do this 2nd! Core pharm Q-bank based on high-yield practice questions covering all CV drug classes tested on Exam 2.</p>
           <div class="card-actions">
-            <a class="btn" href="Cardio Exam 2 — Pharm Study Platform.html">Open Q bank</a>
+            <a class="btn" href="Cardio Exam 2 — Pharm Study Platform.html">Open Q-Bank</a>
             <span class="meta">Interactive</span>
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="pharm question bank">
+        <article class="card searchable-card" data-search="practice questions pharm formative question bank expanded concepts cv pharmacology" data-id="card-17">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Practice Questions</div>
-          <h3>3. Pharm Formative Qbank</h3>
-          <p>Do this 3rd! Building off "Pharm Practice Question QbanK" this expanded qbank asks about similar concepts but in a different way</p>
+          <div class="step-badge">Step 3 of 4 — Practice</div>
+          <h3>Pharm 2 — Pharm Formative Q-Bank</h3>
+          <p>Do this 3rd! Builds on the Pharm Practice Q-Bank with expanded questions that test the same concepts from different angles — great for solidifying knowledge before the exam.</p>
           <div class="card-actions">
-            <a class="btn" href="CardioExam2-ExpandedQBank.html">Open Q bank</a>
+            <a class="btn" href="CardioExam2-ExpandedQBank.html">Open Q-Bank</a>
             <span class="meta">Interactive</span>
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="pharm question bank">
+        <article class="card searchable-card" data-search="practice questions path pathology clinical vignettes NBME style disease identification cardio" data-id="card-18">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Practice Questions</div>
-          <h3>1. Path Clinical Qbank</h3>
-          <p>NBME style questions focused on correctly identifying different diseases and distinguishing between distractors</p>
-          <div class="card-actions"
-            <a class="btn" href="Path-1Q-Clinical_Vignettes.html">Open Q bank</a>
+          <div class="step-badge">Step 3 of 4 — Practice</div>
+          <h3>Path 1 — Path Clinical Vignette Q-Bank</h3>
+          <p>NBME-style questions focused on correctly identifying different cardiology diseases and distinguishing between distractors. Emphasis on clinical presentation and pathology findings.</p>
+          <div class="card-actions">
+            <a class="btn" href="Path-1Q-Clinical_Vignettes.html">Open Q-Bank</a>
             <span class="meta">Interactive</span>
           </div>
         </article>
-    
+
+      </section>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SECTION 4 — RECALL                                           -->
+    <!-- ============================================================ -->
+    <section class="section-wrap" id="recall">
+      <div class="section-head">
+        <div class="section-copy">
+          <div class="section-kicker">Section 4</div>
+          <h2>Pharm &amp; Path Recall</h2>
+          <p>Active recall drills to lock in HY pharm and path information. Best used after reading lectures and reviews — focus on mechanisms, side effects, contraindications, and trap explanations.</p>
+        </div>
+      </div>
+      <div class="section-line"></div>
+      <section class="grid">
+
+        <article class="card searchable-card" data-search="recall pharm drug class fill blank mechanisms indications side effects cv pharm drill" data-id="card-19">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
+          <div class="tag">Recall</div>
+          <div class="step-badge">Step 4 of 4 — Recall</div>
+          <h3>Drug Class HY Recall (Blank)</h3>
+          <p>Fill-in-the-blank drill covering mechanisms, indications, side effects, and contraindications for all major CV drug classes. Attempt this before checking the Answer Key in HY Reviews.</p>
+          <ul class="list">
+            <li>Fill-in-the-blank — drug class focus</li>
+            <li>See HY Reviews for the answer key</li>
+          </ul>
+          <div class="card-actions">
+            <a class="btn" href="cardio_pharm_drill_blank.html">Start Drill</a>
+            <span class="meta">Recall mode</span>
+          </div>
+        </article>
+
+        <article class="card searchable-card" data-search="recall pharm flashcards block 3 cardio drugs individual agents spaced repetition" data-id="card-20">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
+          <div class="tag">Recall</div>
+          <div class="step-badge">Step 4 of 4 — Recall</div>
+          <h3>Pharm Drug Flashcards</h3>
+          <p>Flashcard drill covering individual Block 3 cardio drugs — mechanisms, indications, side effects, and key distinguishing features for each agent.</p>
+          <ul class="list">
+            <li>Individual drug focus (not class-level)</li>
+            <li>Great for pinning down specific agents</li>
+          </ul>
+          <div class="card-actions">
+            <a class="btn" href="CV-Pharm-FlashCardDrill.html">Start Drill</a>
+            <span class="meta">Recall mode</span>
+          </div>
+        </article>
+
+        <article class="card searchable-card" data-search="recall pharm heart failure HF pharm fill blank DRT diuretics neurohormonal agents" data-id="card-21">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
+          <div class="tag">Recall</div>
+          <div class="step-badge">Step 4 of 4 — Recall</div>
+          <h3>HF Pharm &amp; Related DRT Recall</h3>
+          <p>Fill-in-the-blank recall guide focused on heart failure pharmacotherapy and related drug-receptor targets. Pair with the HF Pharm HY Review for answers.</p>
+          <div class="card-actions">
+            <a class="btn" href="hf_pharm_recall.html">Start Drill</a>
+            <span class="meta">Recall mode</span>
+          </div>
+        </article>
+
+        <article class="card searchable-card" data-search="recall pharm hypertension HTN antihypertensive fill blank drug classes step therapy" data-id="card-22">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
+          <div class="tag">Recall</div>
+          <div class="step-badge">Step 4 of 4 — Recall</div>
+          <h3>HTN Pharm Recall</h3>
+          <p>Fill-in-the-blank recall guide for antihypertensive drug classes, step therapy, and special population drug selection. Pair with the Hypertension Pharm HY Review for answers.</p>
+          <div class="card-actions">
+            <a class="btn" href="htn_pharm_recall.html">Start Drill</a>
+            <span class="meta">Recall mode</span>
+          </div>
+        </article>
+
+        <article class="card searchable-card" data-search="recall path pathology flashcards all diseases lectures cardio block 3" data-id="card-23">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
+          <div class="tag">Recall</div>
+          <div class="step-badge">Step 4 of 4 — Recall</div>
+          <h3>Path HY Flashcards</h3>
+          <p>Flashcards spanning all cardiology pathology diseases and lectures from Block 3. Use these to drill disease recognition and recall key facts across the full path curriculum.</p>
+          <div class="card-actions">
+            <a class="btn" href="Path-1R-Flashcards.html">Start Drill</a>
+            <span class="meta">Recall mode</span>
+          </div>
+        </article>
+
+        <article class="card searchable-card" data-search="recall path valvular disease valve keyword identifiers distinguishing features murmur clues" data-id="card-24">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
+          <div class="tag">Recall</div>
+          <div class="step-badge">Step 4 of 4 — Recall</div>
+          <h3>Path Valve Disease — Keyword Identifier</h3>
+          <p>Drill focused on identifying the distinguishing clinical features, murmur characteristics, and exam clues across all valvular heart diseases.</p>
+          <div class="card-actions">
+            <a class="btn" href="Path-2R-Valve-Identifier.html">Start Drill</a>
+            <span class="meta">Recall mode</span>
+          </div>
+        </article>
+
+        <article class="card searchable-card" data-search="recall path clinical vignette identifiers disease recognition key terms cardio pathology" data-id="card-25">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
+          <div class="tag">Recall</div>
+          <div class="step-badge">Step 4 of 4 — Recall</div>
+          <h3>Path Disease — Vignette Identifiers</h3>
+          <p>Flashcard-style drill on key clinical terms that distinguish cardiology pathology diseases. Use this to sharpen pattern recognition for vignette-based exam questions.</p>
+          <div class="card-actions">
+            <a class="btn" href="Path-4R-Clinical-Identifier.html">Start Drill</a>
+            <span class="meta">Recall mode</span>
+          </div>
+        </article>
+
+        <article class="card searchable-card" data-search="recall path fill blank hard HY information disease cheat sheet pathology" data-id="card-26">
+          <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
+          <div class="tag">Recall</div>
+          <div class="step-badge">Step 4 of 4 — Recall</div>
+          <h3>Path HY Fill in the Blanks (Hard)</h3>
+          <p>Challenging fill-in-the-blank recall covering HY facts for each cardio pathology disease. Note: this is intentionally hard — it doubles as a dense cheat sheet if you read it through rather than completing it blank.</p>
+          <div class="card-actions">
+            <a class="btn" href="Path-5R-HY-Fill-Blank.html">Start Drill</a>
+            <span class="meta">Recall mode</span>
+          </div>
+        </article>
+
       </section>
     </section>
 
     <footer>
-      AJ-Block3 • lecture notes, high-yield reviews, and practice questions
+      AJ-Block3 • lecture notes, high-yield reviews, practice questions, and recall drills
     </footer>
   </div>
 
 <script>
+/* ── Dark mode ─────────────────────────────────────────────── */
 function toggleDarkMode(){
   const body=document.body;
   body.classList.toggle('dark');
@@ -430,6 +982,8 @@ function toggleDarkMode(){
     });
   }
 })();
+
+/* ── Search / filter ───────────────────────────────────────── */
 function filterCards(){
   const q=document.getElementById('siteSearch').value.toLowerCase().trim();
   document.querySelectorAll('.searchable-card').forEach(card=>{
@@ -437,6 +991,60 @@ function filterCards(){
     card.classList.toggle('hidden', q && !hay.includes(q));
   });
 }
+
+/* ── Progress tracker ──────────────────────────────────────── */
+const STORAGE_KEY = 'ajblock3-progress';
+
+function loadProgress(){
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function saveProgress(state){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function toggleDone(btn){
+  const card = btn.closest('.card');
+  const id = card.dataset.id;
+  const state = loadProgress();
+  const isDone = !card.classList.contains('completed');
+  if(isDone){
+    state[id] = true;
+    card.classList.add('completed');
+    btn.classList.add('done');
+  } else {
+    delete state[id];
+    card.classList.remove('completed');
+    btn.classList.remove('done');
+  }
+  saveProgress(state);
+  updateProgressBar();
+}
+
+function updateProgressBar(){
+  const cards = document.querySelectorAll('.searchable-card[data-id]');
+  const state = loadProgress();
+  const total = cards.length;
+  const done = Object.keys(state).length;
+  const pct = total ? Math.round((done/total)*100) : 0;
+  document.getElementById('progress-label').textContent =
+    `Progress: ${done} / ${total} completed (${pct}%)`;
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+function initProgress(){
+  const state = loadProgress();
+  document.querySelectorAll('.searchable-card[data-id]').forEach(card => {
+    if(state[card.dataset.id]){
+      card.classList.add('completed');
+      const btn = card.querySelector('.progress-check');
+      if(btn) btn.classList.add('done');
+    }
+  });
+  updateProgressBar();
+}
+
+document.addEventListener('DOMContentLoaded', initProgress);
 </script>
 </body>
 </html>
