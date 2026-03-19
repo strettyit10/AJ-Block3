@@ -224,6 +224,37 @@
     }
     .pill:hover { background: var(--text); color: var(--bg); border-color: var(--text); }
 
+    /* ── Subject filter pills ───────────────────────────────── */
+    .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; padding: 10px 0 0; align-items: center; }
+    .filter-label {
+      font-family: var(--font-body);
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      padding-right: 2px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .fpill {
+      font-family: var(--font-body);
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 100px;
+      background: var(--surface);
+      color: var(--text-soft);
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+      transition: all .18s;
+    }
+    .fpill:hover { border-color: var(--text-muted); color: var(--text); }
+    .fpill.active-all   { background: var(--text);        color: var(--bg);           border-color: var(--text); }
+    .fpill.active-path  { background: var(--tag-pq-bg);   color: var(--tag-pq-clr);  border-color: var(--tag-pq-clr); }
+    .fpill.active-pharm { background: var(--tag-hy-bg);   color: var(--tag-hy-clr);  border-color: var(--tag-hy-clr); }
+    .fpill.active-both  { background: var(--tag-rc-bg);   color: var(--tag-rc-clr);  border-color: var(--tag-rc-clr); }
+
     /* ── Progress bar ───────────────────────────────────────── */
     .progress-bar-wrap {
       margin: 16px 0 8px;
@@ -515,7 +546,14 @@
       </div>
     </div>
 
-    <!-- PROGRESS BAR -->
+    <!-- SUBJECT FILTER BAR -->
+    <div class="filter-bar">
+      <span class="filter-label">Filter:</span>
+      <button class="fpill active-all"  onclick="setFilter('all',   this)">📋 All Cards</button>
+      <button class="fpill"             onclick="setFilter('pharm', this)">💊 Pharm Only</button>
+      <button class="fpill"             onclick="setFilter('path',  this)">🔬 Path Only</button>
+      <button class="fpill"             onclick="setFilter('both',  this)">🫀 Both (Cardio)</button>
+    </div>
     <div>
       <div class="progress-bar-wrap">
         <span id="progress-label">Progress: 0 / 0 completed</span>
@@ -539,7 +577,7 @@
       <div class="section-line"></div>
       <section class="grid">
 
-        <article class="card searchable-card" data-search="hy review cardio pathology congenital lesions ischemic heart disease cardiomyopathy valve murmurs endocarditis pericardial" data-id="card-1">
+        <article class="card searchable-card" data-search="hy review cardio pathology congenital lesions ischemic heart disease cardiomyopathy valve murmurs endocarditis pericardial" data-id="card-1" data-subject="path">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">HY Review</div>
           <div class="step-badge">Step 1 of 4 — Read First</div>
@@ -556,7 +594,7 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="lecture notes acute mi ecg acs stemi nstemi rv infarct case based" data-id="card-2">
+        <article class="card searchable-card" data-search="lecture notes acute mi ecg acs stemi nstemi rv infarct case based" data-id="card-2" data-subject="both">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Lecture Notes</div>
           <div class="step-badge">Step 1 of 4 — Read First</div>
@@ -572,7 +610,7 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="lecture notes cv risk chest pain ascvd statin cac algorithm ecg troponin" data-id="card-3">
+        <article class="card searchable-card" data-search="lecture notes cv risk chest pain ascvd statin cac algorithm ecg troponin" data-id="card-3" data-subject="both">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Lecture Notes</div>
           <div class="step-badge">Step 1 of 4 — Read First</div>
@@ -589,7 +627,7 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="study guide pharm cv pharmacology exam 2 high yield drug class" data-id="card-4">
+        <article class="card searchable-card" data-search="study guide pharm cv pharmacology exam 2 high yield drug class" data-id="card-4" data-subject="pharm">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Lecture Notes</div>
           <div class="step-badge">Step 1 of 4 — Read First</div>
@@ -601,7 +639,7 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="study guide pharm drugs cv drug reference individual agents side effects contraindications" data-id="card-5">
+        <article class="card searchable-card" data-search="study guide pharm drugs cv drug reference individual agents side effects contraindications" data-id="card-5" data-subject="pharm">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Lecture Notes</div>
           <div class="step-badge">Step 1 of 4 — Read First</div>
@@ -613,7 +651,7 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="database cardio algorithms pathways comprehensive reference cardio database" data-id="card-6">
+        <article class="card searchable-card" data-search="database cardio algorithms pathways comprehensive reference cardio database" data-id="card-6" data-subject="both">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Database</div>
           <div class="step-badge">Step 1 of 4 — Read First</div>
@@ -642,7 +680,7 @@
       <div class="section-line"></div>
       <section class="grid">
 
-        <article class="card searchable-card" data-search="HY review pharm anticoagulants antiplatelets aspirin heparin warfarin doac tpa reversal hit" data-id="card-7">
+        <article class="card searchable-card" data-search="HY review pharm anticoagulants antiplatelets aspirin heparin warfarin doac tpa reversal hit" data-id="card-7" data-subject="pharm">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">HY Review</div>
           <div class="step-badge">Step 2 of 4 — Review</div>
@@ -655,12 +693,12 @@
             <li>Interactive questions + diagrams</li>
           </ul>
           <div class="card-actions">
-            <a class="btn primary" href="anticoag_standalone_code.html">Open Review</a>
+            <a class="btn primary" href="anticoag_standalone_code.html">Open Mind Map</a>
             <span class="meta">Deep dive</span>
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="HY review pharm antiarrhythmic class I II III IV vaughan williams sodium channel beta blocker" data-id="card-8">
+        <article class="card searchable-card" data-search="HY review pharm antiarrhythmic class I II III IV vaughan williams sodium channel beta blocker" data-id="card-8" data-subject="pharm">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">HY Review</div>
           <div class="step-badge">Step 2 of 4 — Review</div>
@@ -678,7 +716,7 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="HY review pharm heart failure hf neurohormonal ACE ARB beta blocker spironolactone diuretic" data-id="card-9">
+        <article class="card searchable-card" data-search="HY review pharm heart failure hf neurohormonal ACE ARB beta blocker spironolactone diuretic" data-id="card-9" data-subject="pharm">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">HY Review</div>
           <div class="step-badge">Step 2 of 4 — Review</div>
@@ -696,7 +734,7 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="HY review pharm hypertension antihypertensives CCB ACE ARB thiazide beta blocker resistant" data-id="card-10">
+        <article class="card searchable-card" data-search="HY review pharm hypertension antihypertensives CCB ACE ARB thiazide beta blocker resistant" data-id="card-10" data-subject="pharm">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">HY Review</div>
           <div class="step-badge">Step 2 of 4 — Review</div>
@@ -714,7 +752,7 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="HY review pharm lipid lowering statin fibrate niacin PCSK9 ezetimibe cholesterol LDL" data-id="card-11">
+        <article class="card searchable-card" data-search="HY review pharm lipid lowering statin fibrate niacin PCSK9 ezetimibe cholesterol LDL" data-id="card-11" data-subject="pharm">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">HY Review</div>
           <div class="step-badge">Step 2 of 4 — Review</div>
@@ -732,7 +770,7 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="HY review recall pharm drug class answers fill blank key concepts cardio pharm drill" data-id="card-12">
+        <article class="card searchable-card" data-search="HY review recall pharm drug class answers fill blank key concepts cardio pharm drill" data-id="card-12" data-subject="pharm">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">HY Review</div>
           <div class="step-badge">Step 2 of 4 — Review</div>
@@ -744,7 +782,7 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="HY review pharm comparisons similar drugs differences key distinguishing exam traps concept map" data-id="card-13">
+        <article class="card searchable-card" data-search="HY review pharm comparisons similar drugs differences key distinguishing exam traps concept map" data-id="card-13" data-subject="pharm">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">HY Review</div>
           <div class="step-badge">Step 2 of 4 — Review</div>
@@ -756,7 +794,7 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="HY review recall path MI timeline myocardial infarction progression pathology changes time gross micro" data-id="card-14">
+        <article class="card searchable-card" data-search="HY review recall path MI timeline myocardial infarction progression pathology changes time gross micro" data-id="card-14" data-subject="path">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">HY Review</div>
           <div class="step-badge">Step 2 of 4 — Review</div>
@@ -785,7 +823,7 @@
       <div class="section-line"></div>
       <section class="grid">
 
-        <article class="card searchable-card" data-search="practice questions q bank qbank cardio exam 2 tutor timed angina lipids heart failure htn anticoag" data-id="card-15">
+        <article class="card searchable-card" data-search="practice questions q bank qbank cardio exam 2 tutor timed angina lipids heart failure htn anticoag" data-id="card-15" data-subject="both">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Practice Questions</div>
           <div class="step-badge">Step 3 of 4 — Practice</div>
@@ -797,7 +835,7 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="practice questions pharm question bank cv pharmacology exam 2" data-id="card-16">
+        <article class="card searchable-card" data-search="practice questions pharm question bank cv pharmacology exam 2" data-id="card-16" data-subject="pharm">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Practice Questions</div>
           <div class="step-badge">Step 3 of 4 — Practice</div>
@@ -809,7 +847,7 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="practice questions pharm formative question bank expanded concepts cv pharmacology" data-id="card-17">
+        <article class="card searchable-card" data-search="practice questions pharm formative question bank expanded concepts cv pharmacology" data-id="card-17" data-subject="pharm">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Practice Questions</div>
           <div class="step-badge">Step 3 of 4 — Practice</div>
@@ -821,7 +859,7 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="practice questions path pathology clinical vignettes NBME style disease identification cardio" data-id="card-18">
+        <article class="card searchable-card" data-search="practice questions path pathology clinical vignettes NBME style disease identification cardio" data-id="card-18" data-subject="path">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Practice Questions</div>
           <div class="step-badge">Step 3 of 4 — Practice</div>
@@ -850,7 +888,7 @@
       <div class="section-line"></div>
       <section class="grid">
 
-        <article class="card searchable-card" data-search="recall pharm drug class fill blank mechanisms indications side effects cv pharm drill" data-id="card-19">
+        <article class="card searchable-card" data-search="recall pharm drug class fill blank mechanisms indications side effects cv pharm drill" data-id="card-19" data-subject="pharm">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Recall</div>
           <div class="step-badge">Step 4 of 4 — Recall</div>
@@ -866,7 +904,7 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="recall pharm flashcards block 3 cardio drugs individual agents spaced repetition" data-id="card-20">
+        <article class="card searchable-card" data-search="recall pharm flashcards block 3 cardio drugs individual agents spaced repetition" data-id="card-20" data-subject="pharm">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Recall</div>
           <div class="step-badge">Step 4 of 4 — Recall</div>
@@ -882,7 +920,7 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="recall pharm heart failure HF pharm fill blank DRT diuretics neurohormonal agents" data-id="card-21">
+        <article class="card searchable-card" data-search="recall pharm heart failure HF pharm fill blank DRT diuretics neurohormonal agents" data-id="card-21" data-subject="pharm">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Recall</div>
           <div class="step-badge">Step 4 of 4 — Recall</div>
@@ -894,7 +932,7 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="recall pharm hypertension HTN antihypertensive fill blank drug classes step therapy" data-id="card-22">
+        <article class="card searchable-card" data-search="recall pharm hypertension HTN antihypertensive fill blank drug classes step therapy" data-id="card-22" data-subject="pharm">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Recall</div>
           <div class="step-badge">Step 4 of 4 — Recall</div>
@@ -906,7 +944,7 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="recall path pathology flashcards all diseases lectures cardio block 3" data-id="card-23">
+        <article class="card searchable-card" data-search="recall path pathology flashcards all diseases lectures cardio block 3" data-id="card-23" data-subject="path">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Recall</div>
           <div class="step-badge">Step 4 of 4 — Recall</div>
@@ -918,7 +956,7 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="recall path valvular disease valve keyword identifiers distinguishing features murmur clues" data-id="card-24">
+        <article class="card searchable-card" data-search="recall path valvular disease valve keyword identifiers distinguishing features murmur clues" data-id="card-24" data-subject="path">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Recall</div>
           <div class="step-badge">Step 4 of 4 — Recall</div>
@@ -930,7 +968,7 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="recall path clinical vignette identifiers disease recognition key terms cardio pathology" data-id="card-25">
+        <article class="card searchable-card" data-search="recall path clinical vignette identifiers disease recognition key terms cardio pathology" data-id="card-25" data-subject="path">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Recall</div>
           <div class="step-badge">Step 4 of 4 — Recall</div>
@@ -942,7 +980,7 @@
           </div>
         </article>
 
-        <article class="card searchable-card" data-search="recall path fill blank hard HY information disease cheat sheet pathology" data-id="card-26">
+        <article class="card searchable-card" data-search="recall path fill blank hard HY information disease cheat sheet pathology" data-id="card-26" data-subject="path">
           <button class="progress-check" onclick="toggleDone(this)" title="Mark complete">✓</button>
           <div class="tag">Recall</div>
           <div class="step-badge">Step 4 of 4 — Recall</div>
@@ -983,12 +1021,44 @@ function toggleDarkMode(){
   }
 })();
 
-/* ── Search / filter ───────────────────────────────────────── */
-function filterCards(){
-  const q=document.getElementById('siteSearch').value.toLowerCase().trim();
-  document.querySelectorAll('.searchable-card').forEach(card=>{
-    const hay=(card.dataset.search + ' ' + card.innerText).toLowerCase();
-    card.classList.toggle('hidden', q && !hay.includes(q));
+/* ── Subject filter ────────────────────────────────────────── */
+let activeFilter = 'all';
+
+function setFilter(subject, btn) {
+  activeFilter = subject;
+  // Update pill active states
+  document.querySelectorAll('.fpill').forEach(p => {
+    p.className = 'fpill'; // reset
+  });
+  btn.classList.add('active-' + subject);
+  applyFilters();
+}
+
+/* ── Search ────────────────────────────────────────────────── */
+function filterCards(){ applyFilters(); }
+
+function applyFilters() {
+  const q = document.getElementById('siteSearch').value.toLowerCase().trim();
+  document.querySelectorAll('.searchable-card').forEach(card => {
+    const subject = card.dataset.subject || 'pharm'; // default untagged = pharm
+    const hay = (card.dataset.search + ' ' + card.innerText).toLowerCase();
+
+    const matchesSearch = !q || hay.includes(q);
+    const matchesFilter =
+      activeFilter === 'all'   ? true :
+      activeFilter === 'both'  ? subject === 'both' :
+      activeFilter === 'path'  ? (subject === 'path'  || subject === 'both') :
+      activeFilter === 'pharm' ? (subject === 'pharm' || subject === 'both') :
+      true;
+
+    card.classList.toggle('hidden', !(matchesSearch && matchesFilter));
+  });
+
+  // Hide section headers if all their cards are hidden
+  document.querySelectorAll('.section-wrap').forEach(section => {
+    const cards = section.querySelectorAll('.searchable-card');
+    const anyVisible = [...cards].some(c => !c.classList.contains('hidden'));
+    section.style.display = anyVisible ? '' : 'none';
   });
 }
 
